@@ -3,7 +3,6 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "lib": ["DOM", "ESNEXT"],
-
     "target": "es5",
     "jsx": "react-jsx",
     "allowJs": true,
