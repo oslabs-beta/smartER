@@ -20,16 +20,19 @@ app.use('/', (req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((err: ErrorRequestHandler, req: Request, res: Response) => {
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,
     message: { err: 'An error occurred' },
   };
+  console.log(err.log);
   const errorObj = Object.assign({}, defaultErr, err);
-  console.log(errorObj.log);
+  // console.log(errorObj.message.error);
   return res.status(errorObj.status).json(errorObj.message);
-});
+};
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`⚡️Express:${PORT} ⚡️`);
