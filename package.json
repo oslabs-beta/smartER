@@ -56,6 +56,8 @@
     "express-validator": "^6.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router": "^6.9.0"
+    "react-router": "^6.9.0",
+    "react-router-dom": "^6.9.0",
+    "sass": "^1.59.3"
   }
 }

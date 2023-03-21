@@ -1,15 +1,22 @@
-import React, {useContext} from 'react';
-
-export const GlobalContext = React.createContext<GlobalContextType | undefined>(
-  undefined
-);
+import React, {createContext, useContext} from 'react';
 
 type GlobalContextType = {
   email: string;
-  setEmail: () => void;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
-  setPassword: () => void;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
 };
+
+const defaultState = {
+  email: '',
+  setEmail: () => {},
+  password: '',
+  setPassword: () => {},
+};
+
+export const GlobalContext = createContext<GlobalContextType | undefined>(
+  defaultState
+);
 
 ////////////
 

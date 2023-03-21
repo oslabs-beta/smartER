@@ -1,24 +1,24 @@
-import React, {FC, useContext} from 'react';
+import React, {FC, useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {GlobalContext} from '../GlobalContext';
-// const Heading = ({title}: {title: string}) => <h2>{title}</h2>;
 
-const Login: React.FC<{}> = () => {
+const Signup: React.FC<{}> = () => {
   const {email, setEmail, password, setPassword} = useContext(GlobalContext);
+
   const navigate = useNavigate();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     //TODO: Add fetch request to validate login.
-    console.log('EMAIL IN LOGIN', email);
+    console.log('EMAIL IN SIGNUP', email);
     setEmail('');
     setPassword('');
   };
 
-  //Sign-up Route
-  const routeToSignUp = (e: any) => {
+  // login route
+  const routeToLogin = (e) => {
     e.preventDefault();
-    navigate('/signup');
+    navigate('/');
   };
 
   return (
@@ -50,17 +50,17 @@ const Login: React.FC<{}> = () => {
           </label>
         </div>
         <button type="submit" className="submit" onClick={handleSubmit}>
-          Login
+          Sign up
         </button>
       </form>
       <div className="login-footer">
-        Don&apos;t have an Account?{' '}
-        <button type="button" onClick={routeToSignUp}>
-          Sign up here!
+        Already have an account?{' '}
+        <button type="button" onClick={routeToLogin}>
+          Sign in here!
         </button>
       </div>
     </>
   );
 };
 
-export default Login;
+export default Signup;

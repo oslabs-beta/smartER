@@ -16,8 +16,8 @@ module.exports = {
     },
     port: 8080,
     historyApiFallback: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    proxy: { '/api': 'http://localhost:3000/' },
+    headers: {'Access-Control-Allow-Origin': '*'},
+    proxy: {'/api': 'http://localhost:3000/'},
   },
   module: {
     rules: [
@@ -28,13 +28,13 @@ module.exports = {
         use: 'babel-loader',
       },
       {
-        test: /.css$/,
+        test: /.(scss|sass|css)$/,
         exclude: /node_modules\/(?!@?reactflow).*/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './index.html' })],
+  plugins: [new HtmlWebpackPlugin({template: './index.html'})],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },

@@ -1,25 +1,27 @@
 import React, {useState, useMemo} from 'react';
+import {Route, Routes} from 'react-router-dom';
 import {GlobalContext} from './GlobalContext';
 import Login from './components/Login';
+import Signup from './components/Signup';
 
-export const App = () => {
+const App = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   return (
     <GlobalContext.Provider
       value={{
-        email: 'hello@world.com',
-        setEmail: () => console.log('email was set'),
+        email,
+        setEmail,
+        password,
+        setPassword,
       }}
     >
-      <h1>Auto Sql</h1>
-      <Login />
+      <Routes>
+        <Route path="/" element={<Login />} />;
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
     </GlobalContext.Provider>
   );
 };
 
-// const contextValue = useMemo(
-//   () => ({
-//     email,
-//     setEmail,
-//   }),
-//   [email, setEmail]
-// );
+export default App;
