@@ -11,12 +11,6 @@ const pool = new Pool({
 // export an object that contains a property called query,
 // which is a function that returns the invocation of pool.query() after logging the query
 // This will be required in the controllers to be the access point to the database
-// export default {
-//   query: (text: string, params: string, callback: Function) => {
-//     console.log('executed query', text);
-//     return pool.query(text, params, callback);
-//   },
-// };
 
 export default {
   query: (text: string) => {
@@ -24,3 +18,10 @@ export default {
     return pool.query(text);
   },
 };
+
+// export default {
+//   query: (text: string, params: string, callback: Function) => {
+//     console.log('executed query', text);
+//     return pool.query(text, params, callback);
+//   },
+// };
