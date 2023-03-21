@@ -1,6 +1,6 @@
 import React, {useState, useMemo} from 'react';
 import {Route, Routes} from 'react-router-dom';
-import {GlobalContext} from './GlobalContext';
+import {LoginContext} from './Context';
 import Login from './components/Login';
 import Signup from './components/Signup';
 
@@ -8,7 +8,7 @@ const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   return (
-    <GlobalContext.Provider
+    <LoginContext.Provider
       value={{
         email,
         setEmail,
@@ -20,8 +20,9 @@ const App = () => {
         <Route path="/" element={<Login />} />;
         <Route path="/signup" element={<Signup />} />
       </Routes>
-    </GlobalContext.Provider>
+    </LoginContext.Provider>
   );
 };
 
+// nest providers?
 export default App;
