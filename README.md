@@ -1,2 +1,2 @@
 # smartER
-Visualize your SQL ER as you type!
+Visualize your SQL ER Diagram as you query!
