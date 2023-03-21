@@ -24,7 +24,7 @@ const Login: React.FC<{}> = () => {
 
   return (
     <>
-      <h1>autoSQL</h1>
+      <h1>smartER</h1>
       <form className="loginForm" onSubmit={handleSubmit}>
         <div className="formLine">
           <label className="login-text" htmlFor="email">
@@ -34,7 +34,7 @@ const Login: React.FC<{}> = () => {
               type="text"
               required
               autoComplete="email"
-              placeholder="email *"
+              placeholder="email"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
             />
@@ -47,7 +47,7 @@ const Login: React.FC<{}> = () => {
               type="password"
               required
               autoComplete="current-password"
-              placeholder="password *"
+              placeholder="password"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
