@@ -3,12 +3,13 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const PG_URL = process.env.PG_URL;
+const PG_URL = process.env.PG_URL_STARWARS;
 
 const pg = new Pool({ connectionString: PG_URL });
 
 interface schemaControllers {
   getSchema: RequestHandler;
+  getQueryResults: RequestHandler;
 }
 
 const schemaController: schemaControllers = {
@@ -41,6 +42,7 @@ const schemaController: schemaControllers = {
           currentTable.columns.push(columnObj);
         }
       }
+      //Get foreign and primary keys
       res.json(table_names.rows);
       // query DB
     } catch (error) {
@@ -51,6 +53,7 @@ const schemaController: schemaControllers = {
       });
     }
   },
+  getQueryResults: async (req, res, next) => {},
 };
 
 export default schemaController;
@@ -63,6 +66,10 @@ const obj = {
         primaryKey: true,
         type: 'SERIAL',
       },
+    },
+    {
+      _id: 'SERIAL',
+      primaryKey: true,
     },
     {
       name: 'VARCHAR(255)',
@@ -93,6 +100,10 @@ const obj = {
         linkedTable: 'Species._id',
         type: 'INT',
       },
+    },
+    {
+      Species_id: 'INT',
+      linkedTable: 'Species._id',
     },
   ],
 };
