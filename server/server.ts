@@ -17,6 +17,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// post request to check if user input email is unique
 app.post(
   '/emailCheck',
   body('email').isEmail().normalizeEmail(),
@@ -26,7 +27,32 @@ app.post(
       return res.status(400).json({ error: errors.array() });
     else return next();
   },
-  userController.userExists
+  userController.checkForEmail,
+  (req, res, next) => {
+    if (res.locals.userExists) {
+      return next({
+        log: 'error: email already exists',
+        status: 400,
+        message: { err: 'email already exists' },
+      });
+    } else res.status(200).send();
+  }
+);
+
+// post request to add new user to db
+app.post(
+  '/signup',
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ error: errors.array() });
+    else return next();
+  },
+  userController.checkForEmail,
+  userController.createUser,
+  (req, res, next) => {}
 );
 
 app.post(
@@ -35,16 +61,6 @@ app.post(
   body('password').not().isEmpty(),
 
   userController.verifyUser,
-  (req, res, next) => {}
-);
-
-app.post(
-  '/signup',
-  body('email').isEmail().normalizeEmail(),
-  body('password').not().isEmpty(),
-
-  userController.userExists,
-  userController.createUser,
   (req, res, next) => {}
 );
 

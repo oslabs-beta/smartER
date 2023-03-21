@@ -1,16 +1,17 @@
 import db from '../models/userModel';
 import { Request, Response, NextFunction, Handler } from 'express';
 import { body, validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
 
 interface userControllers {
-  userExists: Handler;
+  checkForEmail: Handler;
   createUser: Handler;
   verifyUser: Handler;
 }
 
 const userController: userControllers = {
   // confirm whether user exists based on email passed in
-  userExists: async (req, res, next) => {
+  checkForEmail: async (req, res, next) => {
     try {
       const emailLookup = await db.query(
         `SELECT _id FROM users WHERE email = '${req.body.email}'`
@@ -24,14 +25,24 @@ const userController: userControllers = {
         message: { err: error },
       });
     }
-    // res.json(req.body);
   },
 
   // create user based on email and password passed in
   createUser: async (req, res, next) => {
     try {
-      const test = await db.query(`SELECT * FROM users`);
-      res.json(test);
+      if (res.locals.userExists) {
+        return next({
+          log: 'error: email already exists',
+          status: 400,
+          message: { err: 'email already exists' },
+        });
+      }
+
+      const password = await bcrypt;
+      await db.query(
+        `INSERT into users (email, password)
+        VALUES ('${req.body.email}')`
+      );
     } catch (error) {
       return next({
         log: 'error running userController.createUser middleware',
