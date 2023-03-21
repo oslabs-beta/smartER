@@ -10,6 +10,10 @@ interface userControllers {
   verifyUser: Handler;
 }
 
+const comparePassword = async (password: string, hashedPassword: string) => {
+  return await bcrypt.compare(password, hashedPassword);
+};
+
 const userController: userControllers = {
   // confirm whether user exists based on email passed in
   checkForEmail: async (req, res, next) => {
@@ -56,7 +60,30 @@ const userController: userControllers = {
   },
 
   // verify user by email/password combination
-  verifyUser: async (req, res, next) => {},
+  verifyUser: async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+      const pwLookup = await db.query(
+        `SELECT password FROM users WHERE email = '${email}'`
+      );
+
+      const hashedPassword = pwLookup.rows[0].password;
+      const isValidPw = await comparePassword(password, hashedPassword);
+      if (!isValidPw) {
+        return next({
+          log: 'error: email or password is incorrect',
+          status: 401,
+          message: { err: 'incorrect password' },
+        });
+      } else return next();
+    } catch (error) {
+      return next({
+        log: 'error running userController.verifyUser middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+  },
 };
 
 export default userController;
