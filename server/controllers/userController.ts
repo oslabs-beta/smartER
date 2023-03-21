@@ -1,23 +1,31 @@
 import db from '../models/userModel';
 import { Request, Response, NextFunction, Handler } from 'express';
+import { body, validationResult } from 'express-validator';
 
 interface userControllers {
-  validEmail: Handler;
-  validPassword: Handler;
   userExists: Handler;
   createUser: Handler;
   verifyUser: Handler;
 }
 
 const userController: userControllers = {
-  // confirm email address is valid and normalize
-  validEmail: async (req, res, next) => {},
-
-  // confirm request has a password
-  validPassword: async (req, res, next) => {},
-
   // confirm whether user exists based on email passed in
-  userExists: async (req, res, next) => {},
+  userExists: async (req, res, next) => {
+    try {
+      const emailLookup = await db.query(
+        `SELECT _id FROM users WHERE email = '${req.body.email}'`
+      );
+      res.locals.userExists = Boolean(emailLookup.rowCount);
+      return next();
+    } catch (error) {
+      return next({
+        log: 'error running userController.userExists middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+    // res.json(req.body);
+  },
 
   // create user based on email and password passed in
   createUser: async (req, res, next) => {

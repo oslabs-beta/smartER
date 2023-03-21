@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
 import userController from './controllers/userController';
 import dotenv from 'dotenv';
+import { body, validationResult } from 'express-validator';
+
 dotenv.config();
 
 const app = express();
@@ -17,23 +19,30 @@ app.use(express.urlencoded({ extended: true }));
 
 app.post(
   '/emailCheck',
-  userController.validEmail,
-  userController.userExists,
-  (req, res, next) => {}
+  body('email').isEmail().normalizeEmail(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ error: errors.array() });
+    else return next();
+  },
+  userController.userExists
 );
 
 app.post(
   '/login',
-  userController.validEmail,
-  userController.validPassword,
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+
   userController.verifyUser,
   (req, res, next) => {}
 );
 
 app.post(
   '/signup',
-  userController.validEmail,
-  userController.validPassword,
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+
   userController.userExists,
   userController.createUser,
   (req, res, next) => {}
