@@ -1,7 +1,9 @@
-import express, { Request, Response, ErrorRequestHandler } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 9001;
@@ -18,9 +20,10 @@ app.use('/api', apiRouter);
 app.use('/', (req: Request, res: Response) => {
   res.status(404).json(`This is not the page you are looking for ¯\\_(ツ)_/¯`);
 });
+// Encrypt 2way, read only access, credentials stored on VS Code local Storage
 
 // Global error handler
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 500,
@@ -28,11 +31,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   };
   console.log(err.log);
   const errorObj = Object.assign({}, defaultErr, err);
-  // console.log(errorObj.message.error);
   return res.status(errorObj.status).json(errorObj.message);
-};
-
-app.use(errorHandler);
+});
 
 app.listen(PORT, () => {
   console.log(`⚡️Express:${PORT} ⚡️`);
