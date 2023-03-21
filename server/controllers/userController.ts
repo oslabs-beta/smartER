@@ -2,6 +2,7 @@ import db from '../models/userModel';
 import { Request, Response, NextFunction, Handler } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+const SALTROUNDS = 5;
 
 interface userControllers {
   checkForEmail: Handler;
@@ -38,11 +39,13 @@ const userController: userControllers = {
         });
       }
 
-      const password = await bcrypt;
+      const { email, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, SALTROUNDS);
       await db.query(
         `INSERT into users (email, password)
-        VALUES ('${req.body.email}')`
+        VALUES ('${email}', '${hashedPassword}')`
       );
+      return next();
     } catch (error) {
       return next({
         log: 'error running userController.createUser middleware',

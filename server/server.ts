@@ -52,16 +52,19 @@ app.post(
   },
   userController.checkForEmail,
   userController.createUser,
-  (req, res, next) => {}
+  (req, res) => {
+    return res.status(200).send();
+  }
 );
 
 app.post(
   '/login',
   body('email').isEmail().normalizeEmail(),
   body('password').not().isEmpty(),
-
   userController.verifyUser,
-  (req, res, next) => {}
+  (req, res) => {
+    return res.status(200).send();
+  }
 );
 
 // API Route
