@@ -16,7 +16,7 @@ const Signup: React.FC<{}> = () => {
   };
 
   // login route
-  const routeToLogin = (e) => {
+  const routeToLogin = (e: any) => {
     e.preventDefault();
     navigate('/');
   };
