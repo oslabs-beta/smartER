@@ -38,8 +38,8 @@ const userController: userControllers = {
       if (res.locals.userExists) {
         return next({
           log: 'error: email already exists',
-          status: 400,
-          message: { err: 'email already exists' },
+          status: 409,
+          message: { err: 'account with this email already exists' },
         });
       }
 
@@ -71,9 +71,9 @@ const userController: userControllers = {
       const isValidPw = await comparePassword(password, hashedPassword);
       if (!isValidPw) {
         return next({
-          log: 'error: email or password is incorrect',
+          log: 'error: incorrect password',
           status: 401,
-          message: { err: 'incorrect password' },
+          message: { err: 'email or password is incorrect' },
         });
       } else return next();
     } catch (error) {

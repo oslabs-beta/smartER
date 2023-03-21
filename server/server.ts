@@ -24,7 +24,11 @@ app.post(
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
-      return res.status(400).json({ error: errors.array() });
+      return next({
+        log: 'error: invalid email address',
+        status: 400,
+        message: { err: 'invalid email address' },
+      });
     else return next();
   },
   userController.checkForEmail,
