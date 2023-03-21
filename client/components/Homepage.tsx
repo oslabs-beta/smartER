@@ -23,6 +23,7 @@ const Homepage: React.FC<{}> = () => {
 
   return (
     <div>
+      <Header />
       {home}
       <div>{queryString}</div>
     </div>
