@@ -2,6 +2,7 @@ import express, { Request, Response, ErrorRequestHandler } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
+import userController from './controllers/userController';
 
 const app = express();
 const PORT = process.env.PORT || 9001;
@@ -11,6 +12,8 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.post('/signup', userController.verifyUser, (req, res, next) => {});
 
 // API Route
 app.use('/api', apiRouter);
