@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
+import userController from './controllers/userController';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,6 +14,8 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.post('/signup', userController.createUser, (req, res, next) => {});
 
 // API Route
 app.use('/api', apiRouter);
