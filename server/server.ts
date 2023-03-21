@@ -15,7 +15,29 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/signup', userController.createUser, (req, res, next) => {});
+app.post(
+  '/emailCheck',
+  userController.validEmail,
+  userController.userExists,
+  (req, res, next) => {}
+);
+
+app.post(
+  '/login',
+  userController.validEmail,
+  userController.validPassword,
+  userController.verifyUser,
+  (req, res, next) => {}
+);
+
+app.post(
+  '/signup',
+  userController.validEmail,
+  userController.validPassword,
+  userController.userExists,
+  userController.createUser,
+  (req, res, next) => {}
+);
 
 // API Route
 app.use('/api', apiRouter);
