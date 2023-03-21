@@ -1,6 +1,6 @@
-import React, {useState, useMemo} from 'react';
-import {Route, Routes} from 'react-router-dom';
-import {LoginContext} from './Context';
+import React, { useState, useMemo } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { LoginContext } from './Context';
 import Login from './components/Login';
 import Signup from './components/Signup';
 

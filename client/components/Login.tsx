@@ -1,10 +1,10 @@
-import React, {FC, useContext, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {LoginContext} from '../Context';
+import React, { FC, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { LoginContext } from '../Context';
 // const Heading = ({title}: {title: string}) => <h2>{title}</h2>;
 
 const Login: React.FC<{}> = () => {
-  const {email, setEmail, password, setPassword} = useContext(LoginContext);
+  const { email, setEmail, password, setPassword } = useContext(LoginContext);
   const [validCredentials, setValidCredentials] = useState(true);
   const navigate = useNavigate();
 
@@ -24,16 +24,17 @@ const Login: React.FC<{}> = () => {
 
   return (
     <>
+      <h1>autoSQL</h1>
       <form className="loginForm" onSubmit={handleSubmit}>
         <div className="formLine">
           <label className="login-text" htmlFor="email">
-            Email
             <input
               id="email"
               className="user-input"
               type="text"
               required
               autoComplete="email"
+              placeholder="email *"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
             />
@@ -41,12 +42,12 @@ const Login: React.FC<{}> = () => {
         </div>
         <div className="formLine">
           <label className="login-text" htmlFor="password">
-            Password
             <input
               className="user-input"
               type="password"
               required
               autoComplete="current-password"
+              placeholder="password *"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
@@ -55,11 +56,13 @@ const Login: React.FC<{}> = () => {
         <button type="submit" className="submit" onClick={handleSubmit}>
           Login
         </button>
-        {!validCredentials && <div>incorrect email/password</div>}
+        {!validCredentials && (
+          <div className="small-text">incorrect password/email</div>
+        )}
       </form>
       <div className="login-footer">
         Don&apos;t have an Account?{' '}
-        <button type="button" onClick={routeToSignUp}>
+        <button type="button" className="small-submit" onClick={routeToSignUp}>
           Sign up here!
         </button>
       </div>
