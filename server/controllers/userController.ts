@@ -134,7 +134,7 @@ const userController: userControllers = {
       // reject request if token is invalid
       const secret = process.env.JWT_SECRET_KEY;
       if (token && secret) {
-        jwt.verify(token, secret, (error, user: User) => {
+        jwt.verify(token, secret, (error, user) => {
           if (error) {
             return next({
               log: 'JWT invalid',
@@ -143,13 +143,15 @@ const userController: userControllers = {
             });
           }
 
-          if (user) {
-            req.email = user.email;
-            req.token = token;
-            req.exp = user.exp;
+          const decodedToken = user as { email: string; exp: number };
+          const { email, exp } = decodedToken;
 
-            return next();
-          }
+          req.user = {
+            email: email,
+            token: token,
+            exp: exp,
+          };
+          return next();
         });
       }
     } catch (error) {
