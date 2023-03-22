@@ -16,8 +16,32 @@ const comparePassword = async (password: string, hashedPassword: string) => {
 };
 
 const userController: userControllers = {
-  // protect API routes
-  protect: async (req, res, next) => {},
+  // protect API routes by validating JWT
+  protect: async (req, res, next) => {
+    try {
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1];
+
+      // reject request if no token provided
+      if (token === null) {
+        return next({
+          log: 'no token provided',
+          status: 401,
+          message: { err: 'no token provided' },
+        });
+      }
+
+      // reject request if token in deny list (user logged out)
+      const inDenyList = await redisClient;
+      // reject token if invalid
+    } catch (error) {
+      return next({
+        log: 'error running userController.protect middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+  },
 
   // confirm whether user exists based on email passed in
   checkForEmail: async (req, res, next) => {
