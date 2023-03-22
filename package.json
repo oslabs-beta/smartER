@@ -14,7 +14,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oslabs-beta/autoSQL.git"
+    "url": "git+https://github.com/oslabs-beta/smartER.git"
   },
   "contributors": [
     "Joyce Kwak",
@@ -44,6 +44,7 @@
     "html-webpack-plugin": "^5.5.0",
     "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.21",
+    "path": "^0.12.7",
     "sass-loader": "^13.2.1",
     "style-loader": "^3.3.2",
     "ts-loader": "^9.4.2",
@@ -65,6 +66,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.9.0",
-    "redis": "^4.6.5"
+    "redis": "^4.6.5",
+    "react-router-dom": "^6.9.0",
+    "sass": "^1.59.3"
   }
 }

@@ -1,7 +1,7 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import * as path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
   entry: ['./client/index.tsx'],
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -28,9 +28,9 @@ module.exports = {
         use: 'babel-loader',
       },
       {
-        test: /.css$/,
+        test: /.(scss|sass|css)$/,
         exclude: /node_modules\/(?!@?reactflow).*/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
