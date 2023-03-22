@@ -72,12 +72,9 @@ button {
 
 .query-main {
   height: 100%;
-  border: 1 solid pink;
-}
-
-.query-submit {
-  display: block;
-  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 //SETTINGS STYLING

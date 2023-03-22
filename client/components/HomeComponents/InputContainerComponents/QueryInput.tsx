@@ -13,7 +13,7 @@ const QueryInput: React.FC<{}> = () => {
 
   return (
     <div className="query-main">
-      Enter your Query:
+      Build your Query:
       <textarea
         className="query-input"
         required
