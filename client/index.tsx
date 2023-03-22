@@ -6,6 +6,8 @@ import './styles/login.scss';
 import './styles/InputContainer.scss';
 import './styles/header.scss';
 import './styles/resultbar.scss';
+import './styles/split.scss';
+import './styles/diagram.scss';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');

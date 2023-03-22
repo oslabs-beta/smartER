@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Avestan&family=Oswald&family=Roboto&display=swap');
+$color1: #2e2e3a;
+$color2: #cbc0ae;
+$color3: #aeb8fe;
+$color4: #16103b;
+
+.diagram-box {
+  border: 1px solid $color1;
+  // border: 1px solid lighten($color2, 10%);
+  // background-color: green;
+  display: flex;
+  height: 80vh;
+  width: 100%;
+}
