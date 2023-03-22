@@ -134,7 +134,7 @@ const userController: userControllers = {
       // reject request if token is invalid
       const secret = process.env.JWT_SECRET_KEY;
       if (token && secret) {
-        jwt.verify(token, secret, (error, user) => {
+        jwt.verify(token, secret, (error, payload) => {
           if (error) {
             return next({
               log: 'JWT invalid',
@@ -143,15 +143,29 @@ const userController: userControllers = {
             });
           }
 
-          const decodedToken = user as { email: string; exp: number };
+          // declare types of properties on payload
+          const decodedToken = payload as { email: string; exp: number };
           const { email, exp } = decodedToken;
 
-          req.user = {
-            email: email,
-            token: token,
-            exp: exp,
-          };
-          return next();
+          // confirm payload contains correct properties and they are expected type before adding to request
+          if (
+            email &&
+            typeof email === 'string' &&
+            exp &&
+            typeof exp === 'number'
+          ) {
+            req.user = {
+              email: email,
+              token: token,
+              exp: exp,
+            };
+            return next();
+          } else
+            return next({
+              log: 'JWT invalid',
+              status: 401,
+              message: { err: error },
+            });
         });
       }
     } catch (error) {
