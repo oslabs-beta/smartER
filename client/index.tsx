@@ -1,8 +1,9 @@
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import './styles/login.scss';
+import './styles/InputContainer.scss';
 import './styles/header.scss';
 import './styles/resultbar.scss';
 

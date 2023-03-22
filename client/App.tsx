@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { LoginContext, HomepageContext } from './Context';
+import React, {useState} from 'react';
+import {Route, Routes} from 'react-router-dom';
+import {LoginContext, HomepageContext} from './Context';
 import Login from './components/Login';
 import Homepage from './components/Homepage';
 import Signup from './components/Signup';
@@ -11,12 +11,12 @@ const App = () => {
   const [home, setHome] = useState('');
   const [queryString, setQueryString] = useState('');
   const [history, setHistory] = useState([
-    { created_at: 'hello', query: 'world' },
+    {created_at: 'hello', query: 'world'},
   ]);
   const [uri, setUri] = useState('');
-  const [dbCredentials, setDbCredentials] = useState({
+  const [dbCredentials, setDBCredentials] = useState({
     host: '',
-    port: 3000,
+    port: 0,
     dbUsername: '',
     dbPassword: '',
     database: '',
@@ -42,7 +42,7 @@ const App = () => {
           uri,
           setUri,
           dbCredentials,
-          setDbCredentials,
+          setDBCredentials,
         }}
       >
         <Routes>

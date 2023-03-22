@@ -1,9 +1,9 @@
-import React, { FC, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LoginContext } from '../Context';
+import React, {FC, useState, useContext} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {LoginContext} from '../Context';
 
 const Signup: React.FC<{}> = () => {
-  const { email, setEmail, password, setPassword } = useContext(LoginContext);
+  const {email, setEmail, password, setPassword} = useContext(LoginContext)!;
   const [secondPw, setSecondPW] = useState('');
   const [doMatch, setMatch] = useState(true);
 
