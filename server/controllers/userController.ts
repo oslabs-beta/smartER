@@ -2,6 +2,7 @@ import db from '../models/userModel';
 import { RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import { createClient, RedisClientType } from 'redis';
+import { User } from '../../types/custom';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 const SALTROUNDS = 5;
@@ -133,7 +134,7 @@ const userController: userControllers = {
       // reject request if token is invalid
       const secret = process.env.JWT_SECRET_KEY;
       if (token && secret) {
-        jwt.verify(token, secret, (error, user) => {
+        jwt.verify(token, secret, (error, user: User) => {
           if (error) {
             return next({
               log: 'JWT invalid',
@@ -144,8 +145,8 @@ const userController: userControllers = {
 
           if (user) {
             req.email = user.email;
-            req.tokenExp = user.exp;
             req.token = token;
+            req.exp = user.exp;
 
             return next();
           }
