@@ -1,0 +1,20 @@
+.logo {
+  position: absolute;
+  left: 3%;
+  font-size: 40px;
+}
+
+.logout-button {
+  position: absolute;
+  top: 4%;
+  right: 2%;
+  outline: none;
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  color: darken(white, 25%);
+}

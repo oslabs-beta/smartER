@@ -23,8 +23,9 @@ const Homepage: React.FC<{}> = () => {
 
   return (
     <div>
-      {home}
-      <div>{queryString}</div>
+      <Header />
+      <QueryResults />
+      <div></div>
     </div>
   );
 };
