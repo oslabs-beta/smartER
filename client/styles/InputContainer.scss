@@ -1,19 +1,29 @@
 //Tab Styling
 //https://www.youtube.com/watch?v=WkREeDy2WQ4
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Avestan&family=Oswald&family=Roboto&display=swap');
+$color1: #2e2e3a;
+$color2: #cbc0ae;
+$color3: #aeb8fe;
+$color4: #16103b;
+
+body {
+  font-family: 'Noto Sans Avestan', sans-serif;
+}
 
 .input-container {
-  border: 1px solid red;
+  border: 1px solid $color1;
   display: flex;
+  height: 80vh;
   flex-direction: column;
-  height: 90vh;
   margin-bottom: 0px;
   width: 40%;
+  background-color: ligten($color1, 5%);
 }
 
 .tab-container {
   display: flex;
   flex-direction: row;
-  border: 1px solid rgba(216, 186, 186, 0.274);
+  border: 1px solid $color1;
   justify-content: center;
 }
 
@@ -22,7 +32,7 @@
   padding: 15px;
   text-align: center;
   width: 100%;
-  background: rgba(128, 128, 128, 0.075);
+  background: lighten($color1, 30%);
   cursor: pointer;
   border-radius: 5px;
   box-sizing: content-box;
@@ -60,21 +70,27 @@ button {
 }
 
 //QUERY STYLING
+.query-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1 solid salmon;
+}
 .query-input {
   resize: none;
   background-color: azure;
   box-sizing: border-box;
   border-radius: 5px;
-  width: 100%;
+  width: 80%;
   height: 100%;
   padding: 12px 20px;
+  resize: vertical;
+  overflow: auto;
 }
 
-.query-main {
+textarea {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
 }
 
 //SETTINGS STYLING
