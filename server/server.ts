@@ -22,7 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 // connect redis for use in logout functionality
 let redisClient: RedisClientType;
 (async () => {
-  console.log('redis');
   redisClient = createClient();
 
   redisClient.on('error', (error) => {
@@ -30,9 +29,6 @@ let redisClient: RedisClientType;
   });
 
   await redisClient.connect();
-  // redisClient.on('connect', () => {
-  //   console.log('Redis connected');
-  // });
 })();
 
 // post request to check if user input email is unique
@@ -123,3 +119,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 app.listen(PORT, () => {
   console.log(`⚡️Express:${PORT} ⚡️`);
 });
+
+export { redisClient };

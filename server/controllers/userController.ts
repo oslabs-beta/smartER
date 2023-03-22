@@ -3,6 +3,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import { User } from '../../types/custom';
 import jwt from 'jsonwebtoken';
+import { redisClient } from '../server';
 import bcrypt from 'bcrypt';
 const SALTROUNDS = 5;
 import dotenv from 'dotenv';
@@ -108,15 +109,15 @@ const userController: userControllers = {
       }
 
       // reject request if token is in deny list (user logged out)
-      // console.log('confirming token not in deny list');
-      // const inDenyList = await redisClient.get(`bl_${token}`);
-      // if (inDenyList) {
-      //   return next({
-      //     log: 'JWT rejected',
-      //     status: 401,
-      //     message: { err: 'JWT rejected' },
-      //   });
-      // }
+      console.log('confirming token not in deny list');
+      const inDenyList = await redisClient.get(`bl_${token}`);
+      if (inDenyList) {
+        return next({
+          log: 'JWT rejected',
+          status: 401,
+          message: { err: 'JWT rejected' },
+        });
+      }
 
       // reject request if token is invalid
       console.log('confirming token is valid');
@@ -148,7 +149,6 @@ const userController: userControllers = {
               token: token,
               exp: exp,
             };
-            console.log(req);
             return next();
           } else
             return next({
@@ -168,7 +168,25 @@ const userController: userControllers = {
   },
 
   blacklistToken: async (req, res, next) => {
-    const { email, token, tokenExp } = req.cookies.JWT;
+    console.log('blacklisting token');
+    try {
+      const { user } = req;
+
+      if (user && user.token) {
+        const { email, token, exp } = user;
+        const token_key = `bl_${token}`;
+        await redisClient.set(token_key, token);
+        redisClient.expireAt(token_key, exp);
+      }
+
+      return next();
+    } catch (error) {
+      return next({
+        log: 'error running userController.blacklistToken middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
   },
 };
 
