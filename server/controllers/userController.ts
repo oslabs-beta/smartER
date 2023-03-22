@@ -13,6 +13,7 @@ interface userControllers {
   checkForEmail: RequestHandler;
   createUser: RequestHandler;
   verifyUser: RequestHandler;
+  changePassword: RequestHandler;
   authenticateToken: RequestHandler;
   blacklistToken: RequestHandler;
 }
@@ -83,6 +84,24 @@ const userController: userControllers = {
           message: { err: 'email or password is incorrect' },
         });
       } else return next();
+    } catch (error) {
+      return next({
+        log: 'error running userController.verifyUser middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+  },
+
+  // verify user by email/password combination
+  changePassword: async (req, res, next) => {
+    try {
+      const { email, newPassword } = req.body;
+      const hashedPassword = await bcrypt.hash(newPassword, SALTROUNDS);
+      await db.query(
+        `UPDATE users SET password = '${hashedPassword}' WHERE email = '${email}'`
+      );
+      return next();
     } catch (error) {
       return next({
         log: 'error running userController.verifyUser middleware',
@@ -173,7 +192,7 @@ const userController: userControllers = {
       const { user } = req;
 
       if (user && user.token) {
-        const { email, token, exp } = user;
+        const { token, exp } = user;
         const token_key = `bl_${token}`;
         await redisClient.set(token_key, token);
         redisClient.expireAt(token_key, exp);

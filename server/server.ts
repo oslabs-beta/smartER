@@ -88,6 +88,18 @@ app.post(
 );
 
 app.post(
+  '/changePassword',
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+  body('newPassword').not().isEmpty(),
+  userController.verifyUser,
+  userController.changePassword,
+  (req, res) => {
+    return res.status(200).send();
+  }
+);
+
+app.post(
   '/logout',
   userController.authenticateToken,
   userController.blacklistToken,
