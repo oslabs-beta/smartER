@@ -1,10 +1,11 @@
-import React, { FC, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LoginContext } from '../Context';
+import React, {FC, useContext, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {LoginContext, LoginContextType} from '../Context';
+
 // const Heading = ({title}: {title: string}) => <h2>{title}</h2>;
 
 const Login: React.FC<{}> = () => {
-  const { email, setEmail, password, setPassword } = useContext(LoginContext);
+  const {email, setEmail, password, setPassword} = useContext(LoginContext);
   const [validCredentials, setValidCredentials] = useState(true);
   const navigate = useNavigate();
 

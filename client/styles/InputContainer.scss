@@ -1,10 +1,18 @@
+//Tab Styling
+//https://www.youtube.com/watch?v=WkREeDy2WQ4
+
+html,
+body,
+.full-height {
+  height: 100%;
+}
 .input-container {
   border: 1px solid red;
-  height: 80vh;
-}
-
-.tabs {
-  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
+  margin-bottom: 0px;
+  width: 40%;
 }
 
 .tab-container {
@@ -14,12 +22,13 @@
 }
 
 .tabs {
+  margin: 10px;
   padding: 15px;
   text-align: center;
   width: 50%;
   background: rgba(128, 128, 128, 0.075);
   cursor: pointer;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+  border-radius: 5px;
   box-sizing: content-box;
   position: relative;
   outline: none;
@@ -52,4 +61,35 @@ button {
 
 .active-content {
   display: block;
+}
+
+//QUERY STYLING
+.query-input {
+  resize: none;
+  background-color: azure;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 12px 20px;
+}
+
+.query-main {
+  height: 100%;
+  border: 1 solid pink;
+}
+
+//SETTINGS STYLING
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.settings-title {
+  text-align: center;
+}
+
+.submit {
+  margin: 5px;
 }

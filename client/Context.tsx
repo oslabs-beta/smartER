@@ -1,8 +1,8 @@
-import { createContext, useContext, Dispatch, SetStateAction } from 'react';
-import { StringLiteral } from 'typescript';
+import {createContext, useContext, Dispatch, SetStateAction} from 'react';
+import {StringLiteral} from 'typescript';
 
 // Login context
-type LoginContextType = {
+export type LoginContextType = {
   email: string;
   setEmail: Dispatch<SetStateAction<string>>;
   password: string;
@@ -21,7 +21,7 @@ export const LoginContext = createContext<LoginContextType | undefined>(
 );
 
 //Homepage Context
-type HomepageContextType = {
+export type HomepageContextType = {
   home: string;
   setHome: Dispatch<SetStateAction<string>>;
   queryString: string;
