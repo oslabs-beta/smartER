@@ -8,7 +8,7 @@ const PG_URL = process.env.PG_URL_STARWARS;
 const pg = new Pool({ connectionString: PG_URL });
 
 interface schemaControllers {
-  getSchema: RequestHandler;
+  getSchemaPostgreSQL: RequestHandler;
   getQueryResults: RequestHandler;
 }
 function currentColumnHasPrimaryKey(
@@ -34,7 +34,7 @@ function currentColumnHasForeignKey(
   );
 }
 const schemaController: schemaControllers = {
-  getSchema: async (req, res, next) => {
+  getSchemaPostgreSQL: async (req, res, next) => {
     try {
       // Get all relationships between all tables
       const relationships = await pg.query(`

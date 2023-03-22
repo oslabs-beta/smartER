@@ -1,7 +1,7 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import * as path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
   entry: ['./client/index.tsx'],
   output: {
     path: path.resolve(__dirname, 'dist'),
