@@ -6,6 +6,8 @@ import userController from './controllers/userController';
 import dotenv from 'dotenv';
 import { body, validationResult } from 'express-validator';
 import cookieController from './controllers/cookieController';
+import { createClient, RedisClientType } from 'redis';
+
 dotenv.config();
 
 const app = express();
@@ -16,6 +18,22 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// connect redis for use in logout functionality
+let redisClient: RedisClientType;
+(async () => {
+  console.log('redis');
+  redisClient = createClient();
+
+  redisClient.on('error', (error) => {
+    console.log(error);
+  });
+
+  await redisClient.connect();
+  // redisClient.on('connect', () => {
+  //   console.log('Redis connected');
+  // });
+})();
 
 // post request to check if user input email is unique
 app.post(

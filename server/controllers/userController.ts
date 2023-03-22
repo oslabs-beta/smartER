@@ -1,7 +1,6 @@
 import db from '../models/userModel';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
-import { createClient, RedisClientType } from 'redis';
 import { User } from '../../types/custom';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -19,20 +18,6 @@ interface userControllers {
 
 const comparePassword = async (password: string, hashedPassword: string) => {
   return await bcrypt.compare(password, hashedPassword);
-};
-
-// connect redis for use in logout functionality
-let redisClient: RedisClientType;
-async () => {
-  redisClient = createClient();
-
-  redisClient.on('error', (error) => {
-    console.log(error);
-  });
-
-  redisClient.on('connect', () => {
-    console.log('Redis connected');
-  });
 };
 
 const userController: userControllers = {
