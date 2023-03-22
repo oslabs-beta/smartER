@@ -109,7 +109,19 @@ const schemaController: schemaControllers = {
       });
     }
   },
-  getQueryResults: async (req, res, next) => {},
+  getQueryResults: async (req, res, next) => {
+    try {
+      const { queryString } = req.body;
+      const getQuery = await pg.query(queryString);
+      res.json(getQuery.rows);
+    } catch (error) {
+      return next({
+        log: `Error in schemaController.getQueryResults ${error}`,
+        status: 400,
+        message: { error },
+      });
+    }
+  },
 };
 
 export default schemaController;
