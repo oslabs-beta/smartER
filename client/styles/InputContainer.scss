@@ -1,16 +1,11 @@
 //Tab Styling
 //https://www.youtube.com/watch?v=WkREeDy2WQ4
 
-html,
-body,
-.full-height {
-  height: 100%;
-}
 .input-container {
   border: 1px solid red;
   display: flex;
   flex-direction: column;
-  flex: 1 1 100%;
+  height: 90vh;
   margin-bottom: 0px;
   width: 40%;
 }
@@ -18,14 +13,15 @@ body,
 .tab-container {
   display: flex;
   flex-direction: row;
-  border: 1px solid rgba(0, 0, 0, 0.274);
+  border: 1px solid rgba(216, 186, 186, 0.274);
+  justify-content: center;
 }
 
 .tabs {
   margin: 10px;
   padding: 15px;
   text-align: center;
-  width: 50%;
+  width: 100%;
   background: rgba(128, 128, 128, 0.075);
   cursor: pointer;
   border-radius: 5px;
@@ -68,6 +64,7 @@ button {
   resize: none;
   background-color: azure;
   box-sizing: border-box;
+  border-radius: 5px;
   width: 100%;
   height: 100%;
   padding: 12px 20px;
@@ -76,6 +73,11 @@ button {
 .query-main {
   height: 100%;
   border: 1 solid pink;
+}
+
+.query-submit {
+  display: block;
+  align-self: center;
 }
 
 //SETTINGS STYLING

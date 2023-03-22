@@ -14,14 +14,16 @@ const QueryInput: React.FC<{}> = () => {
   return (
     <div className="query-main">
       Enter your Query:
-      <form>
-        <textarea
-          className="query-input"
-          required
-          onChange={(e) => setQueryString(e.target.value)}
-        ></textarea>
-      </form>
-      <button type="submit" className="query-submit" onClick={handleSubmit}>
+      <textarea
+        className="query-input"
+        required
+        onChange={(e) => setQueryString(e.target.value)}
+      ></textarea>
+      <button
+        type="submit"
+        className="submit query-submit"
+        onClick={handleSubmit}
+      >
         Submit
       </button>
     </div>

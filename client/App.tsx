@@ -16,7 +16,7 @@ const App = () => {
   const [uri, setUri] = useState('');
   const [dbCredentials, setDBCredentials] = useState({
     host: '',
-    port: 3000,
+    port: '',
     dbUsername: '',
     dbPassword: '',
     database: '',

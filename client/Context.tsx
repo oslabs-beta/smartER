@@ -59,7 +59,7 @@ interface historyType {
   query: string;
 }
 
-interface dbCredentialsType {
+export interface dbCredentialsType {
   host: string;
   port: number;
   dbUsername: string;

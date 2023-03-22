@@ -12,14 +12,14 @@ const Homepage: React.FC<{}> = () => {
   const {history, setHistory} = useContext(HomepageContext);
   const {dbCredentials, setDBCredentials} = useContext(HomepageContext);
 
-  useEffect(() => {
-    setHome('HELLO WORLD');
-    setQueryString('setting query string');
-    console.log('history: ', history);
-    console.log('dbCredentials: ', dbCredentials);
-    setHistory([{created_at: 'hello', query: 'word'}]);
-    console.log('history: ', history);
-  }, []);
+  // useEffect(() => {
+  //   setHome('HELLO WORLD');
+  //   setQueryString('setting query string');
+  //   console.log('history: ', history);
+  //   console.log('dbCredentials: ', dbCredentials);
+  //   setHistory([{created_at: 'hello', query: 'word'}]);
+  //   console.log('history: ', history);
+  // }, []);
 
   return (
     <div>

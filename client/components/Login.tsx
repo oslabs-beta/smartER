@@ -12,7 +12,6 @@ const Login: React.FC<{}> = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     //TODO: Add fetch request to validate login. If invalid login, setValidCredentials -> false
-    console.log('EMAIL IN LOGIN', email);
     setEmail('');
     setPassword('');
   };
