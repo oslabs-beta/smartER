@@ -113,7 +113,8 @@ const userController: userControllers = {
       const token = authHeader && authHeader.split(' ')[1];
 
       // reject request if no token provided
-      if (token === null) {
+      console.log('confirming token provided');
+      if (!token) {
         return next({
           log: 'no token provided',
           status: 401,
@@ -122,16 +123,18 @@ const userController: userControllers = {
       }
 
       // reject request if token is in deny list (user logged out)
-      const inDenyList = await redisClient.get(`bl_${token}`);
-      if (inDenyList) {
-        return next({
-          log: 'JWT rejected',
-          status: 401,
-          message: { err: 'JWT rejected' },
-        });
-      }
+      // console.log('confirming token not in deny list');
+      // const inDenyList = await redisClient.get(`bl_${token}`);
+      // if (inDenyList) {
+      //   return next({
+      //     log: 'JWT rejected',
+      //     status: 401,
+      //     message: { err: 'JWT rejected' },
+      //   });
+      // }
 
       // reject request if token is invalid
+      console.log('confirming token is valid');
       const secret = process.env.JWT_SECRET_KEY;
       if (token && secret) {
         jwt.verify(token, secret, (error, payload) => {
@@ -160,6 +163,7 @@ const userController: userControllers = {
               token: token,
               exp: exp,
             };
+            console.log(req);
             return next();
           } else
             return next({
@@ -171,7 +175,7 @@ const userController: userControllers = {
       }
     } catch (error) {
       return next({
-        log: 'error running userController.protect middleware',
+        log: 'error running userController.authenticateToken middleware',
         status: 400,
         message: { err: error },
       });
