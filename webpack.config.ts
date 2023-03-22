@@ -1,7 +1,7 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import * as path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
   entry: ['./client/index.tsx'],
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -16,8 +16,8 @@ module.exports = {
     },
     port: 8080,
     historyApiFallback: true,
-    headers: {'Access-Control-Allow-Origin': '*'},
-    proxy: {'/api': 'http://localhost:3000/'},
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    proxy: { '/api': 'http://localhost:3000/' },
   },
   module: {
     rules: [
@@ -34,7 +34,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({template: './index.html'})],
+  plugins: [new HtmlWebpackPlugin({ template: './index.html' })],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
