@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import { table } from 'console';
 dotenv.config();
 
 const PG_URL = process.env.PG_URL_STARWARS;
@@ -68,6 +69,11 @@ const schemaController: schemaControllers = {
               tableRelationship.column_name === columnNames.column_name &&
               tableRelationship.constraint_type === 'FOREIGN KEY'
             ) {
+              columnObj.linkedTable =
+                tableRelationship.table_origin +
+                '.' +
+                tableRelationship.table_column;
+              break;
             }
           }
           currentTable.columns.push(columnObj);
