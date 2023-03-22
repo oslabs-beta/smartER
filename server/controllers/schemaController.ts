@@ -12,7 +12,28 @@ interface schemaControllers {
   getSchema: RequestHandler;
   getQueryResults: RequestHandler;
 }
-
+function currentColumnHasPrimaryKey(
+  tableRelationships: any,
+  currentTableName: any,
+  currentColumnName: any
+): boolean {
+  return (
+    tableRelationships.table_name === currentTableName &&
+    tableRelationships.column_name === currentColumnName &&
+    tableRelationships.constraint_type === 'PRIMARY KEY'
+  );
+}
+function currentColumnHasForeignKey(
+  tableRelationships: any,
+  currentTableName: any,
+  currentColumnName: any
+): boolean {
+  return (
+    tableRelationships.table_name === currentTableName &&
+    tableRelationships.column_name === currentColumnName &&
+    tableRelationships.constraint_type === 'FOREIGN KEY'
+  );
+}
 const schemaController: schemaControllers = {
   getSchema: async (req, res, next) => {
     try {
@@ -41,45 +62,43 @@ const schemaController: schemaControllers = {
       for (let i = 0; i < table_names.rows.length; i++) {
         const currentTableName = table_names.rows[i].table_name;
         const currentTable = table_names.rows[i];
-        // Initialize array for each table
+        // Initialize array to hold objects that represent each column for the table
         currentTable.columns = [];
+
         // Get all columns of current table
-        const columns = await pg.query(`
+        const getColumns = await pg.query(`
         SELECT column_name, data_type
         FROM information_schema.columns
         WHERE table_schema = 'public'
         AND table_name = '${currentTableName}';`);
 
-        for (let i = 0; i < columns.rows.length; i++) {
+        // Build each column object by assigning the data type and relationships
+        for (let i = 0; i < getColumns.rows.length; i++) {
           const columnObj: Record<string, any> = {};
-          const columnNames = columns.rows[i];
-          columnObj[columnNames.column_name] = columnNames.data_type;
+          const columns = getColumns.rows[i];
+          const columnName = columns.column_name;
+          const columnDataType = columns.data_type;
 
+          columnObj[columnName] = columnDataType;
+
+          // Iterate through relationships object and check if the the current Column has a primary key or foreign key
           for (let i = 0; i < relationships.rows.length; i++) {
             const tableRelationship = relationships.rows[i];
-            if (
-              tableRelationship.table_name === currentTableName &&
-              tableRelationship.column_name === columnNames.column_name &&
-              tableRelationship.constraint_type === 'PRIMARY KEY'
-            ) {
-              columnObj.primaryKey = true;
-              break;
-            } else if (
-              tableRelationship.table_name === currentTableName &&
-              tableRelationship.column_name === columnNames.column_name &&
-              tableRelationship.constraint_type === 'FOREIGN KEY'
-            ) {
-              columnObj.linkedTable =
-                tableRelationship.table_origin +
-                '.' +
-                tableRelationship.table_column;
-              break;
+            // prettier-ignore
+            {
+                if (currentColumnHasPrimaryKey(tableRelationship,currentTableName,columnName)) {
+                columnObj.primaryKey = true;
+                break;
+              } else if (currentColumnHasForeignKey(tableRelationship,currentTableName,columnName)) {
+                columnObj.linkedTable = tableRelationship.table_origin + '.' +tableRelationship.table_column;
+                break;
+              }
             }
           }
           currentTable.columns.push(columnObj);
         }
       }
-      //Get foreign and primary keys
+
       res.json(table_names.rows);
       // query DB
     } catch (error) {
