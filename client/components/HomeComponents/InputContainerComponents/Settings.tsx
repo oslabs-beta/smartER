@@ -1,27 +1,34 @@
 import React, {FC, useState, useContext, useEffect} from 'react';
-import {HomepageContext, dbCredentialsType} from '../../../Context';
+import {
+  HomepageContext,
+  HomepageContextType,
+  dbCredentialsType,
+} from '../../../Context';
 
 const Settings: React.FC<{}> = () => {
   const {uri, setUri, dbCredentials, setDBCredentials} =
-    useContext(HomepageContext);
+    useContext(HomepageContext)!;
 
-  const handleUriSubmit = (e: any) => {
+  const handleUriSubmit = (e: any): void => {
     e.preventDefault();
     //TODO: Add fetch to add URI to DB
     setUri('');
   };
 
-  const handleCredentialSubmit = (e: any) => {
+  const handleCredentialSubmit = (e: any): void => {
     e.preventDefault();
     //TODO: Add fetch to add Credentials to DB
 
     setDBCredentials((prev) => {
-      return {host: '', port: '', dbUsername: '', dbPassword: '', database: ''};
+      return {host: '', port: 0, dbUsername: '', dbPassword: '', database: ''};
     });
   };
+
+  //Testing dbCredentials
   useEffect(() => {
     console.log('creds in SETTINGS', dbCredentials);
   }, [dbCredentials]);
+
   return (
     <div className="settings-main">
       <div className="uri-main">
@@ -63,10 +70,10 @@ const Settings: React.FC<{}> = () => {
           <input
             id="port"
             className="user-input"
-            type="text"
+            type="number"
             required
             onChange={(e) =>
-              setDBCredentials((prevState: dbCredentialsType) => {
+              setDBCredentials((prevState: any) => {
                 return {...prevState, port: e.target.value};
               })
             }

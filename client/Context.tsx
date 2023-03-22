@@ -31,7 +31,7 @@ export type HomepageContextType = {
   uri: string;
   setUri: Dispatch<SetStateAction<string>>;
   dbCredentials: dbCredentialsType;
-  setDbCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
+  setDBCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
 };
 
 const defaultHomeState = {
@@ -43,7 +43,13 @@ const defaultHomeState = {
   setHistory: () => {},
   uri: '',
   setUri: () => {},
-  dbCredentials: {},
+  dbCredentials: {
+    host: '',
+    port: 0,
+    dbUsername: '',
+    dbPassword: '',
+    database: '',
+  },
   setDBCredentials: () => {},
 };
 

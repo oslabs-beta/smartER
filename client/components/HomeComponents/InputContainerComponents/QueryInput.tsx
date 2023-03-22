@@ -2,11 +2,11 @@ import React, {FC, useState, useContext, useEffect} from 'react';
 import {HomepageContext} from '../../../Context';
 
 const QueryInput: React.FC<{}> = () => {
-  const {queryString, setQueryString} = useContext(HomepageContext);
+  const {queryString, setQueryString} = useContext(HomepageContext)!;
 
   //TODO: Add logic for live rendering nodes n stuff
 
-  const handleSubmit = (e): any => {
+  const handleSubmit = (e: any): void => {
     e.preventDefault;
     console.log('QUERY HANDLE SUBMIT ', queryString);
   };

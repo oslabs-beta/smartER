@@ -7,10 +7,10 @@ import QueryResults from './HomeComponents/QueryResults';
 import {HomepageContext} from '../Context';
 
 const Homepage: React.FC<{}> = () => {
-  const {home, setHome} = useContext(HomepageContext);
-  const {queryString, setQueryString} = useContext(HomepageContext);
-  const {history, setHistory} = useContext(HomepageContext);
-  const {dbCredentials, setDBCredentials} = useContext(HomepageContext);
+  const {home, setHome} = useContext(HomepageContext)!;
+  const {queryString, setQueryString} = useContext(HomepageContext)!;
+  const {history, setHistory} = useContext(HomepageContext)!;
+  const {dbCredentials, setDBCredentials} = useContext(HomepageContext)!;
 
   // useEffect(() => {
   //   setHome('HELLO WORLD');

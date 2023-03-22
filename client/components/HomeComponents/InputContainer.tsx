@@ -1,5 +1,4 @@
-import React, {FC, useState, useContext, useEffect} from 'react';
-import {HomepageContext} from '../../Context';
+import React, {FC, useState} from 'react';
 import QueryInput from './InputContainerComponents/QueryInput';
 import History from './InputContainerComponents/History';
 import Settings from './InputContainerComponents/Settings';
@@ -29,6 +28,7 @@ const InputContainer: React.FC<{}> = () => {
           Settings
         </button>
       </div>
+
       <div className="tab-content">
         <div className={tab === 'Query' ? 'content active-content' : 'content'}>
           <QueryInput />
