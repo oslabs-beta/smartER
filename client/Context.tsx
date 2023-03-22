@@ -1,8 +1,8 @@
-import { createContext, useContext, Dispatch, SetStateAction } from 'react';
-import { StringLiteral } from 'typescript';
+import {createContext, useContext, Dispatch, SetStateAction} from 'react';
+import {StringLiteral} from 'typescript';
 
 // Login context
-type LoginContextType = {
+export type LoginContextType = {
   email: string;
   setEmail: Dispatch<SetStateAction<string>>;
   password: string;
@@ -21,7 +21,7 @@ export const LoginContext = createContext<LoginContextType | undefined>(
 );
 
 //Homepage Context
-type HomepageContextType = {
+export type HomepageContextType = {
   home: string;
   setHome: Dispatch<SetStateAction<string>>;
   queryString: string;
@@ -31,7 +31,7 @@ type HomepageContextType = {
   uri: string;
   setUri: Dispatch<SetStateAction<string>>;
   dbCredentials: dbCredentialsType;
-  setDbCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
+  setDBCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
 };
 
 const defaultHomeState = {
@@ -43,7 +43,13 @@ const defaultHomeState = {
   setHistory: () => {},
   uri: '',
   setUri: () => {},
-  dbCredentials: {},
+  dbCredentials: {
+    host: '',
+    port: 0,
+    dbUsername: '',
+    dbPassword: '',
+    database: '',
+  },
   setDBCredentials: () => {},
 };
 
@@ -59,7 +65,7 @@ interface historyType {
   query: string;
 }
 
-interface dbCredentialsType {
+export interface dbCredentialsType {
   host: string;
   port: number;
   dbUsername: string;
