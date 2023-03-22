@@ -1,4 +1,4 @@
-import Jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { RequestHandler } from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -13,11 +13,14 @@ const cookieController: cookieControllers = {
       const createJwt = (email: string) => {
         const secret = process.env.JWT_SECRET_KEY;
         if (secret) {
-          const token = Jwt.sign(
+          const token = jwt.sign(
             {
               email: email,
             },
-            secret
+            secret,
+            {
+              expiresIn: '7d',
+            }
           );
           return token;
         }
@@ -30,6 +33,7 @@ const cookieController: cookieControllers = {
       res.locals.JWT = jwtToken;
       res.cookie('JWT', jwtToken, {
         httpOnly: true,
+        secure: true,
       });
       return next();
     } catch (error) {
