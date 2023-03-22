@@ -73,6 +73,15 @@ app.post(
   }
 );
 
+app.post(
+  '/logout',
+  userController.authenticateToken,
+  userController.blacklistToken,
+  (req, res) => {
+    return res.status(200).send();
+  }
+);
+
 // API Route
 app.use('/api', apiRouter);
 // Catch all 404

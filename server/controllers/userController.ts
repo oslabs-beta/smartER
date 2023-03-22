@@ -2,14 +2,18 @@ import db from '../models/userModel';
 import { RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import { createClient, RedisClientType } from 'redis';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 const SALTROUNDS = 5;
+import dotenv from 'dotenv';
+dotenv.config();
 
 interface userControllers {
-  protect: RequestHandler;
   checkForEmail: RequestHandler;
   createUser: RequestHandler;
   verifyUser: RequestHandler;
+  authenticateToken: RequestHandler;
+  blacklistToken: RequestHandler;
 }
 
 const comparePassword = async (password: string, hashedPassword: string) => {
@@ -31,33 +35,6 @@ async () => {
 };
 
 const userController: userControllers = {
-  // protect API routes by validating JWT
-  protect: async (req, res, next) => {
-    try {
-      const authHeader = req.headers['authorization'];
-      const token = authHeader && authHeader.split(' ')[1];
-
-      // reject request if no token provided
-      if (token === null) {
-        return next({
-          log: 'no token provided',
-          status: 401,
-          message: { err: 'no token provided' },
-        });
-      }
-
-      // reject request if token in deny list (user logged out)
-      const inDenyList = await redisClient;
-      // reject token if invalid
-    } catch (error) {
-      return next({
-        log: 'error running userController.protect middleware',
-        status: 400,
-        message: { err: error },
-      });
-    }
-  },
-
   // confirm whether user exists based on email passed in
   checkForEmail: async (req, res, next) => {
     try {
@@ -126,6 +103,65 @@ const userController: userControllers = {
         message: { err: error },
       });
     }
+  },
+
+  // protect API routes by validating JWT
+  authenticateToken: async (req, res, next) => {
+    try {
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1];
+
+      // reject request if no token provided
+      if (token === null) {
+        return next({
+          log: 'no token provided',
+          status: 401,
+          message: { err: 'no token provided' },
+        });
+      }
+
+      // reject request if token is in deny list (user logged out)
+      const inDenyList = await redisClient.get(`bl_${token}`);
+      if (inDenyList) {
+        return next({
+          log: 'JWT rejected',
+          status: 401,
+          message: { err: 'JWT rejected' },
+        });
+      }
+
+      // reject request if token is invalid
+      const secret = process.env.JWT_SECRET_KEY;
+      if (token && secret) {
+        jwt.verify(token, secret, (error, user) => {
+          if (error) {
+            return next({
+              log: 'JWT invalid',
+              status: 401,
+              message: { err: error },
+            });
+          }
+
+          if (user) {
+            req.email = user.email;
+            req.tokenExp = user.exp;
+            req.token = token;
+
+            return next();
+          }
+        });
+      }
+    } catch (error) {
+      return next({
+        log: 'error running userController.protect middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+  },
+
+  blacklistToken: async (req, res, next) => {
+    const { email, token, tokenExp } = req.cookies.JWT;
   },
 };
 
