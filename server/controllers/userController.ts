@@ -1,13 +1,14 @@
 import db from '../models/userModel';
-import { Request, Response, NextFunction, Handler } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 const SALTROUNDS = 5;
 
 interface userControllers {
-  checkForEmail: Handler;
-  createUser: Handler;
-  verifyUser: Handler;
+  protect: RequestHandler;
+  checkForEmail: RequestHandler;
+  createUser: RequestHandler;
+  verifyUser: RequestHandler;
 }
 
 const comparePassword = async (password: string, hashedPassword: string) => {
@@ -15,6 +16,9 @@ const comparePassword = async (password: string, hashedPassword: string) => {
 };
 
 const userController: userControllers = {
+  // protect API routes
+  protect: async (req, res, next) => {},
+
   // confirm whether user exists based on email passed in
   checkForEmail: async (req, res, next) => {
     try {

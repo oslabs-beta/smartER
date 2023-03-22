@@ -5,6 +5,7 @@ import apiRouter from './routes/router';
 import userController from './controllers/userController';
 import dotenv from 'dotenv';
 import { body, validationResult } from 'express-validator';
+import cookieController from './controllers/cookieController';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.post(
   },
   userController.checkForEmail,
   userController.createUser,
+  cookieController.setJwtCookie,
   (req, res) => {
     return res.status(200).send();
   }
@@ -66,6 +68,7 @@ app.post(
   body('email').isEmail().normalizeEmail(),
   body('password').not().isEmpty(),
   userController.verifyUser,
+  cookieController.setJwtCookie,
   (req, res) => {
     return res.status(200).send();
   }
