@@ -1,5 +1,5 @@
 import db from '../models/userModel';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 const SALTROUNDS = 5;

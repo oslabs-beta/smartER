@@ -1,14 +1,13 @@
 import Jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-interface cookieController {
+interface cookieControllers {
   setJwtCookie: RequestHandler;
 }
 
-const cookieController = {
+const cookieController: cookieControllers = {
   setJwtCookie: async (req, res, next) => {
     try {
       const createJwt = (email: string) => {
@@ -29,7 +28,7 @@ const cookieController = {
       const jwtToken = createJwt(email);
 
       res.locals.JWT = jwtToken;
-      res.cookit('JWT', jwtToken, {
+      res.cookie('JWT', jwtToken, {
         httpOnly: true,
       });
       return next();
