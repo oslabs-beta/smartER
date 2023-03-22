@@ -1,5 +1,5 @@
 import db from '../models/userModel';
-import { RequestHandler } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import { createClient, RedisClientType } from 'redis';
 import { User } from '../../types/custom';
@@ -155,6 +155,7 @@ const userController: userControllers = {
             typeof exp === 'number'
           ) {
             req.user = {
+              ...req.user,
               email: email,
               token: token,
               exp: exp,
