@@ -37,7 +37,7 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="uri">
             <input
               id="uri"
-              className="user-input"
+              className="settings-input"
               type="text"
               required
               onChange={(e) => setUri(e.target.value)}

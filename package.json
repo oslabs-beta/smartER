@@ -66,6 +66,7 @@
     "react-router": "^6.9.0",
     "react-router-dom": "^6.9.0",
     "react-split": "^2.0.14",
+    "reactflow": "^11.6.1",
     "sass": "^1.59.3"
   }
 }

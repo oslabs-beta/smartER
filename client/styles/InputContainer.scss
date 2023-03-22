@@ -17,18 +17,24 @@ body {
   flex-direction: column;
   margin-bottom: 0px;
   width: 40%;
-  background-color: ligten($color1, 5%);
+  background-color: $color4;
+  overflow-y: scroll;
+}
+
+.input-container::-webkit-scrollbar {
+  background: transparent; /* Chrome/Safari/Webkit */
+  width: 0px;
 }
 
 .tab-container {
   display: flex;
   flex-direction: row;
-  border: 1px solid $color1;
+  border: none;
   justify-content: center;
 }
 
 .tabs {
-  margin: 10px;
+  margin: 15px;
   padding: 15px;
   text-align: center;
   width: 100%;
@@ -77,8 +83,9 @@ button {
   border: 1 solid salmon;
 }
 .query-input {
+  margin-top: 3%;
   resize: none;
-  background-color: azure;
+  background-color: lighten($color2, 10%);
   box-sizing: border-box;
   border-radius: 5px;
   width: 80%;
@@ -88,6 +95,9 @@ button {
   overflow: auto;
 }
 
+.query-input:focus {
+  outline: solid 1px lighten($color1, 15%);
+}
 textarea {
   height: 100%;
   width: 100%;
@@ -100,11 +110,26 @@ form {
   flex-direction: column;
   align-items: center;
 }
+.settings-main {
+  overflow-y: scroll;
+  font-family: 'Noto Sans Avestan', sans-serif;
+  font-size: 11px;
+}
+
+.settings-input {
+  width: 150px;
+  height: 20px;
+  border: 1px $color1;
+  background-color: lighten($color1, 10%);
+  border-radius: 5px;
+  color: white;
+  padding: 8px;
+}
 
 .settings-title {
   text-align: center;
 }
 
 .submit {
-  margin: 5px;
+  margin-top: 5%;
 }
