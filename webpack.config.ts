@@ -28,9 +28,9 @@ export default {
         use: 'babel-loader',
       },
       {
-        test: /.css$/,
+        test: /.(scss|sass|css)$/,
         exclude: /node_modules\/(?!@?reactflow).*/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
