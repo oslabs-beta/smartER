@@ -16,6 +16,20 @@ const schemaController: schemaControllers = {
   getSchema: async (req, res, next) => {
     try {
       const { query } = req.body;
+      // Get all relationships between all tables
+      const relationships = await pg.query(`
+      select tc.table_name, kc.column_name, tc.constraint_type, cc.table_name as table_origin, cc.column_name as table_column
+      from information_schema.key_column_usage kc
+
+      join information_schema.table_constraints tc
+      on kc.table_name = tc.table_name and kc.table_schema = tc.table_schema and kc.constraint_name = tc.constraint_name
+
+      left join information_schema.constraint_column_usage cc
+      on cc.constraint_name = kc.constraint_name and tc.constraint_type = 'FOREIGN KEY'
+
+      where tc.constraint_type = 'PRIMARY KEY' or tc.constraint_type = 'FOREIGN KEY'
+      order by tc.table_name;
+      `);
       // Get all the tables in schema
       const table_names = await pg.query(
         `SELECT table_name FROM information_schema.tables
@@ -36,9 +50,26 @@ const schemaController: schemaControllers = {
         AND table_name = '${currentTableName}';`);
 
         for (let i = 0; i < columns.rows.length; i++) {
-          const columnObj: Record<string, string> = {};
+          const columnObj: Record<string, any> = {};
           const columnNames = columns.rows[i];
           columnObj[columnNames.column_name] = columnNames.data_type;
+
+          for (let i = 0; i < relationships.rows.length; i++) {
+            const tableRelationship = relationships.rows[i];
+            if (
+              tableRelationship.table_name === currentTableName &&
+              tableRelationship.column_name === columnNames.column_name &&
+              tableRelationship.constraint_type === 'PRIMARY KEY'
+            ) {
+              columnObj.primaryKey = true;
+              break;
+            } else if (
+              tableRelationship.table_name === currentTableName &&
+              tableRelationship.column_name === columnNames.column_name &&
+              tableRelationship.constraint_type === 'FOREIGN KEY'
+            ) {
+            }
+          }
           currentTable.columns.push(columnObj);
         }
       }
@@ -57,6 +88,14 @@ const schemaController: schemaControllers = {
 };
 
 export default schemaController;
+
+const objbjj = {
+  table_name: 'films',
+  column_name: '_id',
+  constraint_type: 'PRIMARY KEY',
+  table_origin: null,
+  table_column: null,
+};
 
 const obj = {
   tableName: 'People',
