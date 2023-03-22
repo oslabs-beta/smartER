@@ -3,10 +3,6 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const PG_URL = process.env.PG_URL_STARWARS;
-
-const pg = new Pool({ connectionString: PG_URL });
-
 interface schemaControllers {
   getSchemaPostgreSQL: RequestHandler;
   getQueryResults: RequestHandler;
@@ -36,6 +32,25 @@ function currentColumnHasForeignKey(
 const schemaController: schemaControllers = {
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
+      const { programmatic, pg_url } = req.body;
+      // FE Provides whether or not user is logging in programmatically
+      // If programmatically logging in, create a credentials object to
+      // create a new connection, else we assign it the provided pg_url
+      // if that is not provided, we assign it the starwars pg_url
+      if (programmatic) {
+        var { host, port, dbUsername, dbPassword, database } = req.body;
+        var programmaticCredentials: any = {
+          host,
+          port,
+          user: dbUsername,
+          password: dbPassword,
+          database,
+        };
+      } else {
+        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+        var envCredentials: any = { connectionString: PG_URL };
+      }
+      const pg = new Pool(programmaticCredentials || envCredentials);
       // Get all relationships between all tables
       const relationships = await pg.query(`
       select tc.table_name, kc.column_name, tc.constraint_type, cc.table_name as table_origin, cc.column_name as table_column
@@ -111,8 +126,28 @@ const schemaController: schemaControllers = {
   },
   getQueryResults: async (req, res, next) => {
     try {
-      const { queryString } = req.body;
+      // FE Provides whether or not user is logging in programmatically
+      // If programmatically logging in, create a credentials object to
+      // create a new connection, else we assign it the provided pg_url
+      // if that is not provided, we assign it the starwars pg_url
+      const { programmatic, pg_url, queryString } = req.body;
+      if (programmatic) {
+        var { host, port, dbUsername, dbPassword, database } = req.body;
+        var programmaticCredentials: any = {
+          host,
+          port,
+          user: dbUsername,
+          password: dbPassword,
+          database,
+        };
+      } else {
+        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+        var envCredentials: any = { connectionString: PG_URL };
+      }
+      const pg = new Pool(programmaticCredentials || envCredentials);
+      // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
+      // Return query to FE
       res.json(getQuery.rows);
     } catch (error) {
       return next({
