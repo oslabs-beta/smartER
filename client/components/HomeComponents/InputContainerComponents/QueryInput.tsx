@@ -13,10 +13,10 @@ const QueryInput: React.FC<{}> = () => {
 
   return (
     <div className="query-main">
-      Build your Query:
       <textarea
         className="query-input"
         required
+        placeholder="type your query"
         onChange={(e) => setQueryString(e.target.value)}
       ></textarea>
       <button

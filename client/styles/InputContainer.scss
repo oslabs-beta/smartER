@@ -1,28 +1,44 @@
 //Tab Styling
 //https://www.youtube.com/watch?v=WkREeDy2WQ4
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Avestan&family=Oswald&family=Roboto&display=swap');
+$color1: #2e2e3a;
+$color2: #cbc0ae;
+$color3: #aeb8fe;
+$color4: #16103b;
+
+body {
+  font-family: 'Noto Sans Avestan', sans-serif;
+}
 
 .input-container {
-  border: 1px solid red;
+  border: 1px solid $color1;
   display: flex;
+  height: 80vh;
   flex-direction: column;
-  height: 90vh;
   margin-bottom: 0px;
   width: 40%;
+  background-color: $color4;
+  overflow-y: scroll;
+}
+
+.input-container::-webkit-scrollbar {
+  background: transparent; /* Chrome/Safari/Webkit */
+  width: 0px;
 }
 
 .tab-container {
   display: flex;
   flex-direction: row;
-  border: 1px solid rgba(216, 186, 186, 0.274);
+  border: none;
   justify-content: center;
 }
 
 .tabs {
-  margin: 10px;
+  margin: 15px;
   padding: 15px;
   text-align: center;
   width: 100%;
-  background: rgba(128, 128, 128, 0.075);
+  background: lighten($color1, 30%);
   cursor: pointer;
   border-radius: 5px;
   box-sizing: content-box;
@@ -60,21 +76,31 @@ button {
 }
 
 //QUERY STYLING
-.query-input {
-  resize: none;
-  background-color: azure;
-  box-sizing: border-box;
-  border-radius: 5px;
-  width: 100%;
-  height: 100%;
-  padding: 12px 20px;
-}
-
 .query-main {
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1 solid salmon;
+}
+.query-input {
+  margin-top: 3%;
+  resize: none;
+  background-color: lighten($color2, 10%);
+  box-sizing: border-box;
+  border-radius: 5px;
+  width: 80%;
+  height: 100%;
+  padding: 12px 20px;
+  resize: vertical;
+  overflow: auto;
+}
+
+.query-input:focus {
+  outline: solid 1px lighten($color1, 15%);
+}
+textarea {
+  height: 100%;
+  width: 100%;
 }
 
 //SETTINGS STYLING
@@ -84,11 +110,26 @@ form {
   flex-direction: column;
   align-items: center;
 }
+.settings-main {
+  overflow-y: scroll;
+  font-family: 'Noto Sans Avestan', sans-serif;
+  font-size: 11px;
+}
+
+.settings-input {
+  width: 150px;
+  height: 20px;
+  border: 1px $color1;
+  background-color: lighten($color1, 10%);
+  border-radius: 5px;
+  color: white;
+  padding: 8px;
+}
 
 .settings-title {
   text-align: center;
 }
 
 .submit {
-  margin: 5px;
+  margin-top: 5%;
 }
