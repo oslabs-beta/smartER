@@ -16,7 +16,7 @@ interface schemaControllers {
 const schemaController: schemaControllers = {
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
-      const { programmatic, pg_uri } = req.body;
+      const { programmatic, pg_url } = req.body;
       // FE Provides whether or not user is logging in programmatically
       // If programmatically logging in, create a credentials object to
       // create a new connection, else we assign it the provided pg_url
@@ -31,11 +31,10 @@ const schemaController: schemaControllers = {
           database,
         };
       } else {
-        const PG_URI = pg_uri || process.env.PG_URI_STARWARS;
-        var envCredentials: any = { connectionString: PG_URI };
+        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+        var envCredentials: any = { connectionString: PG_URL };
       }
       const pg = new Pool(programmaticCredentials || envCredentials);
-      // Get current schema name
 
       // Get all relationships between all tables
       const relationships = await pg.query(getAllRelationShips);
@@ -121,6 +120,7 @@ const schemaController: schemaControllers = {
       //   }
       // }
       return res.json(erDiagram);
+      // Get current schema name
       // const getSchema = await pg.query(
       //   `SELECT current_schema from current_schema`
       // );
@@ -190,7 +190,7 @@ const schemaController: schemaControllers = {
       // If programmatically logging in, create a credentials object to
       // create a new connection, else we assign it the provided pg_url
       // if that is not provided, we assign it the starwars pg_url
-      const { programmatic, pg_uri, queryString } = req.body;
+      const { programmatic, pg_url, queryString } = req.body;
       if (programmatic) {
         var { host, port, dbUsername, dbPassword, database } = req.body;
         var programmaticCredentials: any = {
@@ -201,8 +201,8 @@ const schemaController: schemaControllers = {
           database,
         };
       } else {
-        const PG_URI = pg_uri || process.env.PG_URI_STARWARS;
-        var envCredentials: any = { connectionString: PG_URI };
+        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+        var envCredentials: any = { connectionString: PG_URL };
       }
       const pg = new Pool(programmaticCredentials || envCredentials);
       // Make a query based on the passed in queryString
