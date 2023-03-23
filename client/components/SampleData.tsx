@@ -347,7 +347,7 @@ export const testEdges = parseDataEdges(SampleData);
 
 //PARSE EDGES
 function parseDataEdges(data: any): any {
-  const edges: [] = [];
+  const edges: any = [];
   data.forEach((table: any, i: number) => {
     table.columns.forEach((column: any, j: number) => {
       if (column.hasOwnProperty('linkedTable')) {
