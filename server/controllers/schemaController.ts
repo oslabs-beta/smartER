@@ -37,12 +37,32 @@ const schemaController: schemaControllers = {
       const pg = new Pool(programmaticCredentials || envCredentials);
 
       // Get all relationships between all tables
-      const relationships = await pg.query(getAllRelationShips);
+      const getRelationshipsTableNamesColumnNamesDataType = await pg.query(
+        `select
+        c.table_name,
+        c.column_name,
+        max(c.data_type) as data_type,
+        max(case when tc.constraint_type = 'PRIMARY KEY' then 1 else 0 end) AS primary_key_exists,
+        max(cc.table_name) as table_origin,
+        max(cc.column_name) as table_column
 
-      // Get all tables, their column names, and data types for each column
-      const getTableColumnNamesAndDataType = await pg.query(`
-      select table_name, column_name, data_type from information_schema.columns
-      where table_schema = 'public' and is_updatable = 'YES';`);
+       from information_schema.key_column_usage kc
+
+       right join information_schema.columns c
+       on c.table_name = kc.table_name and c.column_name = kc.column_name
+
+       left join information_schema.table_constraints tc
+       on kc.table_name = tc.table_name and kc.table_schema = tc.table_schema and kc.constraint_name = tc.constraint_name
+
+       left join information_schema.constraint_column_usage cc
+       on cc.constraint_name = kc.constraint_name and tc.constraint_type = 'FOREIGN KEY'
+
+       where c.table_schema = 'public' and is_updatable = 'YES'
+
+       group by c.table_name, c.column_name
+       order by c.table_name;`
+      );
+
       // Initialize array to hold returned data
       const erDiagram = [];
       // Table type
@@ -56,12 +76,18 @@ const schemaController: schemaControllers = {
         columns: [],
       };
       // Assign prev table name and tableObj.table_name to be the first table name from the query
-      let prevTableName = getTableColumnNamesAndDataType.rows[0].table_name;
-      tableObj.table_name = getTableColumnNamesAndDataType.rows[0].table_name;
+      let prevTableName =
+        getRelationshipsTableNamesColumnNamesDataType.rows[0].table_name;
+      tableObj.table_name =
+        getRelationshipsTableNamesColumnNamesDataType.rows[0].table_name;
       // Iterate through array of all table names, columns, and data types
-      for (let i = 0; i < getTableColumnNamesAndDataType.rows.length; i++) {
+      for (
+        let i = 0;
+        i < getRelationshipsTableNamesColumnNamesDataType.rows.length;
+        i++
+      ) {
         // current represents each object in the array
-        const current = getTableColumnNamesAndDataType.rows[i];
+        const current = getRelationshipsTableNamesColumnNamesDataType.rows[i];
         //column object type
         const column: Record<string, any> = {};
         // Check to see if the prev table name does not match the current table name
@@ -77,105 +103,29 @@ const schemaController: schemaControllers = {
 
         // create column_name : data_type key value pair on column
         column[current.column_name] = current.data_type;
+        if (current.primary_key_exists) column.primary_key = true;
+        if (current.table_origin)
+          column.linkedTable =
+            current.table_origin + '.' + current.table_column;
         // Adds relationships to columns that have a constraint type, splice choice out if we find a constraint
-        for (let i = 0; i < relationships.rows.length; i++) {
-          const tableRelationship = relationships.rows[i];
-          // prettier-ignore
-          {
-          if (currentColumnHasPrimaryKey(tableRelationship, current.table_name, current.column_name)) {
-            column.primaryKey = true;
-            relationships.rows.splice(i,1)
-            break;
-          } else if (currentColumnHasForeignKey(tableRelationship, current.table_name, current.column_name)) {
-            column.linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
-            relationships.rows.splice(i,1)
-            break;
-          }
-          }
-        }
+
+        // prettier-ignore
+        //   {
+        //   if (currentColumnHasPrimaryKey(tableRelationship, current.table_name, current.column_name)) {
+        //     column.primaryKey = true;
+
+        //     break;
+        //   } else if (currentColumnHasForeignKey(tableRelationship, current.table_name, current.column_name)) {
+        //     column.linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
+
+        //     break;
+        //   }
+        //   }
+        // }
         // Push the complete column object into columns array
         tableObj.columns.push(column);
       }
-
-      // for (let i = 0; i < relationships.rows.length; i++) {
-      //   const tableRelationship = relationships.rows[i];
-      //   for (let j = 0; j < erDiagram.length; j++) {
-      //     const currentTableName = erDiagram[j].table_name;
-      //     const columns = erDiagram[j].columns;
-      //     for (let k = 0; k < columns.length; k++) {
-      //       for (const key in columns[k]) {
-      //         // prettier-ignore
-      //         {
-      //           if (currentColumnHasPrimaryKey(tableRelationship,currentTableName,key)) {
-      //           columns[k].primaryKey = true;
-
-      //           break;
-      //           } else if (currentColumnHasForeignKey(tableRelationship,currentTableName,key)) {
-      //           columns[k].linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
-      //           break;
-      //           }
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
       return res.json(erDiagram);
-      // Get current schema name
-      // const getSchema = await pg.query(
-      //   `SELECT current_schema from current_schema`
-      // );
-      // const schemaName = getSchema.rows[0].current_schema;
-
-      // // Get all the tables in schema
-      // const table_names = await pg.query(
-      //   `SELECT table_name FROM information_schema.tables
-      //    WHERE table_type = 'BASE TABLE'
-      //    AND table_schema = '${schemaName}'`
-      // );
-      // // Loop through each table object
-      // for (let i = 0; i < table_names.rows.length; i++) {
-      //   const currentTableName = table_names.rows[i].table_name;
-      //   const currentTable = table_names.rows[i];
-      //   // Initialize array to hold objects that represent each column for the table
-      //   currentTable.columns = [];
-
-      //   // Get all columns of current table
-      //   const getColumns = await pg.query(`
-      //   SELECT column_name, data_type
-      //   FROM information_schema.columns
-      //   WHERE table_schema = 'public'
-      //   AND table_name = '${currentTableName}';`);
-
-      //   // Build each column object by assigning the data type and relationships
-      //   for (let i = 0; i < getColumns.rows.length; i++) {
-      //     const columnObj: Record<string, any> = {};
-      //     const columns = getColumns.rows[i];
-      //     const columnName = columns.column_name;
-      //     const columnDataType = columns.data_type;
-      //     // Assign data type for the current column
-      //     columnObj[columnName] = columnDataType;
-
-      //     // Iterate through relationships object and check if the the current Column has a primary key or foreign key
-      //     // If a primary key exists, set primaryKey to true
-      //     // If a foreign key exists, set linkedTable to the table's name and the column name that the foreign key points to
-      //     for (let i = 0; i < relationships.rows.length; i++) {
-      //       const tableRelationship = relationships.rows[i];
-      //       // prettier-ignore
-      //       {
-      //           if (currentColumnHasPrimaryKey(tableRelationship,currentTableName,columnName)) {
-      //           columnObj.primaryKey = true;
-      //           break;
-      //         } else if (currentColumnHasForeignKey(tableRelationship,currentTableName,columnName)) {
-      //           columnObj.linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
-      //           break;
-      //         }
-      //       }
-      //     }
-      //     // Push column object to the columns array in each table object
-      //     currentTable.columns.push(columnObj);
-      //   }
-      // }
-      // return res.json(table_names.rows);
     } catch (error) {
       return next({
         log: `Error in schemaController.getSchema ${error}`,
