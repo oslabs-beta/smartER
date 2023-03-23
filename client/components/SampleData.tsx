@@ -290,3 +290,57 @@ export const SampleData = [
     ],
   },
 ];
+
+function parseDataNodes(rawData: any): any {
+  let groupHeight = 40;
+  const nodes: any = [];
+  rawData.map((table, index) => {
+    //create Table container
+    nodes.push({
+      id: `${table.table_name}.group`,
+      type: 'group',
+      position: {x: 150 * index, y: 0},
+      data: {label: table.table_name},
+      style: {
+        display: 'flex',
+        width: 150,
+        height: table.columns.length * 40 + 40,
+        border: '1px solid #000',
+      },
+    });
+    //create Column name node
+    nodes.push({
+      id: `${table.table_name}.columnName`,
+      type: 'input',
+      parentNode: `${table.table_name}.group`,
+      extent: 'parent',
+      position: {x: 0, y: 0},
+      data: {label: table.table_name},
+      sourcePosition: 'right',
+      targetPosition: 'left',
+      style: {
+        background: 'orange',
+      },
+    });
+
+    //Helper func to iterate through the columns property
+    // parseColumns(tables.columns);
+    table.columns.forEach((column, index) => {
+      nodes.push({
+        id: `${Object.keys(column)[0]}.${table.table_name}.node`,
+        type: 'input',
+        parentNode: `${table.table_name}.group`,
+        extent: 'parent',
+        position: {x: 0, y: index === 0 ? 40 : index * 40 + 40},
+        data: {label: `${Object.keys(column)[0]}`},
+        sourcePosition: 'right',
+        targetPosition: 'left',
+      });
+    });
+  });
+
+  return nodes;
+}
+
+export const testnodes = parseDataNodes(SampleData);
+console.log(parseDataNodes(SampleData));

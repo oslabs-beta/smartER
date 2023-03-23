@@ -22,50 +22,48 @@ const tableHeading = {
 };
 
 const TableNode = ({data}) => {
-  const [columns, setColumns] = useState([]);
-  const {tableData} = data;
-
-  useEffect(() => {
-    tableData.columns.forEach((column, i) => {
-      const [[columnName, other]] = Object.entries(column);
-      const columnDataType = other.type || other;
-      const isPrimaryKey = other.primaryKey || false;
-      const linkTo = other.linkedTable || null;
-      setColumns((prev) => [
-        ...prev,
-        <Column
-          key={`C${i}`}
-          columnName={columnName}
-          columnDetails={other}
-          columnDataType={columnDataType}
-          isPrimaryKey={isPrimaryKey}
-          linkTo={linkTo}
-        />,
-      ]);
-      if (linkTo) {
-        const sourceTable = tableData.tableName;
-        const sourceColumn = columnName;
-        const [targetTable, targetColumn] = linkTo.split(`.`);
-
-        data.updateEdge({
-          id: `${sourceTable}/${sourceColumn}-${targetTable}/${targetColumn}`,
-          source: sourceTable,
-          target: targetTable,
-          sourceHandle: sourceColumn,
-          targetHandle: targetColumn,
-        });
-      }
-    });
-  }, []);
-
-  return (
-    <div className="table-node" style={containerStyle}>
-      <div className="table-node__container">
-        <div style={tableHeading}>{tableData.tableName}</div>
-        <div className="table-node__columns-container">{columns}</div>
-      </div>
-    </div>
-  );
+  // const [columns, setColumns] = useState([]);
+  // const {tableData} = data;
+  // // useEffect(() => {
+  // //   tableData.columns.forEach((column, i) => {
+  // //     const [[columnName, other]] = Object.entries(column);
+  // //     const columnDataType = other.type || other;
+  // //     const isPrimaryKey = other.primaryKey || false;
+  // //     const linkTo = other.linkedTable || null;
+  // //     setColumns((prev) => [
+  // //       ...prev,
+  // //       <Column
+  // //         key={`C${i}`}
+  // //         columnName={columnName}
+  // //         columnDetails={other}
+  // //         columnDataType={columnDataType}
+  // //         isPrimaryKey={isPrimaryKey}
+  // //         linkTo={linkTo}
+  // //       />,
+  // //     ]);
+  // //     if (linkTo) {
+  // //       const sourceTable = tableData.tableName;
+  // //       const sourceColumn = columnName;
+  // //       const [targetTable, targetColumn] = linkTo.split(`.`);
+  // //       data.updateEdge({
+  // //         id: `${sourceTable}/${sourceColumn}-${targetTable}/${targetColumn}`,
+  // //         key: Math.random(1),
+  // //         source: sourceTable,
+  // //         target: targetTable,
+  // //         sourceHandle: sourceColumn,
+  // //         targetHandle: targetColumn,
+  // //       });
+  // //     }
+  // //   });
+  // // }, []);
+  // return (
+  //   <div className="table-node" style={containerStyle}>
+  //     <div className="table-node__container">
+  //       <div style={tableHeading}>{tableData.tableName}</div>
+  //       <div className="table-node__columns-container">{columns}</div>
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default memo(TableNode);
