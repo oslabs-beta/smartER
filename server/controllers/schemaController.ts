@@ -37,7 +37,7 @@ const schemaController: schemaControllers = {
         `select current_schema from current_schema`
       );
       // Get Relationships, Tables names, Column names, Data types
-      const RTNCND = await pg.query(getAllQuery(currentSchema));
+      const RTNCNDT = await pg.query(getAllQuery(currentSchema));
 
       // Table type
       interface table {
@@ -51,12 +51,12 @@ const schemaController: schemaControllers = {
         columns: [],
       };
       // Assign prev table name and tableObj.table_name to be the first table name from the query
-      let prevTableName = RTNCND.rows[0].table_name;
-      tableObj.table_name = RTNCND.rows[0].table_name;
+      let prevTableName = RTNCNDT.rows[0].table_name;
+      tableObj.table_name = RTNCNDT.rows[0].table_name;
       // Iterate through array of all table names, columns, and data types
-      for (let i = 0; i < RTNCND.rows.length; i++) {
+      for (let i = 0; i < RTNCNDT.rows.length; i++) {
         // current represents each object in the array
-        const current = RTNCND.rows[i];
+        const current = RTNCNDT.rows[i];
         //column object type and declaration
         const column: Record<string, any> = {};
 
@@ -72,9 +72,15 @@ const schemaController: schemaControllers = {
         prevTableName = current.table_name;
 
         // create column_name : data_type key value pair on column
-        column[current.column_name] = current.data_type;
-        // Check if primary key exists and if foreign key exists
-        if (current.primary_key_exists) column.primary_key = true;
+        if (current.data_type === 'integer')
+          column[current.column_name] = 'int';
+        else if (current.data_type === 'character varying')
+          column[current.column_name] = 'varchar';
+        else column[current.column_name] = current.data_type;
+
+        if (current.primary_key_exists)
+          // Check if primary key exists and if foreign key exists
+          column.primary_key = true;
         if (current.table_origin)
           column.linkedTable =
             current.table_origin + '.' + current.table_column;
