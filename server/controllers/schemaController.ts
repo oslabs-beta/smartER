@@ -8,7 +8,7 @@ interface schemaControllers {
   getSchemaPostgreSQL: RequestHandler;
   getQueryResults: RequestHandler;
 }
-
+//
 const schemaController: schemaControllers = {
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
