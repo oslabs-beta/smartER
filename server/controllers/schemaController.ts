@@ -6,12 +6,15 @@ dotenv.config();
 
 interface schemaControllers {
   getSchemaPostgreSQL: RequestHandler;
-  getQueryResults: RequestHandler;
+  // getQueryResults: RequestHandler;
 }
 //
 const schemaController: schemaControllers = {
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
+      /*
+      FE will always send URI so below logic is not needed
+
       const { programmatic, pg_url } = req.body;
       // FE Provides whether or not user is logging in programmatically
       // If programmatically logging in, create a credentials object to
@@ -30,14 +33,24 @@ const schemaController: schemaControllers = {
         const PG_URL = pg_url || process.env.PG_URL_STARWARS;
         var envCredentials: any = { connectionString: PG_URL };
       }
-      const pg = new Pool(programmaticCredentials || envCredentials);
+      */
+
+      // we should probably refactor this to get URI from db basaed on user/JWT
+      const { pg_url } = req.body;
+      const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+      var envCredentials: any = { connectionString: PG_URL };
+      // const pg = new Pool(programmaticCredentials || envCredentials);
+      const pg = new Pool(envCredentials);
 
       // Get all relationships between all tables
+      // Identify the current schema name for use in full schema query
       const currentSchema = await pg.query(
-        `select current_schema from current_schema`
+        `SELECT current_schema FROM current_schema`
       );
+
       // Get Relationships, Tables names, Column names, Data types
-      const RTNCND = await pg.query(getAllQuery(currentSchema));
+      const schema = await pg.query(getAllQuery(currentSchema));
+      console.log('schema results', schema);
 
       // Table type
       interface table {
@@ -51,12 +64,12 @@ const schemaController: schemaControllers = {
         columns: [],
       };
       // Assign prev table name and tableObj.table_name to be the first table name from the query
-      let prevTableName = RTNCND.rows[0].table_name;
-      tableObj.table_name = RTNCND.rows[0].table_name;
+      let prevTableName = schema.rows[0].table_name;
+      tableObj.table_name = schema.rows[0].table_name;
       // Iterate through array of all table names, columns, and data types
-      for (let i = 0; i < RTNCND.rows.length; i++) {
+      for (let i = 0; i < schema.rows.length; i++) {
         // current represents each object in the array
-        const current = RTNCND.rows[i];
+        const current = schema.rows[i];
         //column object type and declaration
         const column: Record<string, any> = {};
 
@@ -91,39 +104,40 @@ const schemaController: schemaControllers = {
       });
     }
   },
-  getQueryResults: async (req, res, next) => {
-    try {
-      // FE Provides whether or not user is logging in programmatically
-      // If programmatically logging in, create a credentials object to
-      // create a new connection, else we assign it the provided pg_url
-      // if that is not provided, we assign it the starwars pg_url
-      const { programmatic, pg_url, queryString } = req.body;
-      if (programmatic) {
-        var { host, port, dbUsername, dbPassword, database } = req.body;
-        var programmaticCredentials: any = {
-          host,
-          port,
-          user: dbUsername,
-          password: dbPassword,
-          database,
-        };
-      } else {
-        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-        var envCredentials: any = { connectionString: PG_URL };
-      }
-      const pg = new Pool(programmaticCredentials || envCredentials);
-      // Make a query based on the passed in queryString
-      const getQuery = await pg.query(queryString);
-      // Return query to FE
-      res.json(getQuery.rows);
-    } catch (error) {
-      return next({
-        log: `Error in schemaController.getQueryResults ${error}`,
-        status: 400,
-        message: { error },
-      });
-    }
-  },
+  // getQueryResults: async (req, res, next) => {
+  //   try {
+  //     // FE Provides whether or not user is logging in programmatically
+  //     // If programmatically logging in, create a credentials object to
+  //     // create a new connection, else we assign it the provided pg_url
+  //     // if that is not provided, we assign it the starwars pg_url
+  //     const { programmatic, pg_url, queryString } = req.body;
+  //     if (programmatic) {
+  //       var { host, port, dbUsername, dbPassword, database } = req.body;
+  //       var programmaticCredentials: any = {
+  //         host,
+  //         port,
+  //         user: dbUsername,
+  //         password: dbPassword,
+  //         database,
+  //       };
+  //     } else {
+  //       const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+  //       var envCredentials: any = { connectionString: PG_URL };
+  //     }
+  //     const pg = new Pool(programmaticCredentials || envCredentials);
+  //     const pg = new Pool(programmaticCredentials || envCredentials);
+  //     // Make a query based on the passed in queryString
+  //     const getQuery = await pg.query(queryString);
+  //     // Return query to FE
+  //     res.json(getQuery.rows);
+  //   } catch (error) {
+  //     return next({
+  //       log: `Error in schemaController.getQueryResults ${error}`,
+  //       status: 400,
+  //       message: { error },
+  //     });
+  //   }
+  // },
 };
 
 export default schemaController;
