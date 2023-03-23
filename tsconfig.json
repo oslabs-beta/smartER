@@ -10,7 +10,11 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+<<<<<<< HEAD
     "typeRoots": ["./types"],
     "types": ["node"]
+=======
+    "typeRoots": ["./types", "node_modules/@types"]
+>>>>>>> dev
   }
 }

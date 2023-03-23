@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 import * as dotenv from 'dotenv';
 
-const PG_URI = process.env.DATABASE_API;
+const PG_URI = process.env.DATABASE_API || process.env.PG_URI_STARWARS;
 
 // create a new pool here using the connection string above
 const pool = new Pool({

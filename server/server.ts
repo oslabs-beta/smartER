@@ -4,6 +4,10 @@ import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
 import userController from './controllers/userController';
 import dotenv from 'dotenv';
+import { body, validationResult } from 'express-validator';
+import cookieController from './controllers/cookieController';
+import { createClient, RedisClientType } from 'redis';
+
 dotenv.config();
 
 const app = express();
@@ -15,7 +19,94 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/signup', userController.createUser, (req, res, next) => {});
+// connect redis for use in logout functionality
+let redisClient: RedisClientType;
+(async () => {
+  redisClient = createClient();
+
+  redisClient.on('error', (error) => {
+    console.log(error);
+  });
+
+  await redisClient.connect();
+})();
+
+// post request to check if user input email is unique
+app.post(
+  '/emailCheck',
+  body('email').isEmail().normalizeEmail(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return next({
+        log: 'error: invalid email address',
+        status: 400,
+        message: { err: 'invalid email address' },
+      });
+    else return next();
+  },
+  userController.checkForEmail,
+  (req, res, next) => {
+    if (res.locals.userExists) {
+      return next({
+        log: 'error: email already exists',
+        status: 400,
+        message: { err: 'email already exists' },
+      });
+    } else res.status(200).send();
+  }
+);
+
+// post request to add new user to db
+app.post(
+  '/signup',
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors && !errors.isEmpty())
+      return res.status(400).json({ error: errors.array() });
+    else return next();
+  },
+  userController.checkForEmail,
+  userController.createUser,
+  cookieController.setJwtCookie,
+  (req, res) => {
+    return res.status(200).send();
+  }
+);
+
+app.post(
+  '/login',
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+  userController.verifyUser,
+  cookieController.setJwtCookie,
+  (req, res) => {
+    return res.status(200).send();
+  }
+);
+
+app.post(
+  '/changePassword',
+  body('email').isEmail().normalizeEmail(),
+  body('password').not().isEmpty(),
+  body('newPassword').not().isEmpty(),
+  userController.verifyUser,
+  userController.changePassword,
+  (req, res) => {
+    return res.status(200).send();
+  }
+);
+
+app.post(
+  '/logout',
+  userController.authenticateToken,
+  userController.blacklistToken,
+  (req, res) => {
+    return res.status(200).send();
+  }
+);
 
 // API Route
 app.use('/api', apiRouter);
@@ -40,3 +131,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 app.listen(PORT, () => {
   console.log(`⚡️Express:${PORT} ⚡️`);
 });
+
+export { redisClient };
