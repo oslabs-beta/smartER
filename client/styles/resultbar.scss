@@ -1,10 +1,20 @@
-$color2: #cbc0ae;
+$color1: #020024;
+$color2: #004f77;
+$color3: #00a3b5;
+$color4: #6bfbce;
 
-.result-box {
-  border: 1px solid lighten($color2, 10%);
+.query-table {
   border-radius: 5px;
-  width: 100%;
+  width: 98%;
   height: 200px;
   display: flex;
-  background-color: lighten($color2, 10%);
+  margin: 0.8%;
+  background: black;
+  overflow: none;
+}
+
+.query-headers {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

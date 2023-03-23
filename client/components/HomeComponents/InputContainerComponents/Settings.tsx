@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useEffect} from 'react';
+import React, { FC, useState, useContext, useEffect } from 'react';
 import {
   HomepageContext,
   HomepageContextType,
@@ -6,7 +6,7 @@ import {
 } from '../../../Context';
 
 const Settings: React.FC<{}> = () => {
-  const {uri, setUri, dbCredentials, setDBCredentials} =
+  const { uri, setUri, dbCredentials, setDBCredentials } =
     useContext(HomepageContext)!;
 
   const handleUriSubmit = (e: any): void => {
@@ -20,7 +20,13 @@ const Settings: React.FC<{}> = () => {
     //TODO: Add fetch to add Credentials to DB
 
     setDBCredentials((prev) => {
-      return {host: '', port: 0, dbUsername: '', dbPassword: '', database: ''};
+      return {
+        host: '',
+        port: 0,
+        dbUsername: '',
+        dbPassword: '',
+        database: '',
+      };
     });
   };
 
@@ -37,16 +43,20 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="uri">
             <input
               id="uri"
-              className="settings-input"
+              className="db-settings-input"
               type="text"
               required
               onChange={(e) => setUri(e.target.value)}
               value={uri}
             />
+            <button
+              type="submit"
+              className="db-submit-settings"
+              onClick={handleUriSubmit}
+            >
+              connect
+            </button>
           </label>
-          <button type="submit" className="submit" onClick={handleUriSubmit}>
-            Submit
-          </button>
         </form>
       </div>
 
@@ -56,12 +66,12 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="host">Host</label>
           <input
             id="Host"
-            className="user-input"
+            className="settings-input"
             type="text"
             required
             onChange={(e) =>
               setDBCredentials((prevState: dbCredentialsType) => {
-                return {...prevState, host: e.target.value};
+                return { ...prevState, host: e.target.value };
               })
             }
             value={dbCredentials.host}
@@ -69,12 +79,12 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="port">Port</label>
           <input
             id="port"
-            className="user-input"
+            className="settings-input"
             type="number"
             required
             onChange={(e) =>
               setDBCredentials((prevState: any) => {
-                return {...prevState, port: e.target.value};
+                return { ...prevState, port: e.target.value };
               })
             }
             value={dbCredentials.port}
@@ -82,12 +92,12 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="username">Username</label>
           <input
             id="username"
-            className="user-input"
+            className="settings-input"
             type="text"
             required
             onChange={(e) =>
               setDBCredentials((prevState: dbCredentialsType) => {
-                return {...prevState, dbUsername: e.target.value};
+                return { ...prevState, dbUsername: e.target.value };
               })
             }
             value={dbCredentials.dbUsername}
@@ -95,12 +105,12 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="password">Password</label>
           <input
             id="password"
-            className="user-input"
+            className="settings-input"
             type="password"
             required
             onChange={(e) =>
               setDBCredentials((prevState: dbCredentialsType) => {
-                return {...prevState, dbPassword: e.target.value};
+                return { ...prevState, dbPassword: e.target.value };
               })
             }
             value={dbCredentials.dbPassword}
@@ -108,22 +118,22 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="database">Database</label>
           <input
             id="database"
-            className="user-input"
+            className="settings-input"
             type="text"
             required
             onChange={(e) =>
               setDBCredentials((prevState: dbCredentialsType) => {
-                return {...prevState, database: e.target.value};
+                return { ...prevState, database: e.target.value };
               })
             }
             value={dbCredentials.database}
           />
           <button
             type="submit"
-            className="submit"
+            className="submit-settings"
             onClick={handleCredentialSubmit}
           >
-            Submit
+            connect
           </button>
         </form>
       </div>

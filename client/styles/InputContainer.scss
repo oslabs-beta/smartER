@@ -1,24 +1,30 @@
 //Tab Styling
 //https://www.youtube.com/watch?v=WkREeDy2WQ4
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Avestan&family=Oswald&family=Roboto&display=swap');
-$color1: #2e2e3a;
-$color2: #cbc0ae;
-$color3: #aeb8fe;
-$color4: #16103b;
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+$color1: #020024;
+$color2: #2e2c57;
+$color3: #004f77;
+$color4: #00a3b5;
+$color5: #6bfbce;
+// input box color
+$color6: #d6d9e6;
 
 body {
-  font-family: 'Noto Sans Avestan', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 .input-container {
-  border: 1px solid $color1;
+  border: none;
   display: flex;
   height: 80vh;
   flex-direction: column;
+  margin-left: 0.8%;
   margin-bottom: 0px;
   width: 40%;
-  background-color: $color4;
+  background-color: transparent;
   overflow-y: scroll;
+  border-radius: 0 0 5px 5px;
+  filter: drop-shadow(-2px 1px 33px rgba(0, 163, 181, 0.4));
 }
 
 .input-container::-webkit-scrollbar {
@@ -26,28 +32,44 @@ body {
   width: 0px;
 }
 
+// holds the three buttons
 .tab-container {
   display: flex;
   flex-direction: row;
   border: none;
   justify-content: center;
+  background-color: transparent;
+}
+
+.tab-content {
+  background: rgb(0, 79, 119);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 79, 119, 1) 0%,
+    rgba(46, 44, 87, 1) 100%
+  );
+  height: 100%;
+  overflow: auto;
 }
 
 .tabs {
-  margin: 15px;
-  padding: 15px;
+  margin: 0;
+  padding: 0;
   text-align: center;
   width: 100%;
-  background: lighten($color1, 30%);
+  height: 5vh;
+  background: rgb(171, 165, 165);
+  color: white;
+  border: 1px solid lighten($color2, 10%);
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 8px 8px 0 0;
   box-sizing: content-box;
   position: relative;
   outline: none;
 }
 
 .active-tabs {
-  background: white;
+  background: $color2;
   border-bottom: 1px solid transparent;
 }
 
@@ -80,19 +102,34 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1 solid salmon;
 }
 .query-input {
-  margin-top: 3%;
+  margin-top: 10%;
   resize: none;
-  background-color: lighten($color2, 10%);
+  background-color: $color6;
+  outline: none;
   box-sizing: border-box;
-  border-radius: 5px;
+  border: none;
+  border-radius: 5px 5px 0 0;
   width: 80%;
   height: 100%;
   padding: 12px 20px;
+  font-family: 'Lato', sans-serif;
   resize: vertical;
   overflow: auto;
+}
+
+.submit-query-button {
+  background-color: $color6;
+  border-radius: 0 0 5px 5px;
+  width: 80%;
+  height: 5vh;
+  font-size: 20px;
+}
+
+.submit-query-button:hover {
+  cursor: pointer;
+  color: lighten(black, 52%);
 }
 
 .query-input:focus {
@@ -112,24 +149,61 @@ form {
 }
 .settings-main {
   overflow-y: scroll;
-  font-family: 'Noto Sans Avestan', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 11px;
 }
 
+.db-settings-input {
+  width: 15vh;
+  height: 20px;
+  border: 1px $color1;
+  background-color: $color6;
+  border-radius: 5px 0 0 5px;
+  color: black;
+  padding: 8px;
+}
 .settings-input {
   width: 150px;
   height: 20px;
   border: 1px $color1;
-  background-color: lighten($color1, 10%);
+  background-color: $color6;
   border-radius: 5px;
-  color: white;
+  color: black;
   padding: 8px;
+}
+
+.settings-input:focus {
+  outline: solid 1px lighten(rgba(128, 128, 128, 0.443), 15%);
 }
 
 .settings-title {
   text-align: center;
+  color: white;
+}
+.db-submit-settings {
+  background-color: $color6;
+  width: 11vh;
+  height: 4.7vh;
+  border-radius: 0 5px 5px 0;
 }
 
-.submit {
-  margin-top: 5%;
+.db-submit-settings:hover {
+  cursor: pointer;
+  color: lighten(black, 52%);
+}
+.submit-settings {
+  margin-top: 10px;
+  background-color: $color5;
+  border-radius: 5px;
+  border-width: 0;
+  height: 30px;
+  width: 100px;
+  font-size: 11px;
+  color: lighten(black, 5%);
+  cursor: pointer;
+}
+
+.submit-settings:hover {
+  background-color: darken($color5, 15%);
+  cursor: pointer;
 }

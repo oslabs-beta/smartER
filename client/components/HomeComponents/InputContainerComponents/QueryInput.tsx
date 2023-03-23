@@ -1,8 +1,8 @@
-import React, {FC, useState, useContext, useEffect} from 'react';
-import {HomepageContext} from '../../../Context';
+import React, { FC, useState, useContext, useEffect } from 'react';
+import { HomepageContext } from '../../../Context';
 
 const QueryInput: React.FC<{}> = () => {
-  const {queryString, setQueryString} = useContext(HomepageContext)!;
+  const { queryString, setQueryString } = useContext(HomepageContext)!;
 
   //TODO: Add logic for live rendering nodes n stuff
 
@@ -21,10 +21,10 @@ const QueryInput: React.FC<{}> = () => {
       ></textarea>
       <button
         type="submit"
-        className="submit query-submit"
+        className="submit-query-button"
         onClick={handleSubmit}
       >
-        Submit
+        →
       </button>
     </div>
   );
