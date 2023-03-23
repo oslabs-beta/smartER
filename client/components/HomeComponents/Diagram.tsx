@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState, useCallback} from 'react';
+import React, {FC, useContext, useState, useCallback, useEffect} from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -54,11 +54,11 @@ const initialNodes = [
   // },
   {
     id: '4',
-    position: {x: 400, y: 500},
+    position: {x: 100, y: 200},
     data: {label: '4'},
     sourcePosition: 'right',
     targetPosition: 'left',
-    children: [
+    content: [
       {id: 'test', data: {label: 'hello'}, x: 0, y: 0},
       {id: 'test2', data: {label: 'world'}, x: 0, y: 0},
     ],
@@ -69,7 +69,7 @@ const initialEdges = [
   {id: 'e2-3', source: '2', target: '3', animated: true},
 ];
 const Diagram: React.FC<{}> = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)!;
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
@@ -86,10 +86,10 @@ const Diagram: React.FC<{}> = () => {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          fitView
+          // fitView
         >
           <Controls />
-          <MiniMap />
+          {/* <MiniMap /> */}
           <Background variant="dots" gap={12} size={1} />
         </ReactFlow>
       </div>
@@ -137,20 +137,26 @@ export default Diagram;
 // parseData(SampleData);
 // console.log(initialNodesTest);
 
-// SampleData.forEach((tableData, i) => {
-//   const newNode = {
-//     id: tableData.table_Name,
-//     position: {x: i * 300, y: 0},
-//     data: {
-//       tableData,
-//       updateEdge: (newEdge) => {
-//         setEdges((prev) => [...prev, newEdge]);
+//xql re-write
+// useEffect(() => {
+//   console.log('SAMPLE DATA', SampleData);
+//   SampleData.forEach((table, index) => {
+//     const newNode = {
+//       id: table.table_name,
+//       position: {x: index * 200, y: 0},
+//       data: {
+//         table,
+//         updateEdge: (newEdge: any) => {
+//           setEdges((prev) => {
+//             return [...prev, newEdge];
+//           });
+//         },
 //       },
-//     },
-//     type: `tableNode`,
-//   };
-
-//   setNodes((prev) => {
-//     return [...prev, newNode];
+//       type: 'group',
+//     };
+//     setNodes((prev) => {
+//       return [...prev, newNode];
+//     });
 //   });
-// });
+//   console.log('nodes', nodes);
+// }, []);
