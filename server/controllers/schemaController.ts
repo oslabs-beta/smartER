@@ -39,14 +39,13 @@ const schemaController: schemaControllers = {
       // Get Relationships, Tables names, Column names, Data types
       const RTNCND = await pg.query(getAllQuery(currentSchema));
 
-      // Initialize array to hold returned data
-      const erDiagram = [];
       // Table type
       interface table {
         table_name: string;
         columns: any[];
       }
-
+      // Initialize array to hold returned data
+      const erDiagram = [];
       let tableObj: table = {
         table_name: '',
         columns: [],
@@ -58,8 +57,9 @@ const schemaController: schemaControllers = {
       for (let i = 0; i < RTNCND.rows.length; i++) {
         // current represents each object in the array
         const current = RTNCND.rows[i];
-        //column object type
+        //column object type and declaration
         const column: Record<string, any> = {};
+
         // Check to see if the prev table name does not match the current table name
         // if it doesn't match, we know we are in a different table
         // push a deep copy of the tableObj, assign the current table_name to the tableObj.table_name
@@ -73,6 +73,7 @@ const schemaController: schemaControllers = {
 
         // create column_name : data_type key value pair on column
         column[current.column_name] = current.data_type;
+        // Check if primary key exists and if foreign key exists
         if (current.primary_key_exists) column.primary_key = true;
         if (current.table_origin)
           column.linkedTable =
