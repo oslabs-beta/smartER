@@ -9,8 +9,50 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import {SampleData, testnodes} from '../SampleData';
+import {HomepageContext} from '../../Context';
+import {testnodes, testEdges} from '../SampleData';
 
+const Diagram: React.FC<{}> = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(testEdges);
+
+  const onConnect = useCallback(
+    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const {queryString} = useContext(HomepageContext)!;
+
+  return (
+    <ReactFlowProvider>
+      <div className="diagram-box">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView
+        >
+          <Controls />
+          <MiniMap />
+          <Background variant="dots" gap={12} size={1} />
+        </ReactFlow>
+      </div>
+    </ReactFlowProvider>
+  );
+};
+
+export default Diagram;
+
+//Hide nodes docs, but hides ALL nodes: https://reactflow.dev/docs/examples/nodes/hidden/
+//Edge styling: https://reactflow.dev/docs/examples/edges/custom-edge/
+
+//SAMPLE DATA for Initial rendering:
+
+//To use, paste outside of functional component and update
+//useNodeState and useEdgeState default values to initialNodes and initialEdges
+/*
 const initialNodes = [
   {
     id: '0',
@@ -68,37 +110,4 @@ const initialEdges = [
   {id: 'e1-2', source: '1', target: '2', animated: true},
   {id: 'e2-3', source: '2', target: '3', animated: true},
 ];
-const Diagram: React.FC<{}> = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
-
-  return (
-    <ReactFlowProvider>
-      <div className="diagram-box">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          // fitView
-        >
-          <Controls />
-          {/* <MiniMap /> */}
-          <Background variant="dots" gap={12} size={1} />
-        </ReactFlow>
-      </div>
-    </ReactFlowProvider>
-  );
-};
-
-export default Diagram;
-
-//Hide nodes docs, but hides ALL nodes: https://reactflow.dev/docs/examples/nodes/hidden/
-//Edge styling: https://reactflow.dev/docs/examples/edges/custom-edge/
-// 3/21 Sample Data from Brian
+*/
