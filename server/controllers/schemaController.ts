@@ -16,7 +16,7 @@ interface schemaControllers {
 const schemaController: schemaControllers = {
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
-      const { programmatic, pg_url } = req.body;
+      const { programmatic, pg_uri } = req.body;
       // FE Provides whether or not user is logging in programmatically
       // If programmatically logging in, create a credentials object to
       // create a new connection, else we assign it the provided pg_url
@@ -31,58 +31,71 @@ const schemaController: schemaControllers = {
           database,
         };
       } else {
-        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-        var envCredentials: any = { connectionString: PG_URL };
+        const PG_URI = pg_uri || process.env.PG_URI_STARWARS;
+        var envCredentials: any = { connectionString: PG_URI };
       }
       const pg = new Pool(programmaticCredentials || envCredentials);
       // Get current schema name
 
       // Get all relationships between all tables
       const relationships = await pg.query(getAllRelationShips);
+
+      // Get all tables, their column names, and data types for each column
       const getTableColumnNamesAndDataType = await pg.query(`
       select table_name, column_name, data_type from information_schema.columns
       where table_schema = 'public' and is_updatable = 'YES';`);
-
+      // Initialize array to hold returned data
       const erDiagram = [];
+      // Table type
       interface table {
         table_name: string;
         columns: any[];
       }
+
       let tableObj: table = {
         table_name: '',
         columns: [],
       };
-      let currentTableName = getTableColumnNamesAndDataType.rows[0].table_name;
-
+      // Assign prev table name and tableObj.table_name to be the first table name from the query
+      let prevTableName = getTableColumnNamesAndDataType.rows[0].table_name;
+      tableObj.table_name = getTableColumnNamesAndDataType.rows[0].table_name;
+      // Iterate through array of all table names, columns, and data types
       for (let i = 0; i < getTableColumnNamesAndDataType.rows.length; i++) {
+        // current represents each object in the array
         const current = getTableColumnNamesAndDataType.rows[i];
-        const columnObj: Record<string, any> = {};
-        if (currentTableName !== current.table_name) {
+        //column object type
+        const column: Record<string, any> = {};
+        // Check to see if the prev table name does not match the current table name
+        // if it doesn't match, we know we are in a different table
+        // push a deep copy of the tableObj, assign the current table_name to the tableObj.table_name
+        if (prevTableName !== current.table_name) {
           erDiagram.push({ ...tableObj });
-          tableObj.table_name = '';
+          tableObj.table_name = current.table_name;
           tableObj.columns = [];
         }
-        currentTableName = current.table_name;
+        // Update prevTableName so we can keep track of when we enter a new table
+        prevTableName = current.table_name;
 
-        if (!(current.table_name in tableObj)) {
-          tableObj.table_name = current.table_name;
-        }
-        columnObj[current.column_name] = current.data_type;
-        // Adds relationships to columns that have a constraint type
+        // create column_name : data_type key value pair on column
+        column[current.column_name] = current.data_type;
+        // Adds relationships to columns that have a constraint type, splice choice out if we find a constraint
         for (let i = 0; i < relationships.rows.length; i++) {
           const tableRelationship = relationships.rows[i];
           // prettier-ignore
           {
-              if (currentColumnHasPrimaryKey(tableRelationship, currentTableName, current.column_name)) {
-              columnObj.primaryKey = true;
-              break;
-              } else if (currentColumnHasForeignKey(tableRelationship, currentTableName, current.column_name)) {
-              columnObj.linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
-              break;
-              }
-            }
+          if (currentColumnHasPrimaryKey(tableRelationship, current.table_name, current.column_name)) {
+            column.primaryKey = true;
+            relationships.rows.splice(i,1)
+            break;
+          } else if (currentColumnHasForeignKey(tableRelationship, current.table_name, current.column_name)) {
+            column.linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
+            relationships.rows.splice(i,1)
+            break;
+          }
+          }
         }
-        tableObj.columns.push(columnObj);
+        // Push the complete column object into columns array
+        tableObj.columns.push(column);
       }
 
       // for (let i = 0; i < relationships.rows.length; i++) {
@@ -96,6 +109,7 @@ const schemaController: schemaControllers = {
       //         {
       //           if (currentColumnHasPrimaryKey(tableRelationship,currentTableName,key)) {
       //           columns[k].primaryKey = true;
+
       //           break;
       //           } else if (currentColumnHasForeignKey(tableRelationship,currentTableName,key)) {
       //           columns[k].linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
@@ -106,7 +120,7 @@ const schemaController: schemaControllers = {
       //     }
       //   }
       // }
-
+      return res.json(erDiagram);
       // const getSchema = await pg.query(
       //   `SELECT current_schema from current_schema`
       // );
@@ -162,7 +176,6 @@ const schemaController: schemaControllers = {
       //   }
       // }
       // return res.json(table_names.rows);
-      return res.json(erDiagram);
     } catch (error) {
       return next({
         log: `Error in schemaController.getSchema ${error}`,
@@ -177,7 +190,7 @@ const schemaController: schemaControllers = {
       // If programmatically logging in, create a credentials object to
       // create a new connection, else we assign it the provided pg_url
       // if that is not provided, we assign it the starwars pg_url
-      const { programmatic, pg_url, queryString } = req.body;
+      const { programmatic, pg_uri, queryString } = req.body;
       if (programmatic) {
         var { host, port, dbUsername, dbPassword, database } = req.body;
         var programmaticCredentials: any = {
@@ -188,8 +201,8 @@ const schemaController: schemaControllers = {
           database,
         };
       } else {
-        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-        var envCredentials: any = { connectionString: PG_URL };
+        const PG_URI = pg_uri || process.env.PG_URI_STARWARS;
+        var envCredentials: any = { connectionString: PG_URI };
       }
       const pg = new Pool(programmaticCredentials || envCredentials);
       // Make a query based on the passed in queryString
