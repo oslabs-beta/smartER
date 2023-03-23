@@ -30,11 +30,6 @@ const Settings: React.FC<{}> = () => {
     });
   };
 
-  //Testing dbCredentials
-  useEffect(() => {
-    console.log('creds in SETTINGS', dbCredentials);
-  }, [dbCredentials]);
-
   return (
     <div className="settings-main">
       <div className="uri-main">
