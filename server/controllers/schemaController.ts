@@ -1,9 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import {
-  currentColumnHasForeignKey,
-  currentColumnHasPrimaryKey,
-  getAllRelationShips,
-} from '../helper/constraintType';
+import { getAllQuery } from '../helper/getAllQuery';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -12,7 +8,7 @@ interface schemaControllers {
   getSchemaPostgreSQL: RequestHandler;
   getQueryResults: RequestHandler;
 }
-
+//
 const schemaController: schemaControllers = {
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
@@ -35,66 +31,58 @@ const schemaController: schemaControllers = {
         var envCredentials: any = { connectionString: PG_URL };
       }
       const pg = new Pool(programmaticCredentials || envCredentials);
-      // Get current schema name
-      const getSchema = await pg.query(
-        `SELECT current_schema from current_schema`
-      );
-      const schemaName = getSchema.rows[0].current_schema;
 
       // Get all relationships between all tables
-      const relationships = await pg.query(getAllRelationShips);
-
-      // Get all the tables in schema
-      const table_names = await pg.query(
-        `SELECT table_name FROM information_schema.tables
-         WHERE table_type = 'BASE TABLE'
-         AND table_schema = '${schemaName}'`
+      const currentSchema = await pg.query(
+        `select current_schema from current_schema`
       );
-      // Loop through each table object
-      for (let i = 0; i < table_names.rows.length; i++) {
-        const currentTableName = table_names.rows[i].table_name;
-        const currentTable = table_names.rows[i];
-        // Initialize array to hold objects that represent each column for the table
-        currentTable.columns = [];
+      // Get Relationships, Tables names, Column names, Data types
+      const RTNCND = await pg.query(getAllQuery(currentSchema));
 
-        // Get all columns of current table
-        const getColumns = await pg.query(`
-        SELECT column_name, data_type
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-        AND table_name = '${currentTableName}';`);
-
-        // Build each column object by assigning the data type and relationships
-        for (let i = 0; i < getColumns.rows.length; i++) {
-          const columnObj: Record<string, any> = {};
-          const columns = getColumns.rows[i];
-          const columnName = columns.column_name;
-          const columnDataType = columns.data_type;
-          // Assign data type for the current column
-          columnObj[columnName] = columnDataType;
-
-          // Iterate through relationships object and check if the the current Column has a primary key or foreign key
-          // If a primary key exists, set primaryKey to true
-          // If a foreign key exists, set linkedTable to the table's name and the column name that the foreign key points to
-          for (let i = 0; i < relationships.rows.length; i++) {
-            const tableRelationship = relationships.rows[i];
-            // prettier-ignore
-            {
-                if (currentColumnHasPrimaryKey(tableRelationship,currentTableName,columnName)) {
-                columnObj.primaryKey = true;
-                break;
-              } else if (currentColumnHasForeignKey(tableRelationship,currentTableName,columnName)) {
-                columnObj.linkedTable = tableRelationship.table_origin + '.' + tableRelationship.table_column;
-                break;
-              }
-            }
-          }
-          // Push column object to the columns array in each table object
-          currentTable.columns.push(columnObj);
-        }
+      // Table type
+      interface table {
+        table_name: string;
+        columns: any[];
       }
+      // Initialize array to hold returned data
+      const erDiagram = [];
+      let tableObj: table = {
+        table_name: '',
+        columns: [],
+      };
+      // Assign prev table name and tableObj.table_name to be the first table name from the query
+      let prevTableName = RTNCND.rows[0].table_name;
+      tableObj.table_name = RTNCND.rows[0].table_name;
+      // Iterate through array of all table names, columns, and data types
+      for (let i = 0; i < RTNCND.rows.length; i++) {
+        // current represents each object in the array
+        const current = RTNCND.rows[i];
+        //column object type and declaration
+        const column: Record<string, any> = {};
 
-      res.json(table_names.rows);
+        // Check to see if the prev table name does not match the current table name
+        // if it doesn't match, we know we are in a different table
+        // push a deep copy of the tableObj, assign the current table_name to the tableObj.table_name
+        if (prevTableName !== current.table_name) {
+          erDiagram.push({ ...tableObj });
+          tableObj.table_name = current.table_name;
+          tableObj.columns = [];
+        }
+        // Update prevTableName so we can keep track of when we enter a new table
+        prevTableName = current.table_name;
+
+        // create column_name : data_type key value pair on column
+        column[current.column_name] = current.data_type;
+        // Check if primary key exists and if foreign key exists
+        if (current.primary_key_exists) column.primary_key = true;
+        if (current.table_origin)
+          column.linkedTable =
+            current.table_origin + '.' + current.table_column;
+
+        // Push the complete column object into columns array
+        tableObj.columns.push(column);
+      }
+      return res.json(erDiagram);
     } catch (error) {
       return next({
         log: `Error in schemaController.getSchema ${error}`,
@@ -139,3 +127,12 @@ const schemaController: schemaControllers = {
 };
 
 export default schemaController;
+const sampleData = {
+  people_in_films: {
+    columns: {
+      _id: { dataType: 'integer', primaryKey: true },
+      person_id: { dataType: 'bigint', linkedTable: 'people._id' },
+      film_id: { dataType: 'bigint', linkedTable: 'films._id' },
+    },
+  },
+};

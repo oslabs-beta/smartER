@@ -10,6 +10,6 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types", "node_modules/@types"]
   }
 }
