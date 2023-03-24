@@ -11,10 +11,11 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import {HomepageContext} from '../../Context';
 import {testnodes, testEdges} from '../SampleData';
+import {testnodes2, testEdges2} from '../SampleData2';
 
 const Diagram: React.FC<{}> = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(testEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(testnodes2);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(testEdges2);
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),

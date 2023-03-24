@@ -275,7 +275,7 @@ export const SampleData = [
 export const testnodes = parseDataNodes(SampleData);
 
 //PARSE NODES
-function parseDataNodes(rawData: any): any {
+function parseDataNodes(rawData: typeof SampleData): any {
   //40 <-- this is the height of a node
   const nodes: any = [];
   rawData.map((table: any, index: number) => {
@@ -311,6 +311,69 @@ function parseDataNodes(rawData: any): any {
 
     //Helper func to iterate through the columns property
     // parseColumns(tables.columns);
+    // tableName: 'films'
+    // columns: [
+    //   {
+    //     tableName: 'films'
+    //     colName: '_id',
+    //     colType: 'int',
+    //     primary_key: true,
+    //   },
+    //   {
+    //     tableName: 'films'
+    //     colName: 'something',
+    //     colType: 'int',
+    //     foreign_key: true,
+    //     linked_table: someTableName,
+    //     linked_table_column: someColumnName
+    //   },
+    //  ]
+    /*
+
+    //  query: 'SELECT f.producer as filmProds FROM films f LEFT OUTER JOIN people p on FK'
+    rows: [{filmProds: someGuy },{},{}]
+    
+    // SELECT p.*, 
+    s.name AS species, 
+    h.name AS homeworld
+    
+    FROM people p 
+    
+    LEFT JOIN species s ON p.species_id = s._id 
+    LEFT JOIN planets h ON p.homeworld_id = h._id'
+
+    SELECT * FROM people
+    SELECT name FROM species
+
+    //EXPECTED DIAGRAM 
+      //Only what's in the select statement should be black (focused)
+      //Show any additional realationships that exist from people, planets, or species, but grey (to show join options)
+      //People_in_films table would render, but since it's a join table, we should show films
+      // ^ GO FOR THIS RIGHT AWAY
+
+    // Query with Joins
+    //Search for a JOIN first
+    //Look for FROM keyword to find Table name and Alias. Store on an object. {alias: table name}
+    //Look for JOIN and do the same thing ^
+    //Go to SELECT to find which columns belong with which table
+    //Check for aliases on columns (p.species_id)
+    //Look for column names and table names, ignore aggs, groups, orders
+    
+    // Query without JOINS
+    
+    
+    {
+      films: {
+        table: {NODE}
+        primary_key:true,
+        foreign_key: true,
+        linkedTable: someTable
+        linkedColumn: someColumn
+      },
+      people: {_id:1}
+    }
+
+     */
     table.columns.forEach((column: any, index: number) => {
       const newNode = {
         id: `${Object.keys(column)[0]}.${table.table_name}.node`,
@@ -327,7 +390,7 @@ function parseDataNodes(rawData: any): any {
         targetPosition: 'left',
         draggable: false,
       };
-      if (column.hasOwnProperty('primaryKey'))
+      if (column.primary_key)
         newNode.data.label = `🔑 ${Object.keys(column)[0]} | ${
           column[Object.keys(column)[0]]
         }`;
