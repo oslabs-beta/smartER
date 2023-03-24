@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {Route, Routes} from 'react-router-dom';
-import {LoginContext, HomepageContext} from './Context';
+import React, { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { LoginContext, HomepageContext } from './Context';
 import Login from './components/Login';
 import Homepage from './components/Homepage';
 import Signup from './components/Signup';
@@ -8,10 +8,10 @@ import Signup from './components/Signup';
 const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [home, setHome] = useState('');
+  const [submit, setSubmit] = useState(false);
   const [queryString, setQueryString] = useState('');
   const [history, setHistory] = useState([
-    {created_at: 'hello', query: 'world'},
+    { created_at: 'hello', query: 'world' },
   ]);
   const [uri, setUri] = useState('');
   const [dbCredentials, setDBCredentials] = useState({
@@ -33,8 +33,8 @@ const App = () => {
     >
       <HomepageContext.Provider
         value={{
-          home,
-          setHome,
+          submit,
+          setSubmit,
           queryString,
           setQueryString,
           history,

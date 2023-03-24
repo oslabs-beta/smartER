@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useEffect} from 'react';
+import React, { FC, useState, useContext, useEffect } from 'react';
 import Diagram from './HomeComponents/Diagram';
 import Header from './HomeComponents/Header';
 import InputContainer from './HomeComponents/InputContainer';
@@ -16,14 +16,6 @@ const TopComp = () => {
   );
 };
 
-const LowerComp = () => {
-  return (
-    <div>
-      <QueryResults />
-    </div>
-  );
-};
-
 const Homepage: React.FC<{}> = () => {
   return (
     <>
@@ -31,9 +23,9 @@ const Homepage: React.FC<{}> = () => {
       <div className="main-container">
         <Split direction="vertical" minSize={[600, 200]} gutterSize={5}>
           <TopComp />
-          <LowerComp />
         </Split>
       </div>
+      <QueryResults />
     </>
   );
 };
