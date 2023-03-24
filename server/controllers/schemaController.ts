@@ -96,13 +96,21 @@ const schemaController: schemaControllers = {
         // Update prevTableName so we can keep track of when we enter a new table
         prevTableName = current.table_name;
 
-        // create column_name : data_type key value pair on column
-        column[current.column_name] = current.data_type;
-        // Check if primary key exists and if foreign key exists
-        if (current.is_primary_key) column.primary_key = true;
-        if (current.table_origin)
-          column.linkedTable =
-            current.table_origin + '.' + current.table_column;
+        // Assign table name and column name
+        column.table_name = current.table_name;
+        column.column_name = current.column_name;
+        // Assign data type
+        if (current.data_type === 'integer') column.data_type = 'int';
+        else if (current.data_type === 'character varying')
+          column.data_type = 'varchar';
+        else column[current.column_name] = current.data_type;
+        // Add relationships and constraints if there are any
+        if (current.primary_key_exists) column.primary_key = true;
+        if (current.table_origin) {
+          column.foreign_key = true;
+          column.linkedTable = current.table_origin;
+          column.linkedTableColumn = current.table_column;
+        }
 
         // Push the complete column object into columns array
         tableObj.columns.push(column);
@@ -160,12 +168,3 @@ const schemaController: schemaControllers = {
 };
 
 export default schemaController;
-const sampleData = {
-  people_in_films: {
-    columns: {
-      _id: { dataType: 'integer', primaryKey: true },
-      person_id: { dataType: 'bigint', linkedTable: 'people._id' },
-      film_id: { dataType: 'bigint', linkedTable: 'films._id' },
-    },
-  },
-};
