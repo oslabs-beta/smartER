@@ -4,7 +4,21 @@ const router = express.Router();
 
 // Possibly add route for storing users previous login credentials or URLs?
 router.get('/getQueryResults', schemaController.getQueryResults);
-router.get('/getSchema', schemaController.getSchemaPostgreSQL);
+router.get(
+  '/getSchema',
+  schemaController.connectDb,
+  schemaController.getSchemaPostgreSQL,
+  (req, res) => {
+    res.status(200).json(res.locals.erDiagram);
+  }
+);
+
+router.get(
+  '/getSchemaPerformance',
+  schemaController.connectDb,
+  schemaController.getQueryPerformance
+);
+
 router.patch('/changeURI', (req, res, next) => {});
 router.delete('/', (req, res, next) => {});
 
