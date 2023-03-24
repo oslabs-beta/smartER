@@ -453,9 +453,11 @@ function parseDataNodes(rawData: typeof SampleData): any {
       targetPosition: 'bottom',
       style: {
         background: 'orange',
+        opacity: '1',
       },
       draggable: false,
     };
+    if (!table.r) newColumnTitle.style.opacity = '0.35';
     nodes.push(newColumnTitle);
     //create column nodes
     table.columns.forEach((column: any, index: number) => {
@@ -469,7 +471,10 @@ function parseDataNodes(rawData: typeof SampleData): any {
         sourcePosition: 'right',
         targetPosition: 'left',
         draggable: false,
+        style: { opacity: '1' },
       };
+      if (!column.r) newColumnNode.style.opacity = '0.35';
+
       if (column.primary_key) {
         newColumnNode.data.label = `🔑  ${column.column_name} | ${column.data_type}`;
       }
@@ -503,7 +508,7 @@ function parseDataEdges(data: any): any {
 }
 
 let str = `
-SELECT p.*, s.name AS species, h.name AS homeworld
+SELECT p.*,    ," ",      s.name        AS species,  h.name AS homeworld
 FROM people p
 LEFT JOIN species s ON p.species_id = s._id
 LEFT JOIN planets h ON p.homeworld_id = h._id`;
@@ -523,14 +528,16 @@ function parseQueryAndGenerateNodes(
   const columnsToHighlight = {};
   const tableAlias: Record<string, string> = {};
   const splitBySpace = queryString.split(/[(\s,|.)]+/);
-  console.log(splitBySpace);
+
   for (let i = 0; i < splitBySpace.length; i++) {
     const currentString = splitBySpace[i];
     const previousString = splitBySpace[i - 1];
     if (previousString === 'FROM' || previousString === 'JOIN') {
       tablesToRender.push(currentString);
-      if (splitBySpace[i + 1] !== 'ON' || splitBySpace[i + 1] !== 'WHERE')
+      if (splitBySpace[i + 1] !== 'ON' || splitBySpace[i + 1] !== 'WHERE') {
         tableAlias[splitBySpace[i + 1]] = currentString;
+        tableAlias[currentString] = splitBySpace[i + 1];
+      }
     }
   }
   for (const table of tablesToRender) {
@@ -539,10 +546,45 @@ function parseQueryAndGenerateNodes(
     tableObject.columns = [];
     nodes.push(tableObject);
   }
+  interface columnObj {
+    table_name: string;
+    column_name: string;
+    data_type: string;
+    primary_key?: boolean;
+    foreign_key?: boolean;
+    linkedTable?: string;
+    linkedTableColumn?: string;
+  }
 
-  for (let i = 0; i < tablesToRender.length; i++) {
-    const currentTable = tablesToRender[i];
-
+  /*
+  {
+    people: {
+      species_id: {
+        table_name: 'people',
+        column_name: 'species_id',
+        data_type: 'bigint',
+        foreign_key: true,
+        linkedTable: 'species',
+        linkedTableColumn: '_id',
+      },
+      birth_year: {
+        table_name: 'people',
+        column_name: 'birth_year',
+        data_type: 'varchar',
+      },
+    };
+    tableName1: {},
+    tableName2: {},
+  }
+  */
+  // interface innerObj {
+  //   string: columnObj;
+  // }
+  const nodesObj: Record<string, Record<string, columnObj>> = {};
+  for (const table of tablesToRender) nodesObj[table] = {};
+  console.log(splitBySpace);
+  // find columns in each table
+  if (Object.keys(tableAlias).length) {
     for (let j = 0; j < splitBySpace.length; j++) {
       const currEl = splitBySpace[j];
       const prevEl = splitBySpace[j - 1];
@@ -550,38 +592,44 @@ function parseQueryAndGenerateNodes(
       if (prevEl in tableAlias) {
         if (currEl === '*') {
           for (let k = 0; k < SampleData.length; k++) {
-            if (SampleData[k].table_name === currentTable) {
-              for (let l = 0; l < nodes.length; l++) {
-                if (nodes[l].table_name === currentTable)
+            if (SampleData[k].table_name in nodesObj) {
+              for (let l = 0; l < SampleData[k].columns.length; l++) {
+                if (nodes[l].table_name in nodesObj)
                   nodes[l].columns = [...SampleData[k].columns];
                 break;
               }
               break;
             }
           }
-        } else {
-          for (let o = 0; o < nodes.length; o++) {
-            let z = 0;
-            if (
-              nodes[o].table_name === tableAlias[prevEl] &&
-              currentTable === tableAlias[prevEl]
-            ) {
-              z++;
-              nodes[o].columns.push(currEl);
-              // console.log('in push', nodes[o]);
-            }
-          }
         }
         // currEl is the column
       }
     }
+  } else {
+    // There are no aliases
+    let start;
+    let end;
+    let tableName: string;
+    for (let i = 0; i < splitBySpace.length; i++) {
+      const currentString = splitBySpace[i];
+      if (currentString === 'SELECT') start = i + 1;
+      if (currentString === 'FROM') {
+        end = i - 1;
+        tableName = splitBySpace[i + 1];
+      }
+    }
+    const columnsRendered = splitBySpace.slice(start, end);
+    for (let i = 0; i < columnsRendered.length; i++) {
+      // nodesObj[tableName][columnsRendered[i]] =
+      //    {
+      //     table_name: tableName,
+      //     column_name: columnsRendered[i],
+      //   },
+    }
   }
+
   console.log('alias', tableAlias);
   console.log('tables', tablesToRender);
-  console.log('Nodes arr:', nodes);
-  for (let i = 0; i < nodes.length; i++) {
-    console.log('Table_name', nodes[i].table_name, 'columns', nodes[i].columns);
-  }
 }
 parseQueryAndGenerateNodes(str, SampleData);
 //notes on parsing
