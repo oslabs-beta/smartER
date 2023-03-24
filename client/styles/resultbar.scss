@@ -4,17 +4,17 @@ $color3: #00a3b5;
 $color4: #6bfbce;
 
 .query-table {
-  border-radius: 5px;
-  width: 98%;
-  height: 200px;
-  display: flex;
-  margin: 0.8%;
-  background: black;
-  overflow: none;
+  margin: 0.5%;
+  background: transparent;
 }
 
 .query-headers {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.table-row {
+  background-color: brown;
+  flex-direction: row;
 }
