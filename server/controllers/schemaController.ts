@@ -103,7 +103,7 @@ const schemaController: schemaControllers = {
         if (current.data_type === 'integer') column.data_type = 'int';
         else if (current.data_type === 'character varying')
           column.data_type = 'varchar';
-        else column[current.column_name] = current.data_type;
+        else column.data_type = current.data_type;
         // Add relationships and constraints if there are any
         if (current.primary_key_exists) column.primary_key = true;
         if (current.table_origin) {
