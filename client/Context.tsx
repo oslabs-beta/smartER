@@ -1,5 +1,5 @@
-import {createContext, useContext, Dispatch, SetStateAction} from 'react';
-import {StringLiteral} from 'typescript';
+import { createContext, useContext, Dispatch, SetStateAction } from 'react';
+import { StringLiteral } from 'typescript';
 
 // Login context
 export type LoginContextType = {
@@ -22,8 +22,8 @@ export const LoginContext = createContext<LoginContextType | undefined>(
 
 //Homepage Context
 export type HomepageContextType = {
-  home: string;
-  setHome: Dispatch<SetStateAction<string>>;
+  submit: boolean;
+  setSubmit: Dispatch<SetStateAction<boolean>>;
   queryString: string;
   setQueryString: Dispatch<SetStateAction<string>>;
   history: historyType[];
@@ -35,8 +35,8 @@ export type HomepageContextType = {
 };
 
 const defaultHomeState = {
-  home: 'HOMEPAGE',
-  setHome: () => {},
+  submit: false,
+  setSubmit: () => {},
   queryString: '',
   setQueryString: () => {},
   history: [],
@@ -60,7 +60,7 @@ export const HomepageContext = createContext<HomepageContextType | undefined>(
 //History [{created_at: string, query: string}]
 
 //TYPES
-interface historyType {
+export interface historyType {
   created_at: string;
   query: string;
 }

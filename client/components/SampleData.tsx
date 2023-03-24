@@ -444,8 +444,8 @@ function parseDataNodes(rawData: typeof SampleData): any {
       type: 'default',
       parentNode: `${table.table_name}.group`,
       extent: 'parent',
-      position: {x: 0, y: 0 + 10},
-      data: {label: table.table_name},
+      position: { x: 0, y: 0 + 10 },
+      data: { label: table.table_name },
       sourcePosition: 'bottom',
       targetPosition: 'bottom',
       style: {
