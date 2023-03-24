@@ -1,3 +1,6 @@
+import { table } from 'console';
+import { query } from 'express';
+
 export const SampleData = [
   {
     table_name: 'films',
@@ -427,8 +430,8 @@ function parseDataNodes(rawData: typeof SampleData): any {
     const newContainer = {
       id: `${table.table_name}.group`,
       type: `group`,
-      position: {x: 180 * index, y: Math.random() * 100}, //Control spacing of tables here, Probably needs an algo
-      data: {label: table.table_name},
+      position: { x: 180 * index, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
+      data: { label: table.table_name },
       style: {
         display: 'flex',
         width: 150,
@@ -444,8 +447,8 @@ function parseDataNodes(rawData: typeof SampleData): any {
       type: 'default',
       parentNode: `${table.table_name}.group`,
       extent: 'parent',
-      position: {x: 0, y: 0 + 10},
-      data: {label: table.table_name},
+      position: { x: 0, y: 0 + 10 },
+      data: { label: table.table_name },
       sourcePosition: 'bottom',
       targetPosition: 'bottom',
       style: {
@@ -461,8 +464,8 @@ function parseDataNodes(rawData: typeof SampleData): any {
         type: 'default',
         parentNode: `${column.table_name}.group`,
         extent: 'parent',
-        position: {x: 0, y: index === 0 ? 40 : index * 40 + 40},
-        data: {label: `${column.column_name} | ${column.data_type}`},
+        position: { x: 0, y: index === 0 ? 40 : index * 40 + 40 },
+        data: { label: `${column.column_name} | ${column.data_type}` },
         sourcePosition: 'right',
         targetPosition: 'left',
         draggable: false,
@@ -499,45 +502,104 @@ function parseDataEdges(data: any): any {
   return edges;
 }
 
+let str = `
+SELECT p.*, s.name AS species, h.name AS homeworld
+FROM people p
+LEFT JOIN species s ON p.species_id = s._id
+LEFT JOIN planets h ON p.homeworld_id = h._id`;
+
+function parseQueryAndGenerateNodes(
+  queryString: string,
+  data: typeof SampleData
+) {
+  // Determine tables to render
+  // Determine Aliases
+  // after FROM
+  // after JOIN
+  // console.log(queryString);
+  const nodes = [];
+
+  const tablesToRender = [];
+  const columnsToHighlight = {};
+  const tableAlias: Record<string, string> = {};
+  const splitBySpace = queryString.split(/[(\s,|.)]+/);
+  console.log(splitBySpace);
+  for (let i = 0; i < splitBySpace.length; i++) {
+    const currentString = splitBySpace[i];
+    const previousString = splitBySpace[i - 1];
+    if (previousString === 'FROM' || previousString === 'JOIN') {
+      tablesToRender.push(currentString);
+      if (splitBySpace[i + 1] !== 'ON' || splitBySpace[i + 1] !== 'WHERE')
+        tableAlias[splitBySpace[i + 1]] = currentString;
+    }
+  }
+  for (const table of tablesToRender) {
+    const tableObject: Record<string, any> = {};
+    tableObject.table_name = table;
+    tableObject.columns = [];
+    nodes.push(tableObject);
+  }
+
+  for (let i = 0; i < tablesToRender.length; i++) {
+    const currentTable = tablesToRender[i];
+
+    for (let j = 0; j < splitBySpace.length; j++) {
+      const currEl = splitBySpace[j];
+      const prevEl = splitBySpace[j - 1];
+      if (currEl === 'FROM') break;
+      if (prevEl in tableAlias) {
+        if (currEl === '*') {
+          for (let k = 0; k < SampleData.length; k++) {
+            if (SampleData[k].table_name === currentTable) {
+              for (let l = 0; l < nodes.length; l++) {
+                if (nodes[l].table_name === currentTable)
+                  nodes[l].columns = [...SampleData[k].columns];
+                break;
+              }
+              break;
+            }
+          }
+        } else {
+          for (let o = 0; o < nodes.length; o++) {
+            let z = 0;
+            if (
+              nodes[o].table_name === tableAlias[prevEl] &&
+              currentTable === tableAlias[prevEl]
+            ) {
+              z++;
+              nodes[o].columns.push(currEl);
+              // console.log('in push', nodes[o]);
+            }
+          }
+        }
+        // currEl is the column
+      }
+    }
+  }
+  console.log('alias', tableAlias);
+  console.log('tables', tablesToRender);
+  console.log('Nodes arr:', nodes);
+  for (let i = 0; i < nodes.length; i++) {
+    console.log('Table_name', nodes[i].table_name, 'columns', nodes[i].columns);
+  }
+}
+parseQueryAndGenerateNodes(str, SampleData);
 //notes on parsing
 /*
-    //Helper func to iterate through the columns property
-    // parseColumns(tables.columns);
-    // tableName: 'films'
-    // columns: [
-    //   {
-    //     tableName: 'films'
-    //     colName: '_id',
-    //     colType: 'int',
-    //     primary_key: true,
-    //   },
-    //   {
-    //     tableName: 'films'
-    //     colName: 'something',
-    //     colType: 'int',
-    //     foreign_key: true,
-    //     linked_table: someTableName,
-    //     linked_table_column: someColumnName
-    //   },
-    //  ]
-    /*
 
-    //  query: 'SELECT f.producer as filmProds FROM films f LEFT OUTER JOIN people p on FK'
-    rows: [{filmProds: someGuy },{},{}]
-    
-    // SELECT p.*, 
-    s.name AS species, 
+    // SELECT p.*,
+    s.name AS species,
     h.name AS homeworld
-    
-    FROM people p 
-    
-    LEFT JOIN species s ON p.species_id = s._id 
-    LEFT JOIN planets h ON p.homeworld_id = h._id'
+
+    FROM people p
+
+    LEFT JOIN species s ON p.species_id = s._id
+    LEFT JOIN planets h ON p.homeworld_id = h._id
 
     SELECT * FROM people
     SELECT name FROM species
 
-    //EXPECTED DIAGRAM 
+    //EXPECTED DIAGRAM
       //Only what's in the select statement should be black (focused)
       //Show any additional realationships that exist from people, planets, or species, but grey (to show join options)
       //People_in_films table would render, but since it's a join table, we should show films
@@ -550,6 +612,6 @@ function parseDataEdges(data: any): any {
     //Go to SELECT to find which columns belong with which table
     //Check for aliases on columns (p.species_id)
     //Look for column names and table names, ignore aggs, groups, orders
-    
+
     // Query without JOINS
 */
