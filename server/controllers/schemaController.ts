@@ -52,7 +52,6 @@ const schemaController: schemaControllers = {
       });
     }
   },
-
   getSchemaPostgreSQL: async (req, res, next) => {
     try {
       const pg = res.locals.pg;
