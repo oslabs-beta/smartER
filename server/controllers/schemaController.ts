@@ -71,19 +71,21 @@ const schemaController: schemaControllers = {
         // Update prevTableName so we can keep track of when we enter a new table
         prevTableName = current.table_name;
 
-        // create column_name : data_type key value pair on column
-        if (current.data_type === 'integer')
-          column[current.column_name] = 'int';
+        // Assign table name and column name
+        column.table_name = current.table_name;
+        column.column_name = current.column_name;
+        // Assign data type
+        if (current.data_type === 'integer') column.data_type = 'int';
         else if (current.data_type === 'character varying')
-          column[current.column_name] = 'varchar';
+          column.data_type = 'varchar';
         else column[current.column_name] = current.data_type;
-
-        if (current.primary_key_exists)
-          // Check if primary key exists and if foreign key exists
-          column.primary_key = true;
-        if (current.table_origin)
-          column.linkedTable =
-            current.table_origin + '.' + current.table_column;
+        // Add relationships and constraints if there are any
+        if (current.primary_key_exists) column.primary_key = true;
+        if (current.table_origin) {
+          column.foreign_key = true;
+          column.linkedTable = current.table_origin;
+          column.linkedTableColumn = current.table_column;
+        }
 
         // Push the complete column object into columns array
         tableObj.columns.push(column);
@@ -142,3 +144,39 @@ const sampleData = {
     },
   },
 };
+
+//Helper func to iterate through the columns property
+// parseColumns(tables.columns);
+// tableName: 'films'
+// columns: [
+//   {
+//     tableName: 'films'
+//     colName: '_id',
+//     colType: 'int',
+//     primary_key: true,
+//   },
+//   {
+//     tableName: 'films'
+//     colName: 'something',
+//     colType: 'int',
+//     foreign_key: true,
+//     linked_table: someTableName,
+//     linked_table_column: someColumnName
+//   },
+//  ]
+/*
+
+    //  query: 'SELECT f.producer as filmProds FROM films f LEFT OUTER JOIN people p on FK'
+    rows: [{filmProds: someGuy },{},{}]
+    // SELECT p.*, s.name AS species, h.name AS homeworld FROM people p LEFT JOIN species s ON p.species_id = s._id LEFT JOIN planets h ON p.homeworld_id = h._id'
+    {
+      films: {
+        table: {NODE}
+        primary_key:true,
+        foreign_key: true,
+        linkedTable: someTable
+        linkedColumn: someColumn
+      },
+      people: {_id:1}
+    }
+     */
