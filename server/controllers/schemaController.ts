@@ -5,13 +5,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 interface schemaControllers {
+  connectDb: RequestHandler;
   getSchemaPostgreSQL: RequestHandler;
   getQueryResults: RequestHandler;
+  getQueryPerformance: RequestHandler;
 }
 //
 const schemaController: schemaControllers = {
-  getSchemaPostgreSQL: async (req, res, next) => {
-    try {
+  connectDb: async (req, res, next) => {
+    /*
+      FE will always send URI so below logic is not needed
+
       const { programmatic, pg_url } = req.body;
       // FE Provides whether or not user is logging in programmatically
       // If programmatically logging in, create a credentials object to
@@ -30,14 +34,35 @@ const schemaController: schemaControllers = {
         const PG_URL = pg_url || process.env.PG_URL_STARWARS;
         var envCredentials: any = { connectionString: PG_URL };
       }
-      const pg = new Pool(programmaticCredentials || envCredentials);
+      */
 
+    try {
+      // we should probably refactor this to get URI from db basaed on user/JWT
+      const { pg_url } = req.body;
+      const PG_URL = pg_url || process.env.PG_URL_STARWARS;
+      var envCredentials: any = { connectionString: PG_URL };
+      // const pg = new Pool(programmaticCredentials || envCredentials);
+      res.locals.pg = new Pool(envCredentials);
+      return next();
+    } catch (error) {
+      return next({
+        log: `Error in schemaController.connectDb ${error}`,
+        status: 400,
+        message: { error },
+      });
+    }
+  },
+  getSchemaPostgreSQL: async (req, res, next) => {
+    try {
+      const pg = res.locals.pg;
       // Get all relationships between all tables
+      // Identify the current schema name for use in full schema query
       const currentSchema = await pg.query(
-        `select current_schema from current_schema`
+        `SELECT current_schema FROM current_schema`
       );
+
       // Get Relationships, Tables names, Column names, Data types
-      const RTNCNDT = await pg.query(getAllQuery(currentSchema));
+      const schema = await pg.query(getAllQuery(currentSchema));
 
       // Table type
       interface table {
@@ -51,12 +76,12 @@ const schemaController: schemaControllers = {
         columns: [],
       };
       // Assign prev table name and tableObj.table_name to be the first table name from the query
-      let prevTableName = RTNCNDT.rows[0].table_name;
-      tableObj.table_name = RTNCNDT.rows[0].table_name;
+      let prevTableName = schema.rows[0].table_name;
+      tableObj.table_name = prevTableName;
       // Iterate through array of all table names, columns, and data types
-      for (let i = 0; i < RTNCNDT.rows.length; i++) {
+      for (let i = 0; i < schema.rows.length; i++) {
         // current represents each object in the array
-        const current = RTNCNDT.rows[i];
+        const current = schema.rows[i];
         //column object type and declaration
         const column: Record<string, any> = {};
 
@@ -90,7 +115,9 @@ const schemaController: schemaControllers = {
         // Push the complete column object into columns array
         tableObj.columns.push(column);
       }
-      return res.json(erDiagram);
+      // return res.json(erDiagram);
+      res.locals.erDiagram = erDiagram;
+      return next();
     } catch (error) {
       return next({
         log: `Error in schemaController.getSchema ${error}`,
@@ -101,25 +128,8 @@ const schemaController: schemaControllers = {
   },
   getQueryResults: async (req, res, next) => {
     try {
-      // FE Provides whether or not user is logging in programmatically
-      // If programmatically logging in, create a credentials object to
-      // create a new connection, else we assign it the provided pg_url
-      // if that is not provided, we assign it the starwars pg_url
-      const { programmatic, pg_url, queryString } = req.body;
-      if (programmatic) {
-        var { host, port, dbUsername, dbPassword, database } = req.body;
-        var programmaticCredentials: any = {
-          host,
-          port,
-          user: dbUsername,
-          password: dbPassword,
-          database,
-        };
-      } else {
-        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-        var envCredentials: any = { connectionString: PG_URL };
-      }
-      const pg = new Pool(programmaticCredentials || envCredentials);
+      const { queryString } = req.body;
+      const pg = res.locals.pg;
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
       // Return query to FE
@@ -132,51 +142,29 @@ const schemaController: schemaControllers = {
       });
     }
   },
-};
+  getQueryPerformance: async (req, res, next) => {
+    try {
+      const pg = res.locals.pg;
+      const currentSchema = await pg.query(
+        `SELECT current_schema FROM current_schema`
+      );
 
-export default schemaController;
-const sampleData = {
-  people_in_films: {
-    columns: {
-      _id: { dataType: 'integer', primaryKey: true },
-      person_id: { dataType: 'bigint', linkedTable: 'people._id' },
-      film_id: { dataType: 'bigint', linkedTable: 'films._id' },
-    },
+      // Get Relationships, Tables names, Column names, Data types
+      const schema = await pg.query(
+        `EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON) ${getAllQuery(
+          currentSchema
+        )}`
+      );
+
+      res.json(schema.rows[0]['QUERY PLAN'][0]);
+    } catch (error) {
+      return next({
+        log: `Error in schemaController.getQueryPerformance ${error}`,
+        status: 400,
+        message: { error },
+      });
+    }
   },
 };
 
-//Helper func to iterate through the columns property
-// parseColumns(tables.columns);
-// tableName: 'films'
-// columns: [
-//   {
-//     tableName: 'films'
-//     colName: '_id',
-//     colType: 'int',
-//     primary_key: true,
-//   },
-//   {
-//     tableName: 'films'
-//     colName: 'something',
-//     colType: 'int',
-//     foreign_key: true,
-//     linked_table: someTableName,
-//     linked_table_column: someColumnName
-//   },
-//  ]
-/*
-
-    //  query: 'SELECT f.producer as filmProds FROM films f LEFT OUTER JOIN people p on FK'
-    rows: [{filmProds: someGuy },{},{}]
-    // SELECT p.*, s.name AS species, h.name AS homeworld FROM people p LEFT JOIN species s ON p.species_id = s._id LEFT JOIN planets h ON p.homeworld_id = h._id'
-    {
-      films: {
-        table: {NODE}
-        primary_key:true,
-        foreign_key: true,
-        linkedTable: someTable
-        linkedColumn: someColumn
-      },
-      people: {_id:1}
-    }
-     */
+export default schemaController;

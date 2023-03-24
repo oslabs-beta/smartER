@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState, useCallback, useEffect} from 'react';
+import React, { FC, useContext, useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -9,8 +9,8 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import {HomepageContext} from '../../Context';
-import {testnodes, testEdges} from '../SampleData';
+import { HomepageContext } from '../../Context';
+import { testnodes, testEdges } from '../SampleData';
 
 const Diagram: React.FC<{}> = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
@@ -21,7 +21,7 @@ const Diagram: React.FC<{}> = () => {
     [setEdges]
   );
 
-  const {queryString} = useContext(HomepageContext)!;
+  const { queryString } = useContext(HomepageContext)!;
 
   return (
     <ReactFlowProvider>
@@ -36,7 +36,7 @@ const Diagram: React.FC<{}> = () => {
         >
           <Controls />
           <MiniMap />
-          <Background variant="dots" gap={12} size={1} />
+          <Background variant={'dots'} gap={12} size={1} />
         </ReactFlow>
       </div>
     </ReactFlowProvider>
