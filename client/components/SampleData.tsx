@@ -283,8 +283,8 @@ function parseDataNodes(rawData: typeof SampleData): any {
     nodes.push({
       id: `${table.table_name}.group`,
       type: 'group',
-      position: {x: 180 * index, y: Math.random() * 100}, //Control spacing of tables here, Probably needs an algo
-      data: {label: table.table_name},
+      position: { x: 180 * index, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
+      data: { label: table.table_name },
       style: {
         display: 'flex',
         width: 150,
@@ -299,8 +299,8 @@ function parseDataNodes(rawData: typeof SampleData): any {
       type: 'default',
       parentNode: `${table.table_name}.group`,
       extent: 'parent',
-      position: {x: 0, y: 0 + 10},
-      data: {label: table.table_name},
+      position: { x: 0, y: 0 + 10 },
+      data: { label: table.table_name },
       sourcePosition: 'bottom',
       targetPosition: 'bottom',
       style: {
@@ -380,7 +380,7 @@ function parseDataNodes(rawData: typeof SampleData): any {
         type: 'default',
         parentNode: `${table.table_name}.group`,
         extent: 'parent',
-        position: {x: 0, y: index === 0 ? 40 : index * 40 + 40},
+        position: { x: 0, y: index === 0 ? 40 : index * 40 + 40 },
         data: {
           label: `${Object.keys(column)[0]} | ${
             column[Object.keys(column)[0]]
