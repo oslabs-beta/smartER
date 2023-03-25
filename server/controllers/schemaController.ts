@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { getAllQuery } from '../helper/getAllQuery';
-import { Pool } from 'pg';
+import {Request, Response, NextFunction, RequestHandler} from 'express';
+import {getAllQuery} from '../helper/getAllQuery';
+import {Pool} from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -38,9 +38,9 @@ const schemaController: schemaControllers = {
 
     try {
       // we should probably refactor this to get URI from db basaed on user/JWT
-      const { pg_url } = req.body;
+      const {pg_url} = req.body;
       const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-      var envCredentials: any = { connectionString: PG_URL };
+      var envCredentials: any = {connectionString: PG_URL};
       // const pg = new Pool(programmaticCredentials || envCredentials);
       res.locals.pg = new Pool(envCredentials);
       return next();
@@ -48,7 +48,7 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.connectDb ${error}`,
         status: 400,
-        message: { error },
+        message: {error},
       });
     }
   },
@@ -65,55 +65,57 @@ const schemaController: schemaControllers = {
       const schema = await pg.query(getAllQuery(currentSchema));
 
       // Table type
-      interface table {
-        table_name: string;
-        columns: any[];
-      }
-      // Initialize array to hold returned data
-      const erDiagram = [];
-      let tableObj: table = {
-        table_name: '',
-        columns: [],
+
+      const masterObj = {
+        people: {
+          someColumnName: {
+            // EVERY DATA WE NEED
+          },
+        },
+        films: {},
       };
+      // Initialize array to hold returned data
+      const erDiagram: Record<string, typeof tableObj> = {};
+      let tableObj: Record<string, any> = {};
       // Assign prev table name and tableObj.table_name to be the first table name from the query
       let prevTableName = schema.rows[0].table_name;
-      tableObj.table_name = prevTableName;
+
       // Iterate through array of all table names, columns, and data types
       for (let i = 0; i < schema.rows.length; i++) {
         // current represents each object in the array
         const current = schema.rows[i];
         //column object type and declaration
-        const column: Record<string, any> = {};
 
         // Check to see if the prev table name does not match the current table name
         // if it doesn't match, we know we are in a different table
         // push a deep copy of the tableObj, assign the current table_name to the tableObj.table_name
         if (prevTableName !== current.table_name) {
-          erDiagram.push({ ...tableObj });
-          tableObj.table_name = current.table_name;
-          tableObj.columns = [];
+          erDiagram[prevTableName] = {...tableObj};
+          tableObj = {};
         }
         // Update prevTableName so we can keep track of when we enter a new table
         prevTableName = current.table_name;
-
+        tableObj[current.column_name] = {};
         // Assign table name and column name
-        column.table_name = current.table_name;
-        column.column_name = current.column_name;
+        tableObj[current.column_name].table_name = current.table_name;
+        tableObj[current.column_name].column_name = current.column_name;
         // Assign data type
-        if (current.data_type === 'integer') column.data_type = 'int';
+        if (current.data_type === 'integer')
+          tableObj[current.column_name].data_type = 'int';
         else if (current.data_type === 'character varying')
-          column.data_type = 'varchar';
-        else column[current.column_name] = current.data_type;
+          tableObj[current.column_name].data_type = 'varchar';
+        else tableObj[current.column_name].data_type = current.data_type;
         // Add relationships and constraints if there are any
-        if (current.primary_key_exists) column.primary_key = true;
+        if (current.is_primary_key)
+          tableObj[current.column_name].primary_key = true;
         if (current.table_origin) {
-          column.foreign_key = true;
-          column.linkedTable = current.table_origin;
-          column.linkedTableColumn = current.table_column;
+          tableObj[current.column_name].foreign_key = true;
+          tableObj[current.column_name].linkedTable = current.table_origin;
+          tableObj[current.column_name].linkedTableColumn =
+            current.table_column;
         }
 
         // Push the complete column object into columns array
-        tableObj.columns.push(column);
       }
       // return res.json(erDiagram);
       res.locals.erDiagram = erDiagram;
@@ -122,13 +124,13 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.getSchema ${error}`,
         status: 400,
-        message: { error },
+        message: {error},
       });
     }
   },
   getQueryResults: async (req, res, next) => {
     try {
-      const { queryString } = req.body;
+      const {queryString} = req.body;
       const pg = res.locals.pg;
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
@@ -138,7 +140,7 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.getQueryResults ${error}`,
         status: 400,
-        message: { error },
+        message: {error},
       });
     }
   },
@@ -161,7 +163,7 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.getQueryPerformance ${error}`,
         status: 400,
-        message: { error },
+        message: {error},
       });
     }
   },
