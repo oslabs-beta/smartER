@@ -23,7 +23,7 @@ function parseNodes(rawData: any): any {
     j++;
     nodes.push(newContainer);
 
-    // create Column title node
+    // create table name node
     const newColumnTitle = {
       id: `${table}.columnName`,
       type: 'default',
@@ -83,7 +83,10 @@ function parseData(data: any): any {
           id: `${table}.${columnName}->${column.linkedTableColumn}${column.column_name}`,
           source: `${columnName}.${table}.node`,
           target: `${column.linkedTableColumn}.${column.linkedTable}.node`,
-          animated: true,
+          animated: false,
+          style: {
+            // display: 'none',
+          },
         };
         edges.push(newEdge);
       }

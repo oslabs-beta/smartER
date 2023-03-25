@@ -16,8 +16,8 @@ export default {
     },
     port: 8080,
     historyApiFallback: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    proxy: { '/api': 'http://localhost:3000/' },
+    headers: {'Access-Control-Allow-Origin': '*'},
+    proxy: {'/api': 'http://localhost:3000/'},
   },
   module: {
     rules: [
@@ -34,7 +34,7 @@ export default {
       },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './index.html' })],
+  plugins: [new HtmlWebpackPlugin({template: './index.html'})],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
