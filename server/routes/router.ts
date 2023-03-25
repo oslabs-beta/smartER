@@ -3,7 +3,14 @@ import schemaController from '../controllers/schemaController';
 const router = express.Router();
 
 // Possibly add route for storing users previous login credentials or URLs?
-router.get('/getQueryResults', schemaController.getQueryResults);
+router.get(
+  '/getQueryResults',
+  schemaController.connectDb,
+  schemaController.getQueryResults,
+  (req, res) => {
+    res.json(res.locals.queryResults);
+  }
+);
 router.get(
   '/getSchema',
   schemaController.connectDb,
