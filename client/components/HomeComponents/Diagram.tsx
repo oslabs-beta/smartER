@@ -10,7 +10,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {HomepageContext} from '../../Context';
-import {testnodes, testEdges} from '../ParseNodes';
+import {testnodes, testEdges} from './DiagramLogic/ParseNodes';
 
 const Diagram: React.FC<{}> = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
@@ -36,7 +36,7 @@ const Diagram: React.FC<{}> = () => {
         >
           <Controls />
           <MiniMap />
-          <Background variant={'dots'} gap={12} size={1} />
+          <Background gap={12} size={1} />
         </ReactFlow>
       </div>
     </ReactFlowProvider>

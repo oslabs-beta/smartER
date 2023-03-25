@@ -1,4 +1,4 @@
-import {SampleData} from './TestData';
+import {SampleData} from '../../TestData';
 
 export const testnodes = parseNodes(SampleData);
 console.log(SampleData);
