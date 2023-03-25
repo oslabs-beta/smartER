@@ -1,6 +1,6 @@
-import {table} from 'console';
-import {query} from 'express';
-import {SampleData} from '../../TestData';
+import { table } from 'console';
+import { query } from 'express';
+import { SampleData } from '../../TestData';
 
 let str = `
 SELECT p.*, s.name AS species,  h.name AS homeworld
@@ -114,7 +114,7 @@ function parseQueryAndGenerateNodes(
     people: new Set([name])
     films: new Set()
   }
-
+$
   const smallerObject = {};
   for (tableName of tablesToRender) {
     smallerObject[tableName] = mainObject[tableName] // (object contains all columns)

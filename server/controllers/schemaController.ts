@@ -1,6 +1,6 @@
-import {Request, Response, NextFunction, RequestHandler} from 'express';
-import {getAllQuery} from '../helper/getAllQuery';
-import {Pool} from 'pg';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { getAllQuery } from '../helper/getAllQuery';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,34 +13,11 @@ interface schemaControllers {
 //
 const schemaController: schemaControllers = {
   connectDb: async (req, res, next) => {
-    /*
-      FE will always send URI so below logic is not needed
-
-      const { programmatic, pg_url } = req.body;
-      // FE Provides whether or not user is logging in programmatically
-      // If programmatically logging in, create a credentials object to
-      // create a new connection, else we assign it the provided pg_url
-      // if that is not provided, we assign it the starwars pg_url
-      if (programmatic) {
-        var { host, port, dbUsername, dbPassword, database } = req.body;
-        var programmaticCredentials: any = {
-          host,
-          port,
-          user: dbUsername,
-          password: dbPassword,
-          database,
-        };
-      } else {
-        const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-        var envCredentials: any = { connectionString: PG_URL };
-      }
-      */
-
     try {
-      // we should probably refactor this to get URI from db basaed on user/JWT
-      const {pg_url} = req.body;
+      // we should probably refactor this to get URI from db based on user/JWT
+      const { pg_url } = req.body;
       const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-      var envCredentials: any = {connectionString: PG_URL};
+      var envCredentials: any = { connectionString: PG_URL };
       // const pg = new Pool(programmaticCredentials || envCredentials);
       res.locals.pg = new Pool(envCredentials);
       return next();
@@ -48,7 +25,7 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.connectDb ${error}`,
         status: 400,
-        message: {error},
+        message: { error },
       });
     }
   },
@@ -64,19 +41,10 @@ const schemaController: schemaControllers = {
       // Get Relationships, Tables names, Column names, Data types
       const schema = await pg.query(getAllQuery(currentSchema));
 
-      // Table type
-
-      const masterObj = {
-        people: {
-          someColumnName: {
-            // EVERY DATA WE NEED
-          },
-        },
-        films: {},
-      };
       // Initialize array to hold returned data
       const erDiagram: Record<string, typeof tableObj> = {};
       let tableObj: Record<string, any> = {};
+      // Make custom type for any on tableObj
       // Assign prev table name and tableObj.table_name to be the first table name from the query
       let prevTableName = schema.rows[0].table_name;
 
@@ -90,11 +58,11 @@ const schemaController: schemaControllers = {
         // if it doesn't match, we know we are in a different table
         // push a deep copy of the tableObj, assign the current table_name to the tableObj.table_name
         if (prevTableName !== current.table_name) {
-          erDiagram[prevTableName] = {...tableObj};
+          erDiagram[prevTableName] = { ...tableObj };
           tableObj = {};
+          prevTableName = current.table_name;
         }
-        // Update prevTableName so we can keep track of when we enter a new table
-        prevTableName = current.table_name;
+
         tableObj[current.column_name] = {};
         // Assign table name and column name
         tableObj[current.column_name].table_name = current.table_name;
@@ -124,23 +92,24 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.getSchema ${error}`,
         status: 400,
-        message: {error},
+        message: { error },
       });
     }
   },
   getQueryResults: async (req, res, next) => {
     try {
-      const {queryString} = req.body;
+      const { queryString } = req.body;
       const pg = res.locals.pg;
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
       // Return query to FE
-      res.json(getQuery.rows);
+      res.locals.queryResults = getQuery;
+      return next();
     } catch (error) {
       return next({
         log: `Error in schemaController.getQueryResults ${error}`,
         status: 400,
-        message: {error},
+        message: { error },
       });
     }
   },
@@ -163,7 +132,7 @@ const schemaController: schemaControllers = {
       return next({
         log: `Error in schemaController.getQueryPerformance ${error}`,
         status: 400,
-        message: {error},
+        message: { error },
       });
     }
   },
