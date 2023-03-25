@@ -1,5 +1,5 @@
 import db from '../models/userModel';
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import { body, validationResult } from 'express-validator';
 import { User } from '../../types/custom';
 import jwt from 'jsonwebtoken';
@@ -163,7 +163,7 @@ const userController: userControllers = {
             typeof exp === 'number'
           ) {
             req.user = {
-              ...req.user,
+              // ...req.user,
               email: email,
               token: token,
               exp: exp,
