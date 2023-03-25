@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Avestan&family=Oswald&family=Roboto&display=swap');
-$color1: #2e2e3a;
-$color2: #cbc0ae;
-$color3: #aeb8fe;
-$color4: #16103b;
+$color1: #020024;
+$color2: #004f77;
+$color3: #00a3b5;
+$color4: #6bfbce;
 body {
   background: rgb(2, 0, 36);
   background: linear-gradient(
@@ -12,7 +12,6 @@ body {
     rgba(69, 69, 121, 1) 96%
   );
   color: white;
-  font-family: 'Noto Sans Avestan', sans-serif;
 }
 
 h1 {
@@ -50,14 +49,14 @@ h1 {
   width: 150px;
   height: 30px;
   border: 1px $color1;
-  background-color: lighten($color1, 10%);
+  background-color: rgba(128, 128, 128, 0.443);
   border-radius: 5px;
   color: white;
   padding: 8px;
 }
 
 .user-input:focus {
-  outline: solid 1px lighten($color1, 15%);
+  outline: solid 1px lighten(rgba(128, 128, 128, 0.443), 15%);
 }
 .login-footer {
   display: flex;

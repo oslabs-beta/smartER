@@ -10,7 +10,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { HomepageContext } from '../../Context';
-import { SampleData, testnodes, testEdges } from '../SampleData';
+import { testnodes, testEdges } from '../SampleData';
 
 const Diagram: React.FC<{}> = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
