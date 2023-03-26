@@ -1,28 +1,76 @@
-import React, {FC, useState, useContext} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {LoginContext} from '../Context';
+import React, { FC, useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { LoginContext } from '../Context';
 
 const Signup: React.FC<{}> = () => {
-  const {email, setEmail, password, setPassword} = useContext(LoginContext)!;
+  const { email, setEmail, password, setPassword } = useContext(LoginContext)!;
   const [secondPw, setSecondPW] = useState('');
-  const [doMatch, setMatch] = useState(true);
+  const [doPwMatch, setPwMatch] = useState(true);
+  const [emailExistsError, setEmailExistsError] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    if (secondPw === password) {
-      console.log('EMAIL IN SIGNUP', email);
-      //TODO: Add fetch request to validate signup.
-      setEmail('');
-      setPassword('');
-      setSecondPW('');
-      setMatch(true);
-    } else {
-      setPassword('');
-      setSecondPW('');
-      setMatch(false);
-      console.log('PASSWORDS DO NOT MATCH');
+  //EMAIL CHECK
+  useEffect(() => {
+    (async () => {
+      try {
+        console.log('EMAIL', email);
+        const validEmail = new RegExp(/^\S+@\S+\.\S\S+$/);
+        //if email has a '@' and '.'
+
+        if (email.match(validEmail)) {
+          console.log('VALID EMAIL');
+          //Make API req to backend since match has been found to be valid email
+          const data = await fetch('/user/emailCheck', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          });
+          const parsedData = await data.json();
+          if (parsedData === 'user exists') {
+            //TODO: render a message 'Email is already in use. '
+            // setEmailExistsError(true);
+            console.log('email in use');
+          }
+        }
+      } catch (error) {
+        console.log(`Error in useEffect signup.tsx ${error}`);
+        return `Error in useEffect signup.tsx ${error}`;
+      }
+    })();
+  }, [email]);
+
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+
+      if (secondPw === password) {
+        const data = await fetch('/user/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        //TODO: FETCH to authenticate Token
+        if (data.status === 200) navigate('/homepage');
+        // 400 General Error | 409 User already exists | 200 Success
+        else if (data.status === 404 || data.status === 400) {
+          setEmail('');
+          setPassword('');
+          setSecondPW('');
+          setPwMatch(true);
+        } else if (data.status === 409) {
+          setEmail('');
+          setPassword('');
+          navigate('/');
+        }
+      } else {
+        setPassword('');
+        setSecondPW('');
+        setPwMatch(false);
+      }
+    } catch (error) {
+      console.log(`Error in signup.tsx handleSubmit ${error}`);
+      return `Error in signup.tsx handleSubmit ${error}`;
     }
   };
 
@@ -50,6 +98,9 @@ const Signup: React.FC<{}> = () => {
             />
           </label>
         </div>
+        {emailExistsError && (
+          <div className="small-text">Email already in use.</div>
+        )}
         <div className="formLine">
           <label className="login-text" htmlFor="password">
             <input
@@ -79,7 +130,9 @@ const Signup: React.FC<{}> = () => {
         <button type="submit" className="submit" onClick={handleSubmit}>
           Sign up
         </button>
-        {!doMatch && <div className="small-text">Passwords do not match.</div>}
+        {!doPwMatch && (
+          <div className="small-text">Passwords do not match.</div>
+        )}
       </form>
       <div className="login-footer">
         Already have an account?{' '}

@@ -35,6 +35,7 @@ const cookieController: cookieControllers = {
         httpOnly: true,
         secure: true,
       });
+      // res.header('Authorization', jwtToken);
       return next();
     } catch (error) {
       return next({

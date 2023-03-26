@@ -5,7 +5,7 @@ import uriController from '../controllers/uriController';
 const router = express.Router();
 
 // Possibly add route for storing users previous login credentials or URLs?
-router.get(
+router.post(
   '/getQueryResults',
   schemaController.connectDb,
   schemaController.getQueryResults

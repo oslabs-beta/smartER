@@ -6,28 +6,56 @@ const QueryInput: React.FC<{}> = () => {
   const { queryString, setQueryString } = useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
   const { submit, setSubmit } = useContext(HomepageContext)!;
+  const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
 
   //TODO: Add logic for live rendering nodes n stuff
 
-  // on submit query result and er diagram will render
-  const handleSubmit = (e: any): void => {
+  // on submit GET query result
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    try {
-      // POST request to database with queryString
 
-      // GET request to database with object from the Query
-      const api = async () => {
-        const data = await fetch('https://localhost:9001/api/getQueryResults', {
-          method: 'GET',
-        });
-        const jsonData = await data.json();
-      };
-      api();
-      // response from GET should be sent to the Query Result component
-      console.log('QUERY HANDLE SUBMIT ', queryString);
-    } catch (err) {
-      console.log('error in get');
+    // POST request to database with queryString
+
+    // GET request to database with object from the Query
+
+    try {
+      const created_at = String(Date.now());
+      const data = await fetch('/api/getQueryResults', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ created_at, queryString }),
+      });
+      const parsedData = await data.json();
+      setQueryResponse(parsedData);
+      const newHistory: historyType[] = [
+        { created_at: created_at, query: queryString },
+        ...history,
+      ];
+      setHistory(newHistory);
+
+      /*
+      [ {
+        "_id": 1,
+        "name": "Luke Skywalker",
+        "mass": "77",
+        "hair_color": "blond",
+        "skin_color": "fair",
+        "eye_color": "blue",
+        "birth_year": "19BBY",
+        "gender": "male",
+        "species_id": "1",
+        "homeworld_id": "1",
+        "height": 172
+        },
+      ]
+    */
+    } catch (error) {
+      console.log(`Error in QueryInput.tsx ${error}`);
+      return `Error in QueryInput.tsx ${error}`;
     }
+
+    // response from GET should be sent to the Query Result component
+    console.log('QUERY HANDLE SUBMIT ', queryString);
   };
 
   return (
