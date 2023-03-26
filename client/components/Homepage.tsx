@@ -4,8 +4,23 @@ import Header from './HomeComponents/Header';
 import InputContainer from './HomeComponents/InputContainer';
 import QueryResults from './HomeComponents/QueryResults';
 import Split from 'react-split';
+import { useNavigate } from 'react-router-dom';
 
 const TopComp = () => {
+  const navigate = useNavigate();
+
+  (async () => {
+    try {
+      const authenticate = await fetch('/user/authenticate', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (authenticate.status !== 200) navigate('/');
+    } catch (error) {
+      console.log(`Error in useEffect Homepage ${error}`);
+      return `Error in useEffect Homepage ${error}`;
+    }
+  })();
   return (
     <div>
       <Split className="flex" sizes={[30, 70]} minSize={[270, 40]}>
@@ -17,6 +32,8 @@ const TopComp = () => {
 };
 
 const Homepage: React.FC<{}> = () => {
+  //TODO: FETCH to authenticate Token: 401 not authenticated | 200 Sucess | 400 server error
+
   return (
     <>
       <Header />
@@ -45,7 +62,7 @@ export default Homepage;
       </Split>
       <div>Results</div>
     </Split>
-    
+
     */
 }
 

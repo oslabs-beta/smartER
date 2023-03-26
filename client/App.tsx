@@ -4,6 +4,7 @@ import { LoginContext, HomepageContext } from './Context';
 import Login from './components/Login';
 import Homepage from './components/Homepage';
 import Signup from './components/Signup';
+import { useNavigate } from 'react-router-dom';
 
 const App = () => {
   const [email, setEmail] = useState('');
@@ -21,7 +22,22 @@ const App = () => {
     dbPassword: '',
     database: '',
   });
+  const [queryResponse, setQueryResponse] = useState([]);
 
+  const navigate = useNavigate();
+
+  // (async () => {
+  //   try {
+  //     const authenticate = await fetch('/user/authenticate', {
+  //       method: 'GET',
+  //       headers: { 'Content-Type': 'application/json' },
+  //     });
+  //     if (authenticate.status !== 200) navigate('/');
+  //   } catch (error) {
+  //     console.log(`Error in useEffect Homepage ${error}`);
+  //     return `Error in useEffect Homepage ${error}`;
+  //   }
+  // })();
   return (
     <LoginContext.Provider
       value={{
@@ -43,6 +59,8 @@ const App = () => {
           setUri,
           dbCredentials,
           setDBCredentials,
+          queryResponse,
+          setQueryResponse,
         }}
       >
         <Routes>
@@ -55,5 +73,4 @@ const App = () => {
   );
 };
 
-// nest providers?
 export default App;

@@ -33,7 +33,7 @@ const userController: userControllers = {
       return next();
     } catch (error) {
       return next({
-        log: 'error running userController.userExists middleware',
+        log: 'error running userController.checkForEmail middleware',
         status: 400,
         message: { err: error },
       });
@@ -114,8 +114,12 @@ const userController: userControllers = {
   // protect API routes by validating JWT
   authenticateToken: async (req, res, next) => {
     try {
-      const authHeader = req.headers['authorization'];
-      const token = authHeader && authHeader.split(' ')[1];
+      // console.log('HEADER:', req.headers);
+      // const authHeader: any = req.headers.Authorization;
+
+      // const token = authHeader && authHeader.split(' ')[1];
+
+      const token: string | undefined = req.cookies.JWT;
 
       // reject request if no token provided
       console.log('confirming token provided');
@@ -163,7 +167,7 @@ const userController: userControllers = {
             typeof exp === 'number'
           ) {
             req.user = {
-              // ...req.user,
+              ...req.user,
               email: email,
               token: token,
               exp: exp,

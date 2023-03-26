@@ -34,7 +34,7 @@ let redisClient: RedisClientType;
 
 // post request to check if user input email is unique
 app.post(
-  '/emailCheck',
+  '/user/emailCheck',
   body('email').isEmail().normalizeEmail(),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -49,18 +49,14 @@ app.post(
   userController.checkForEmail,
   (req, res, next) => {
     if (res.locals.userExists) {
-      return next({
-        log: 'error: email already exists',
-        status: 400,
-        message: { err: 'email already exists' },
-      });
-    } else res.status(200).send();
+      res.status(200).json('user exists');
+    } else res.status(200).json('unique email');
   }
 );
 
 // post request to add new user to db
 app.post(
-  '/signup',
+  '/user/signup',
   body('email').isEmail().normalizeEmail(),
   body('password').not().isEmpty(),
   (req, res, next) => {
@@ -78,7 +74,7 @@ app.post(
 );
 
 app.post(
-  '/login',
+  '/user/login',
   body('email').isEmail().normalizeEmail(),
   body('password').not().isEmpty(),
   userController.verifyUser,
@@ -89,7 +85,7 @@ app.post(
 );
 
 app.post(
-  '/changePassword',
+  '/user/changePassword',
   body('email').isEmail().normalizeEmail(),
   body('password').not().isEmpty(),
   body('newPassword').not().isEmpty(),
@@ -101,7 +97,7 @@ app.post(
 );
 
 app.post(
-  '/logout',
+  '/user/logout',
   userController.authenticateToken,
   userController.blacklistToken,
   (req, res) => {
@@ -109,8 +105,12 @@ app.post(
   }
 );
 
+app.get('/user/authenticate', userController.authenticateToken, (req, res) => {
+  return res.status(200).send();
+});
+
 // API Route
-app.use('/api', apiRouter);
+app.use('/api', userController.authenticateToken, apiRouter);
 // Catch all 404
 app.use('/', (req: Request, res: Response) => {
   res.status(404).json(`This is not the page you are looking for ¯\\_(ツ)_/¯`);
@@ -125,6 +125,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     message: { err: 'An error occurred' },
   };
   console.log(err.log);
+  console.log(err.message);
   const errorObj = Object.assign({}, defaultErr, err);
   return res.status(errorObj.status).json(errorObj.message);
 });
