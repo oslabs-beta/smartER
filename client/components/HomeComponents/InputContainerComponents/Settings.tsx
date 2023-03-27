@@ -8,25 +8,49 @@ import {
 const Settings: React.FC<{}> = () => {
   const { uri, setUri, dbCredentials, setDBCredentials } =
     useContext(HomepageContext)!;
-
-  const handleUriSubmit = (e: any): void => {
+  //Handle submission of new URI
+  const handleUriSubmit = async (e: any) => {
     e.preventDefault();
-    //TODO: Add fetch to add URI to DB
-    setUri('');
+    //TODO: Add fetch to add URI to DB, email will be parsed from JWT on backend
+    try {
+      const encodedURI: string = encodeURIComponent(uri);
+      const data = await fetch('/api/addURI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ encodedURI }),
+      });
+      if (data.status === 200) {
+        //TODO: add a success indicator
+        setUri('');
+      }
+    } catch (error) {
+      console.log(`Error in Settings.tsx ${error}`);
+      return `Error in Settings.tsx ${error}`;
+    }
   };
 
-  const handleCredentialSubmit = (e: any): void => {
+  //Handle submission of new Credentials
+  const handleCredentialSubmit = async (e: any) => {
     e.preventDefault();
     //TODO: Add fetch to add Credentials to DB
-
-    setDBCredentials((prev) => {
-      return {
-        host: '',
-        port: 0,
-        dbUsername: '',
-        dbPassword: '',
-        database: '',
-      };
+    const { host, port, dbUsername, dbPassword, database } = dbCredentials;
+    const hostspec = port ? `${host}:${port}` : host;
+    const encodedURI: string = encodeURIComponent(
+      `postgres://${dbUsername}:${dbPassword}@${hostspec}/${database}`
+    );
+    try {
+      const data = await fetch('/api/addURI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ encodedURI }),
+      });
+    } catch (error) {}
+    setDBCredentials({
+      host: '',
+      port: 0,
+      dbUsername: '',
+      dbPassword: '',
+      database: '',
     });
   };
 

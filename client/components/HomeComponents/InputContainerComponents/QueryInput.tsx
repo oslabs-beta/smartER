@@ -27,28 +27,12 @@ const QueryInput: React.FC<{}> = () => {
       });
       const parsedData = await data.json();
       setQueryResponse(parsedData);
+      console.log('QUERY RETURN', parsedData);
       const newHistory: historyType[] = [
         { created_at: created_at, query: queryString },
         ...history,
       ];
       setHistory(newHistory);
-
-      /*
-      [ {
-        "_id": 1,
-        "name": "Luke Skywalker",
-        "mass": "77",
-        "hair_color": "blond",
-        "skin_color": "fair",
-        "eye_color": "blue",
-        "birth_year": "19BBY",
-        "gender": "male",
-        "species_id": "1",
-        "homeworld_id": "1",
-        "height": 172
-        },
-      ]
-    */
     } catch (error) {
       console.log(`Error in QueryInput.tsx ${error}`);
       return `Error in QueryInput.tsx ${error}`;

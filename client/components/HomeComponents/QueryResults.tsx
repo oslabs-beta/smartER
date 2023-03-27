@@ -60,7 +60,7 @@ const QueryResults: React.FC<{}> = () => {
   const { submit, setSubmit } = useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
   const [dataTable, setDataTable] = useState([]);
-
+  // queryString= [{},{}]
   const columns = [
     {
       name: 'title',

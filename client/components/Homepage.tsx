@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const TopComp = () => {
   const navigate = useNavigate();
 
+  // TODO: stop calling authenticate everytime something re-renders
   (async () => {
     try {
       const authenticate = await fetch('/user/authenticate', {

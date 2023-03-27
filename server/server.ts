@@ -111,6 +111,7 @@ app.get('/user/authenticate', userController.authenticateToken, (req, res) => {
 
 // API Route
 app.use('/api', userController.authenticateToken, apiRouter);
+
 // Catch all 404
 app.use('/', (req: Request, res: Response) => {
   res.status(404).json(`This is not the page you are looking for ¯\\_(ツ)_/¯`);

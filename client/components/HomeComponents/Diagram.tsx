@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState, useCallback, useEffect} from 'react';
+import React, { FC, useContext, useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -9,19 +9,28 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import {HomepageContext} from '../../Context';
-import {testnodes, testEdges} from './DiagramLogic/ParseNodes';
+import { HomepageContext } from '../../Context';
+import {
+  testnodes,
+  testEdges,
+  parseData,
+  parseNodes,
+} from './DiagramLogic/ParseNodes';
+import { getErrorMap } from 'zod';
+import { parse } from 'path';
 
 const Diagram: React.FC<{}> = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(testEdges);
+  // const [nodes, setNodes, onNodesChange] = useNodesState(parseData(ERDiagram));
+  // const [edges, setEdges, onEdgesChange] = useEdgesState(parseNodes());
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
-  const {queryString} = useContext(HomepageContext)!;
+  const { queryString } = useContext(HomepageContext)!;
 
   return (
     <ReactFlowProvider>
