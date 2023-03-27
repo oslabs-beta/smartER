@@ -18,6 +18,8 @@ const dbController: dbControllers = {
         const { encodedURI } = req.body;
         // TODO: if URI exists, replace it ?
         const sql = `INSERT INTO `;
+
+        res.cookie;
       }
       return next();
     } catch (error) {
@@ -48,16 +50,15 @@ const dbController: dbControllers = {
 
   getHistory: async (req, res, next) => {
     try {
-      if (true || req.user) {
-        // const { email } = req.user;
-        const email = 'mclmelissam@gmail.com';
-        const history = await db.query(`SELECT 
-          h.created_at, h.query 
-          FROM history h
-          JOIN users u on u._id = h.user_id
-          WHERE u.email = '${email}';`);
-        res.locals.queryHistory = history.rows;
-      }
+      const { dbId } = req.cookies;
+      // const { email } = req.user;
+      const email = 'mclmelissam@gmail.com';
+      const history = await db.query(`SELECT 
+        h.created_at, h.query 
+        FROM history h
+        JOIN users u on u._id = h.user_id
+        WHERE u.email = '${email}';`);
+      res.locals.queryHistory = history.rows;
       return next();
     } catch (error) {
       return next({

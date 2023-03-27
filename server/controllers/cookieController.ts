@@ -5,6 +5,7 @@ dotenv.config();
 
 interface cookieControllers {
   setJwtCookie: RequestHandler;
+  setDbCookie: RequestHandler;
 }
 
 const cookieController: cookieControllers = {
@@ -40,6 +41,23 @@ const cookieController: cookieControllers = {
     } catch (error) {
       return next({
         log: 'error running cookieController.setJwtCookie middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+  },
+
+  setDbCookie: async (req, res, next) => {
+    try {
+      const dbId = 1;
+      // TODO: update dbId: on login/signup pull based on user, on uri entry get from return
+      res.cookie('dbId', dbId, {
+        httpOnly: true,
+        secure: true,
+      });
+    } catch (error) {
+      return next({
+        log: 'error running cookieController.setDbCookie middleware',
         status: 400,
         message: { err: error },
       });
