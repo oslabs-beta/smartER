@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import db from '../models/userModel';
 import dotenv from 'dotenv';
+import { redirect } from 'react-router';
 dotenv.config();
 
 interface dbControllers {
@@ -15,14 +16,14 @@ const dbController: dbControllers = {
       if (req.user) {
         const { id } = req.user;
         const { encodedURI } = req.body;
-        // TODO: if URI exists, replace it ?
-        const uri = await db.query(`
+        const postUri = await db.query(`
           INSERT INTO databases (user_id, uri)
           VALUES (${id}, '${encodedURI}')
           RETURNING _id
           ;`);
-      }
-      return next();
+        res.locals.dbId = postUri.rows[0]._id;
+        return next();
+      } else throw new Error('user not set');
     } catch (error) {
       return next({
         log: `Error in dbController.saveURI ${error}`,
@@ -35,15 +36,17 @@ const dbController: dbControllers = {
   getHistory: async (req, res, next) => {
     try {
       const { dbId } = req.cookies;
-      // const { email } = req.user;
-      const email = 'mclmelissam@gmail.com';
-      const history = await db.query(`SELECT 
-        h.created_at, h.query 
-        FROM history h
-        JOIN users u on u._id = h.user_id
-        WHERE u.email = '${email}';`);
-      res.locals.queryHistory = history.rows;
-      return next();
+      if (dbId) {
+        const history = await db.query(`
+          SELECT 
+          h.created_at, h.query 
+          FROM history h
+          JOIN databases d on d._id = h.database_id
+          WHERE d._id = ${dbId}
+          ;`);
+        res.locals.queryHistory = history.rows;
+        return next();
+      } else throw new Error('db not found');
     } catch (error) {
       return next({
         log: `Error in dbController.getHistory ${error}`,
@@ -55,23 +58,16 @@ const dbController: dbControllers = {
 
   postHistory: async (req, res, next) => {
     try {
-      if (req.user) {
+      const { dbId } = req.cookies;
+      if (dbId) {
         const { created_at, queryString } = req.body;
-        const { email } = req.user;
-
         const dateInt = Math.floor(parseInt(created_at) / 1000);
-        console.log(dateInt);
         const saveHistory = await db.query(
-          `INSERT INTO history (user_id, created_at, query)
-          VALUES (
-            (SELECT _id FROM users WHERE email = '${email}')
-            , to_timestamp(${dateInt}), '${queryString}');`
+          `INSERT INTO history (database_id, created_at, query)
+          VALUES (${dbId}, to_timestamp(${dateInt}), '${queryString}');`
         );
-
-        // console.log(saveHistory);
         return next();
-      }
-      return next();
+      } else throw new Error('db not found');
     } catch (error) {
       return next({
         log: `Error in dbController.postHistory ${error}`,

@@ -50,11 +50,21 @@ const cookieController: cookieControllers = {
 
   setDbCookie: async (req, res, next) => {
     try {
-      if (req.user) {
+      if (res.locals.dbId) {
+        // if uri was just saved, pull dbId from res.locals
+        res.cookie('dbId', res.locals.dbId, {
+          httpOnly: true,
+          secure: true,
+        });
+        return next();
+      } else if (req.user) {
+        // if user just signed up or logged in, get user id and use query to find most recent URI for that user
+        // STRETCH: allow user to select from list of saved URIs instead of always pulling the last one
         const { id } = req.user;
         const sql = await db.query(`
           SELECT _id FROM databases 
           WHERE user_id = ${id}
+          ORDER BY _id desc
           ;`);
 
         const dbId = sql.rows[0]._id;
@@ -63,9 +73,8 @@ const cookieController: cookieControllers = {
           httpOnly: true,
           secure: true,
         });
-      }
-      return next();
-      // TODO: move return next inside if statement and return error if no user obj
+        return next();
+      } else throw new Error('user not set');
     } catch (error) {
       return next({
         log: 'error running cookieController.setDbCookie middleware',

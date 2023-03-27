@@ -44,14 +44,6 @@ router.post(
   }
 );
 
-// router.patch(
-//   '/changeURI',
-//   userController.authenticateToken,
-//   dbController.updateURI,
-//   (req, res) => {
-//     res.status(200).send();
-//   }
-// );
 router.delete('/', (req, res, next) => {});
 
 export default router;
