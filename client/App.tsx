@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
   const [submit, setSubmit] = useState(false);
   const [queryString, setQueryString] = useState('');
   const [history, setHistory] = useState([
@@ -45,6 +46,8 @@ const App = () => {
         setEmail,
         password,
         setPassword,
+        loggedIn,
+        setLoggedIn,
       }}
     >
       <HomepageContext.Provider

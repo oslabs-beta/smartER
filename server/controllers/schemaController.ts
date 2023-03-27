@@ -103,7 +103,8 @@ const schemaController: schemaControllers = {
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
       // Return query to FE
-      res.locals.queryResults = getQuery;
+      const results = getQuery.rows;
+      res.locals.queryResults = results;
       return next();
     } catch (error) {
       return next({

@@ -1,5 +1,3 @@
-import { table } from 'console';
-import { query } from 'express';
 import { SampleData } from '../../TestData';
 
 let str = `

@@ -1,8 +1,21 @@
-import {SampleData} from '../../TestData';
+import { SampleData } from '../../TestData';
 
 export const testnodes = parseNodes(SampleData);
-console.log(SampleData);
-function parseNodes(rawData: any): any {
+
+export const getERDiagram = async () => {
+  try {
+    const data = await fetch('/api/getSchema', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const parsedData = await data.json();
+    return parsedData;
+  } catch (error) {
+    console.log(`Error in getERDiagram: ${error}`);
+  }
+};
+
+export function parseNodes(rawData: any): any {
   const nodes: any = [];
   let j = 0;
   for (const table in rawData) {
@@ -10,8 +23,8 @@ function parseNodes(rawData: any): any {
     const newContainer = {
       id: `${table}.group`,
       type: 'group',
-      position: {x: 180 * j, y: Math.random() * 100}, //Control spacing of tables here, Probably needs an algo
-      data: {label: table},
+      position: { x: 180 * j, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
+      data: { label: table },
       style: {
         display: 'flex',
         width: 150,
@@ -29,8 +42,8 @@ function parseNodes(rawData: any): any {
       type: 'default',
       parentNode: `${table}.group`,
       extent: 'parent',
-      position: {x: 0, y: 0 + 10},
-      data: {label: table},
+      position: { x: 0, y: 0 + 10 },
+      data: { label: table },
       sourcePosition: 'bottom',
       targetPosition: 'bottom',
       style: {
@@ -50,12 +63,12 @@ function parseNodes(rawData: any): any {
         type: 'default',
         parentNode: `${table}.group`,
         extent: 'parent',
-        position: {x: 0, y: i === 0 ? 40 : i * 40 + 40}, //Control spacing of tables here, Probably needs an algo
-        data: {label: `${columnObj} | ${column.data_type}`},
+        position: { x: 0, y: i === 0 ? 40 : i * 40 + 40 }, //Control spacing of tables here, Probably needs an algo
+        data: { label: `${columnObj} | ${column.data_type}` },
         sourcePosition: 'right',
         targetPosition: 'left',
         draggable: false,
-        style: {opacity: '1'},
+        style: { opacity: '1' },
       };
 
       if (column.primary_key) {
@@ -72,7 +85,7 @@ function parseNodes(rawData: any): any {
 }
 export const testEdges = parseData(SampleData);
 
-function parseData(data: any): any {
+export function parseData(data: any): any {
   const edges: any = [];
   for (const table in data) {
     for (const columnObj in data[table]) {

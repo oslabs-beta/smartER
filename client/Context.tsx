@@ -7,6 +7,8 @@ export type LoginContextType = {
   setEmail: Dispatch<SetStateAction<string>>;
   password: string;
   setPassword: Dispatch<SetStateAction<string>>;
+  loggedIn: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
 };
 
 const defaultState = {
@@ -14,6 +16,8 @@ const defaultState = {
   setEmail: () => {},
   password: '',
   setPassword: () => {},
+  loggedIn: false,
+  setLoggedIn: () => {},
 };
 
 export const LoginContext = createContext<LoginContextType | undefined>(

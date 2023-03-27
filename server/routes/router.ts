@@ -1,14 +1,17 @@
 import express from 'express';
 import schemaController from '../controllers/schemaController';
 import userController from '../controllers/userController';
-import uriController from '../controllers/uriController';
+import dbController from '../controllers/dbController';
 const router = express.Router();
 
 // Possibly add route for storing users previous login credentials or URLs?
 router.post(
   '/getQueryResults',
   schemaController.connectDb,
-  schemaController.getQueryResults
+  schemaController.getQueryResults,
+  (req, res) => {
+    res.status(200).json(res.locals.queryResults);
+  }
 );
 
 router.get(
@@ -26,9 +29,22 @@ router.get(
   schemaController.getQueryPerformance
 );
 
-router.post('/addURI', userController.authenticateToken, uriController.saveURI);
+router.get('/getHistory', dbController.getHistory, (req, res) => {
+  res.status(200).json(res.locals.queryHistory);
+});
 
-router.patch('/changeURI', (req, res, next) => {});
+router.post('/addURI', dbController.saveURI, (req, res) => {
+  res.status(200).send();
+});
+
+// router.patch(
+//   '/changeURI',
+//   userController.authenticateToken,
+//   dbController.updateURI,
+//   (req, res) => {
+//     res.status(200).send();
+//   }
+// );
 router.delete('/', (req, res, next) => {});
 
 export default router;

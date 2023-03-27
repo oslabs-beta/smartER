@@ -6,7 +6,8 @@ import { parse } from 'path';
 // const Heading = ({title}: {title: string}) => <h2>{title}</h2>;
 
 const Login: React.FC<{}> = () => {
-  const { email, setEmail, password, setPassword } = useContext(LoginContext)!;
+  const { email, setEmail, password, setPassword, loggedIn, setLoggedIn } =
+    useContext(LoginContext)!;
   const [validCredentials, setValidCredentials] = useState(true);
   const navigate = useNavigate();
 
@@ -21,6 +22,7 @@ const Login: React.FC<{}> = () => {
       if (data.status === 200) {
         setEmail('');
         setPassword('');
+        setLoggedIn(true);
         navigate('/homepage');
       }
       // 401 incorrect pw , 400 middleware error
