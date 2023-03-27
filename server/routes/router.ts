@@ -9,6 +9,7 @@ router.post(
   '/getQueryResults',
   schemaController.connectDb,
   schemaController.getQueryResults,
+  dbController.postHistory,
   (req, res) => {
     res.status(200).json(res.locals.queryResults);
   }

@@ -120,9 +120,10 @@ const userController: userControllers = {
       // const token = authHeader && authHeader.split(' ')[1];
 
       const token: string | undefined = req.cookies.JWT;
+      if (token) console.log('validating token');
 
       // reject request if no token provided
-      console.log('confirming token provided');
+      // console.log('confirming token provided');
       if (!token) {
         return next({
           log: 'no token provided',
@@ -132,7 +133,7 @@ const userController: userControllers = {
       }
 
       // reject request if token is in deny list (user logged out)
-      console.log('confirming token not in deny list');
+      // console.log('confirming token not in deny list');
       const inDenyList = await redisClient.get(`bl_${token}`);
       if (inDenyList) {
         return next({
@@ -143,7 +144,7 @@ const userController: userControllers = {
       }
 
       // reject request if token is invalid
-      console.log('confirming token is valid');
+      // console.log('confirming token is valid');
       const secret = process.env.JWT_SECRET_KEY;
       if (token && secret) {
         jwt.verify(token, secret, (error, payload) => {
