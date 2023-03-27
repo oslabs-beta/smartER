@@ -14,6 +14,7 @@ interface userControllers {
   createUser: RequestHandler;
   verifyUser: RequestHandler;
   changePassword: RequestHandler;
+  setUser: RequestHandler;
   authenticateToken: RequestHandler;
   blacklistToken: RequestHandler;
 }
@@ -111,19 +112,48 @@ const userController: userControllers = {
     }
   },
 
+  setUser: async (req, res, next) => {
+    try {
+      let email: string | undefined;
+
+      if (req.body.email) {
+        const { email } = req.body;
+      } else if (res.locals.email) {
+        const { email } = res.locals;
+      }
+
+      if (email) {
+        const sql = await db.query(
+          `SELECT _id FROM users WHERE email = '${email}'`
+        );
+
+        const userId = sql.rows[0]._id;
+
+        req.user = {
+          email: email,
+          id: userId,
+          token: res.locals.token,
+          exp: res.locals.exp,
+        };
+
+        return next();
+      }
+    } catch (error) {
+      return next({
+        log: 'error running userController.setUser middleware',
+        status: 400,
+        message: { err: error },
+      });
+    }
+  },
+
   // protect API routes by validating JWT
   authenticateToken: async (req, res, next) => {
     try {
-      // console.log('HEADER:', req.headers);
-      // const authHeader: any = req.headers.Authorization;
-
-      // const token = authHeader && authHeader.split(' ')[1];
-
       const token: string | undefined = req.cookies.JWT;
       if (token) console.log('validating token');
 
       // reject request if no token provided
-      // console.log('confirming token provided');
       if (!token) {
         return next({
           log: 'no token provided',
@@ -133,7 +163,6 @@ const userController: userControllers = {
       }
 
       // reject request if token is in deny list (user logged out)
-      // console.log('confirming token not in deny list');
       const inDenyList = await redisClient.get(`bl_${token}`);
       if (inDenyList) {
         return next({
@@ -167,12 +196,9 @@ const userController: userControllers = {
             exp &&
             typeof exp === 'number'
           ) {
-            req.user = {
-              ...req.user,
-              email: email,
-              token: token,
-              exp: exp,
-            };
+            res.locals.email = email;
+            res.locals.exp = exp;
+            res.locals.token = token;
             return next();
           } else
             return next({

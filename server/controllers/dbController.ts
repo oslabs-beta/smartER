@@ -5,7 +5,6 @@ dotenv.config();
 
 interface dbControllers {
   saveURI: RequestHandler;
-  updateURI: RequestHandler;
   getHistory: RequestHandler;
   postHistory: RequestHandler;
 }
@@ -14,34 +13,19 @@ const dbController: dbControllers = {
   saveURI: async (req, res, next) => {
     try {
       if (req.user) {
-        const { email } = req.user;
+        const { id } = req.user;
         const { encodedURI } = req.body;
         // TODO: if URI exists, replace it ?
-        const sql = `INSERT INTO `;
-
-        res.cookie;
+        const uri = await db.query(`
+          INSERT INTO databases (user_id, uri)
+          VALUES (${id}, '${encodedURI}')
+          RETURNING _id
+          ;`);
       }
       return next();
     } catch (error) {
       return next({
         log: `Error in dbController.saveURI ${error}`,
-        status: 400,
-        message: { error },
-      });
-    }
-  },
-
-  updateURI: async (req, res, next) => {
-    try {
-      if (req.user) {
-        const { email } = req.user;
-        const { uri } = req.body;
-        const sql = `UPDATE `;
-      }
-      return next();
-    } catch (error) {
-      return next({
-        log: `Error in dbController.updateURI ${error}`,
         status: 400,
         message: { error },
       });

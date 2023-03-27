@@ -101,6 +101,7 @@ app.post(
 app.post(
   '/user/logout',
   userController.authenticateToken,
+  userController.setUser,
   userController.blacklistToken,
   (req, res) => {
     return res.status(200).send();

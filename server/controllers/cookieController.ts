@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { RequestHandler } from 'express';
+import db from '../models/userModel';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -49,12 +50,22 @@ const cookieController: cookieControllers = {
 
   setDbCookie: async (req, res, next) => {
     try {
-      const dbId = 1;
-      // TODO: update dbId: on login/signup pull based on user, on uri entry get from return
-      res.cookie('dbId', dbId, {
-        httpOnly: true,
-        secure: true,
-      });
+      if (req.user) {
+        const { id } = req.user;
+        const sql = await db.query(`
+          SELECT _id FROM databases 
+          WHERE user_id = ${id}
+          ;`);
+
+        const dbId = sql.rows[0]._id;
+
+        res.cookie('dbId', dbId, {
+          httpOnly: true,
+          secure: true,
+        });
+      }
+      return next();
+      // TODO: move return next inside if statement and return error if no user obj
     } catch (error) {
       return next({
         log: 'error running cookieController.setDbCookie middleware',
