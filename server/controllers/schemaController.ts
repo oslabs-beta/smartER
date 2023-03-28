@@ -89,6 +89,7 @@ const schemaController: schemaControllers = {
           tableObj[current.column_name].linkedTable = current.table_origin;
           tableObj[current.column_name].linkedTableColumn =
             current.table_column;
+
           constraintArr.push({ ...constraintObj });
         }
 
@@ -106,6 +107,7 @@ const schemaController: schemaControllers = {
 
         ]
          */
+
       for (const constraint of constraintArr) {
         for (const relationship in constraint) {
           const string = relationship.split('.'); // [species, _id]
