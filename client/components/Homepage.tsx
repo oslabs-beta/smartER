@@ -10,18 +10,18 @@ const TopComp = () => {
   const navigate = useNavigate();
 
   // TODO: stop calling authenticate everytime something re-renders
-  (async () => {
-    try {
-      const authenticate = await fetch('/user/authenticate', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (authenticate.status !== 200) navigate('/');
-    } catch (error) {
-      console.log(`Error in useEffect Homepage ${error}`);
-      return `Error in useEffect Homepage ${error}`;
-    }
-  })();
+  // (async () => {
+  //   try {
+  //     const authenticate = await fetch('/user/authenticate', {
+  //       method: 'GET',
+  //       headers: { 'Content-Type': 'application/json' },
+  //     });
+  //     if (authenticate.status !== 200) navigate('/');
+  //   } catch (error) {
+  //     console.log(`Error in useEffect Homepage ${error}`);
+  //     return `Error in useEffect Homepage ${error}`;
+  //   }
+  // })();
   return (
     <div>
       <Split className="flex" sizes={[30, 70]} minSize={[270, 40]}>

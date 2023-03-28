@@ -3,18 +3,39 @@ $color2: #004f77;
 $color3: #00a3b5;
 $color4: #6bfbce;
 
+.query-table-home {
+  margin: 0.8%;
+  background: rgb(0, 79, 119);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 79, 119, 1) 0%,
+    rgba(46, 44, 87, 1) 100%
+  );
+  border-radius: 5px;
+  width: 98%;
+  table-layout: fixed;
+  overflow-y: scroll;
+}
+
 .query-table {
-  margin: 0.5%;
-  background: transparent;
+  margin: 0.8%;
+  background: rgba(255, 255, 255, 0.284);
+  color: black;
+  border-radius: 5px;
+  width: 98%;
+  table-layout: fixed;
 }
 
-.query-headers {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.query-table-cell {
+  border: 1px solid $color2;
+}
+.query-header {
+  // position: absolute;
+  // display: fixed;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
 }
 
-.table-row {
-  background-color: brown;
-  flex-direction: row;
+.query-rows {
 }
