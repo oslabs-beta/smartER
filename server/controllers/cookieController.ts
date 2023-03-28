@@ -61,17 +61,23 @@ const cookieController: cookieControllers = {
         // if user just signed up or logged in, get user id and use query to find most recent URI for that user
         // STRETCH: allow user to select from list of saved URIs instead of always pulling the last one
         const sql = await db.query(`
-          SELECT _id FROM databases 
+          SELECT _id FROM databases
           WHERE user_id = ${res.locals.user_id}
           ORDER BY _id desc
           ;`);
 
-        const dbId = sql.rows[0]._id;
-
-        res.cookie('dbId', dbId, {
-          httpOnly: true,
-          secure: true,
-        });
+        if (sql.rowCount) {
+          const dbId = sql.rows[0]._id;
+          res.cookie('dbId', dbId, {
+            httpOnly: true,
+            secure: true,
+          });
+        } else if (req.cookies.dbId) {
+          res.cookie('dbId', 0, {
+            httpOnly: true,
+            secure: true,
+          });
+        }
         return next();
       } else throw new Error('user not set');
     } catch (error) {
