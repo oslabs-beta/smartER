@@ -25,10 +25,7 @@ export function parseQueryAndGenerateNodes(
   // left join species s on people.species_id = s._id
   // `;
 
-  const regex = new RegExp(
-    /(?<=")([^"]*)(?=")|(?<=`)([^`]*)(?=`)|[^\s",`]+/,
-    'gm'
-  );
+  const regex = new RegExp(/"([^"]*)"|`([^`]*)`|[^\s",`]+/, 'gm');
 
   interface columnObj {
     table_name: string;
@@ -43,6 +40,7 @@ export function parseQueryAndGenerateNodes(
     foreign_tables?: string[];
   }
 
+  // const keywordsAfterTableName = new Set([
   const keywords = new Set([
     'left',
     'right',
@@ -124,6 +122,9 @@ export function parseQueryAndGenerateNodes(
       }
       // without aliasing, using column names to select columns
       // const notSelectOrAs = new Set(['select', 'as', 'from']);
+
+      // if we are in the SELECT list and the current word is not a column alias or a keyword
+      // and current word is a column name in the
       if (
         beforeFrom &&
         !selectOrAs.has(currentString) &&
