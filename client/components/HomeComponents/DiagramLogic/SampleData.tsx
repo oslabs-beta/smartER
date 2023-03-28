@@ -1,3 +1,4 @@
+import { string } from 'zod';
 import { SampleData } from '../../TestData';
 
 let str = `
@@ -17,17 +18,13 @@ export function parseQueryAndGenerateNodes(
   data: typeof SampleData
 ) {
   {
-    // Determine tables to render
-    // Determine Aliases
-    // after FROM
-    // after JOIN
-    // console.log(queryString);
-    // Select * from people
-    const query = `
-    select people.name, people.hair_color,
-    s.skin_colors from people
-    left join species s on people.species_id = s._id
-    `;
+    const query = `select name, hair_color
+    from people`;
+    // const query = `
+    // select people.name, people.hair_color,
+    // s.skin_colors from people
+    // left join species s on people.species_id = s._id
+    // `;
 
     const re = new RegExp(
       /(?<=")([^"]*)(?=")|(?<=`)([^`]*)(?=`)|[^\s",`]+/,
@@ -45,15 +42,7 @@ export function parseQueryAndGenerateNodes(
       activeColumn?: boolean;
       activeLink?: boolean;
     }
-    /*
-    films: {
-    _id: {
-      table_name: 'films',
-      column_name: '_id',
-      data_type: 'int',
-      primary_key: true,
-    },
-    */
+
     const keywords = new Set([
       'left',
       'right',
@@ -66,15 +55,10 @@ export function parseQueryAndGenerateNodes(
     const tablesAndAlias: Record<string, string> = {};
     const masterObj: Record<string, typeof tableObj> = {};
     const tableObj: Record<string, columnObj> = {};
-    /*     p            c               n
-      ['select', 'people.name,', 'people.hair_color,',
-
-      's.skin_colors', 'from', 'people', 'left', 'join',
-      'species', 's', 'on', 'people.species_id', '=', 's._id']
-      */
     const lowerCasedQuery = query.toLowerCase();
     const matchByRegex = lowerCasedQuery.match(re);
-    console.log('match:', matchByRegex);
+
+    const tablesToRender: Record<string, Set<string>> = {};
     if (matchByRegex) {
       // Get all relevant Tables and aliases
       for (let i = 0; i < matchByRegex.length; i++) {
@@ -82,10 +66,12 @@ export function parseQueryAndGenerateNodes(
         const previousString = matchByRegex[i - 1];
         const nextString = matchByRegex[i + 1];
         if (previousString === 'from' || previousString === 'join') {
+          // Add tables to be rendered
+          tablesToRender[currentString] = new Set();
           masterObj[currentString] = {
             ...data[currentString as keyof typeof data],
           };
-
+          // Get aliases for table
           if (!keywords.has(nextString) && nextString)
             tablesAndAlias[nextString] = currentString;
           else tablesAndAlias[currentString] = currentString;
@@ -94,30 +80,27 @@ export function parseQueryAndGenerateNodes(
       console.log('master:', masterObj);
       console.log('alias:', tablesAndAlias);
       // Get columns for each table and constraints to highlight to user
-      /*
-      SELECT * FROM PEOPLE
-      SELECT people.* from people
-      select name, hair_color, skin_color from people
-
-      select p.name, p.hair_color from people p
-      */
+      console.log('TTR:', tablesToRender);
       let afterFrom = false;
       for (let i = 0; i < matchByRegex.length; i++) {
         const currentString: string = matchByRegex[i];
         const splitString = currentString.split('.');
-        const alias = splitString[0];
+        let alias = splitString[0];
         const columnName = splitString[1];
+        if (splitString.length < 2) alias = Object.keys(tablesAndAlias)[0];
         if (currentString === 'from') afterFrom = true;
         // using alias' to select columns
         if (splitString.length === 2 && !afterFrom) {
           masterObj[tablesAndAlias[alias]][columnName].activeColumn = true;
         }
         // No alias, select columns
-        if (
-          alias in tablesAndAlias &&
-          masterObj[tablesAndAlias[alias]].hasOwnProperty(currentString) &&
-          !afterFrom
-        ) {
+        /**
+         select name, hair_color
+            from people
+
+        */
+
+        if (currentString in masterObj[alias] && !afterFrom) {
           masterObj[tablesAndAlias[alias]][currentString].activeColumn = true;
         }
         // using alias' to highlight links (edges)
@@ -125,13 +108,23 @@ export function parseQueryAndGenerateNodes(
           masterObj[tablesAndAlias[alias]][columnName].activeLink = true;
         }
       }
+      // for (const key in masterObj) {
+      //   for (const columns in masterObj[key]) {
+      //     for (const something in masterObj[key][columns]) {
+      //       console.log(something, columns, key);
+      //     }
+      //   }
+      // }
     } else {
       // OPTIONAL ERROR CHECKING
     }
-    // Add linked tables to masterObj
+    // Add linked tables to masterObj and appendd to masterObj so we don't double render tables and lose active columns/links
     for (const table in masterObj) {
       for (const column in masterObj[table]) {
         const linkedTable = masterObj[table][column]['linkedTable'];
+        const isPrimaryKey = masterObj[table][column]['is_'];
+        // check if the foreign_tables is truthy
+        // if so, iterate through that array to check and see if we have that table already rendered in our masterObj
         if (linkedTable && !masterObj[linkedTable]) {
           masterObj[linkedTable] = {
             ...data[linkedTable as keyof typeof data],
@@ -139,98 +132,17 @@ export function parseQueryAndGenerateNodes(
         }
       }
     }
-    return masterObj;
-    /*
-    SELECT col
-    FROM table
-    WHERE ...
-
-    SELECT col
-    FROM table (alias)
-    LEFT/RIGHT/INNER/OUTER/NOTHING JOIN table (alias) ON
-
-    select people.name, p.hair_color, species.skin_colors from people p
-    left join species on people.species_id = species._id
-
-
-    main object:
-    {
-      films: [
-  `    {
-        table_name: 'films',
-        column_name: '_id',
-        data_type: 'int',
-      },
-      {
-        table_name: 'films',
-        column_name: 'title',
-        data_type: 'varchar',
-      },
-      {
-        table_name: 'films',
-        column_name: 'episode_id',
-        data_type: 'int',
-      },
-    ],
-    {
-      people:{
-        someColumnName: {
-          EVERY DATA WE NEED
-        }
-      }
-      films:{}
-    }
-    people:
-      {
-        _id: {
-          table_name: 'people',
-          column_name: '_id',
-          data_type: 'int',
-        }
-      }
-    ,
-      {
-        table_name: 'people',
-        column_name: 'name',
-        data_type: 'varchar',
-      },
-      {
-        table_name: 'people',
-        column_name: 'mass',
-        data_type: 'varchar',
-      },
-      {
-        table_name: 'people',
-        column_name: 'film_id',
-        data_type: 'bigint',
-        foreign_key: true,
-        linkedTable: 'films',
-        linkedTableColumn: '_id',
-      },
-      {
-        table_name: 'people',
-        column_name: 'homeworld_id',
-        data_type: 'bigint',
-        foreign_key: true,
-        linkedTable: 'planets',
-        linkedTableColumn: '_id',
-      },
-      {
-        table_name: 'people',
-        column_name: 'height',
-        data_type: 'int',
-      },
-    ],
-  },`
-
-  select p.name from people p
-  left join films f on p.film_id = f._id
-
-  tablesToRender = {
+    // need to get columns of interest
+    // get tables from our query
+    // external object or array
+    // other table information here that we want to add to our rendered tables
+    // combine the masterObj with the remaining tables
+    /**
+     tablesToRender = {
     people: new Set([name])
     films: new Set()
   }
-$
+
   const smallerObject = {};
   for (tableName of tablesToRender) {
     smallerObject[tableName] = mainObject[tableName] // (object contains all columns)
@@ -249,6 +161,27 @@ $
       }
     }
   }
+     */
+    return masterObj;
+    /*
+    SELECT col
+    FROM table
+    WHERE ...
+
+    SELECT col
+    FROM table (alias)
+    LEFT/RIGHT/INNER/OUTER/NOTHING JOIN table (alias) ON
+
+    select people.name, p.hair_color, species.skin_colors from people p
+    left join species on people.species_id = species._id
+
+
+
+
+  select p.name from people p
+  left join films f on p.film_id = f._id
+
+
 
   everything between SELECT and FROM is a colName
   if colName has . array = colName.split('.')

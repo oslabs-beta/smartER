@@ -84,9 +84,9 @@ export function parseNodes(rawData: any): any {
   }
   return nodes;
 }
-export const testEdges = parseData(SampleData);
+export const testEdges = parseEdges(SampleData);
 
-export function parseData(data: any): any {
+export function parseEdges(data: any): any {
   const edges: any = [];
   for (const table in data) {
     for (const columnObj in data[table]) {

@@ -115,11 +115,7 @@ const schemaController: schemaControllers = {
           erDiagram[tableName][columnName].foreign_tables.push(tableOrigin);
         }
       }
-      for (const key in erDiagram) {
-        for (const column in erDiagram[key]) {
-          console.log(column, erDiagram[key][column]);
-        }
-      }
+
       res.locals.erDiagram = erDiagram;
       return next();
     } catch (error) {

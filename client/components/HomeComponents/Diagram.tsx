@@ -13,17 +13,18 @@ import { HomepageContext } from '../../Context';
 import {
   testnodes,
   testEdges,
-  parseData,
+  parseEdges,
   parseNodes,
 } from './DiagramLogic/ParseNodes';
 import { getErrorMap } from 'zod';
 import { parse } from 'path';
+import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
 
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
   const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes
   const [edges, setEdges, onEdgesChange] = useEdgesState([]); //testEdges
-  // const [nodes, setNodes, onNodesChange] = useNodesState(parseData(ERDiagram));
+  // const [nodes, setNodes, onNodesChange] = useNodesState(parseEdges(ERDiagram));
   // const [edges, setEdges, onEdgesChange] = useEdgesState(parseNodes());
 
   const onConnect = useCallback(
@@ -40,9 +41,15 @@ const Diagram: React.FC<{}> = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       const parsedData = await data.json();
-      console.log(parsedData);
-      const defaultNodes = parseNodes(parsedData);
-      const defaultEdges = parseData(parsedData);
+      const query = `
+      SELECT p.*, s.name AS species,  h.name AS homeworld
+      FROM people p
+      LEFT JOIN species s ON p.species_id = s._id
+      LEFT JOIN planets h ON p.homeworld_id = h._id`;
+      const queryParse = parseQueryAndGenerateNodes(query, parsedData);
+      console.log('PARSED DATA FE', query);
+      const defaultNodes = parseNodes(queryParse);
+      const defaultEdges = parseEdges(queryParse);
       // console.log(defaultNodes);
       // console.log(defaultEdges);
       setNodes(defaultNodes);
