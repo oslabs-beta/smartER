@@ -14,7 +14,6 @@ interface userControllers {
   createUser: RequestHandler;
   verifyUser: RequestHandler;
   changePassword: RequestHandler;
-  setUser: RequestHandler;
   authenticateToken: RequestHandler;
   blacklistToken: RequestHandler;
 }
@@ -54,10 +53,13 @@ const userController: userControllers = {
 
       const { email, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, SALTROUNDS);
-      await db.query(
-        `INSERT into users (email, password)
-        VALUES ('${email}', '${hashedPassword}')`
-      );
+      const newUser = await db.query(`
+        INSERT into users (email, password)
+        VALUES ('${email}', '${hashedPassword}')
+        RETURNING _id
+        ;`);
+
+      res.locals.user_id = newUser.rows[0]._id;
       return next();
     } catch (error) {
       return next({
@@ -73,8 +75,10 @@ const userController: userControllers = {
     try {
       const { email, password } = req.body;
       const pwLookup = await db.query(
-        `SELECT password FROM users WHERE email = '${email}'`
+        `SELECT _id, password FROM users WHERE email = '${email}'`
       );
+
+      res.locals.user_id = pwLookup.rows[0]._id;
 
       const hashedPassword = pwLookup.rows[0].password;
       const isValidPw = await comparePassword(password, hashedPassword);
@@ -106,41 +110,6 @@ const userController: userControllers = {
     } catch (error) {
       return next({
         log: 'error running userController.verifyUser middleware',
-        status: 400,
-        message: { err: error },
-      });
-    }
-  },
-
-  setUser: async (req, res, next) => {
-    try {
-      let email: string | undefined;
-
-      if (req.body.email) {
-        const { email } = req.body;
-      } else if (res.locals.email) {
-        const { email } = res.locals;
-      }
-
-      if (email) {
-        const sql = await db.query(
-          `SELECT _id FROM users WHERE email = '${email}'`
-        );
-
-        const userId = sql.rows[0]._id;
-
-        req.user = {
-          email: email,
-          id: userId,
-          token: res.locals.token,
-          exp: res.locals.exp,
-        };
-
-        return next();
-      }
-    } catch (error) {
-      return next({
-        log: 'error running userController.setUser middleware',
         status: 400,
         message: { err: error },
       });
@@ -196,10 +165,20 @@ const userController: userControllers = {
             exp &&
             typeof exp === 'number'
           ) {
-            res.locals.email = email;
-            res.locals.exp = exp;
-            res.locals.token = token;
-            return next();
+            db.query(`SELECT _id FROM users WHERE email = '${email}'`).then(
+              (result: any) => {
+                const userId = result.rows[0]._id;
+
+                req.user = {
+                  email: email,
+                  id: userId,
+                  token: res.locals.token,
+                  exp: res.locals.exp,
+                };
+
+                return next();
+              }
+            );
           } else
             return next({
               log: 'JWT invalid',
@@ -222,7 +201,7 @@ const userController: userControllers = {
     try {
       const { user } = req;
 
-      if (user && user.token) {
+      if (user && user.token && user.exp) {
         const { token, exp } = user;
         const token_key = `bl_${token}`;
         await redisClient.set(token_key, token);
