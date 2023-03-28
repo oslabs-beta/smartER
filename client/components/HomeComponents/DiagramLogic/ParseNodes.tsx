@@ -96,44 +96,6 @@ export function parseNodes(rawData: any): any {
 }
 export const testEdges = parseEdges(SampleData);
 
-type Edge<T = any> = {
-  id: string;
-  type?: string;
-  source: string;
-  target: string;
-  sourceHandle?: string | null;
-  targetHandle?: string | null;
-  label?: string | ReactNode;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
-  style?: CSSProperties;
-  animated?: boolean;
-  hidden?: boolean;
-  deletable?: boolean;
-  focusable?: boolean;
-  data?: T;
-  className?: string;
-  sourceNode?: Node;
-  targetNode?: Node;
-  selected?: boolean;
-  markerStart?: EdgeMarker;
-  markerEnd?: EdgeMarker;
-  zIndex?: number;
-  ariaLabel?: string;
-  interactionWidth?: number;
-};
-type EdgeMarker = {
-  type: string; // 'arrow' or 'arrowclosed'
-  color?: string; // arrow fill color
-  width?: number;
-  height?: number;
-  markerUnits?: string; // defines the coordinate system https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerUnits
-  orient?: string; // defines rotation - 'auto' | 'auto-start-reverse' | number
-  strokeWidth?: number;
-};
 export function parseEdges(data: any): any {
   const edges: any = [];
   for (const table in data) {
