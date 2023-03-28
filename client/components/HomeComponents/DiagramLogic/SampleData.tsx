@@ -1,4 +1,3 @@
-import { string } from 'zod';
 import { SampleData } from '../../TestData';
 
 // let str = `
@@ -52,7 +51,8 @@ export function parseQueryAndGenerateNodes(
     'where',
     'join',
   ]);
-  const notSelectOrAs = new Set(['select', 'as', 'from']);
+
+  const selectOrAs = new Set(['select', 'as', 'from']);
   const tablesAndAlias: Record<string, string> = {};
   const masterObj: Record<string, typeof tableObj> = {};
   const tableObj: Record<string, columnObj> = {};
@@ -87,7 +87,20 @@ export function parseQueryAndGenerateNodes(
     // Flag selected columns and links
     let beforeFrom = true;
     console.log('REGEXMATCHES: ', regexMatches);
+    /*
+      select mass, average_height from people p
 
+      left join species s on s._id = p.species_id
+      select mass, diameter, name from people p
+
+      left join planets pl on pl._id = p.homeworld_id
+
+      select mass, diameter as "from" from people p
+      left join planets pl on pl._id = p.homeworld_id
+
+      logic for wildcards
+
+      */
     for (let i = 0; i < regexMatches.length; i++) {
       const currentString: string = regexMatches[i];
       const previousString: string = regexMatches[i - 1];
@@ -97,8 +110,9 @@ export function parseQueryAndGenerateNodes(
       const tableName = tablesAndAlias[alias];
       let table: string = '';
       // If there is no alias, alias is reassigned to be the table name
-
+      // ['name'] = ['name']['p.name'] = ['p', 'name'];
       if (splitString.length < 2) {
+        //Need to refactor cause of the above queries line 91-97
         table = Object.keys(tablesAndAlias)[0];
       }
       // using alias' to select columns
@@ -108,10 +122,10 @@ export function parseQueryAndGenerateNodes(
         continue;
       }
       // without aliasing, using column names to select columns
-
+      // const notSelectOrAs = new Set(['select', 'as', 'from']);
       if (
         beforeFrom &&
-        !notSelectOrAs.has(currentString) &&
+        !selectOrAs.has(currentString) &&
         previousString !== 'as' &&
         currentString in masterObj[table]
       ) {
@@ -122,11 +136,13 @@ export function parseQueryAndGenerateNodes(
       if (splitString.length === 2 && !beforeFrom) {
         masterObj[tablesAndAlias[alias]][columnName].activeLink = true;
       }
+
       if (currentString === 'from') beforeFrom = false;
     }
   } else {
     // OPTIONAL ERROR CHECKING
   }
+
   // Add linked tables to masterObj and appendd to masterObj so we don't double render tables and lose active columns/links
   for (const table in masterObj) {
     for (const column in masterObj[table]) {
