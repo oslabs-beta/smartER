@@ -2,6 +2,7 @@ import { SampleData } from '../../TestData';
 
 export const testnodes = parseNodes(SampleData);
 
+//Reusable function for getting DB ER Data to then parse
 export const getERDiagram = async () => {
   try {
     const data = await fetch('/api/getSchema', {

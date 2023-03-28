@@ -12,7 +12,7 @@ RENAME COLUMN eye_colors TO "eye colors"
 select "eye colors" from species
 select `eye colors` from species
  */
-function parseQueryAndGenerateNodes(
+export function parseQueryAndGenerateNodes(
   queryString: string,
   data: typeof SampleData
 ) {
@@ -22,6 +22,124 @@ function parseQueryAndGenerateNodes(
     // after FROM
     // after JOIN
     // console.log(queryString);
+    // Select * from people
+    const query = `
+    select people.name, people.hair_color,
+    s.skin_colors from people
+    left join species s on people.species_id = s._id
+    `;
+
+    const re = new RegExp(
+      /(?<=")([^"]*)(?=")|(?<=`)([^`]*)(?=`)|[^\s",`]+/,
+      'gm'
+    );
+
+    interface columnObj {
+      table_name: string;
+      column_name: string;
+      data_type: string;
+      primary_key?: boolean;
+      foreign_key?: boolean;
+      linkedTable?: string;
+      linkedTableColumn?: string;
+      activeColumn?: boolean;
+      activeLink?: boolean;
+    }
+    /*
+    films: {
+    _id: {
+      table_name: 'films',
+      column_name: '_id',
+      data_type: 'int',
+      primary_key: true,
+    },
+    */
+    const keywords = new Set([
+      'left',
+      'right',
+      'inner',
+      'outer',
+      'on',
+      'where',
+      'join',
+    ]);
+    const tablesAndAlias: Record<string, string> = {};
+    const masterObj: Record<string, typeof tableObj> = {};
+    const tableObj: Record<string, columnObj> = {};
+    /*     p            c               n
+      ['select', 'people.name,', 'people.hair_color,',
+
+      's.skin_colors', 'from', 'people', 'left', 'join',
+      'species', 's', 'on', 'people.species_id', '=', 's._id']
+      */
+    const lowerCasedQuery = query.toLowerCase();
+    const matchByRegex = lowerCasedQuery.match(re);
+    console.log('match:', matchByRegex);
+    if (matchByRegex) {
+      // Get all relevant Tables and aliases
+      for (let i = 0; i < matchByRegex.length; i++) {
+        const currentString = matchByRegex[i];
+        const previousString = matchByRegex[i - 1];
+        const nextString = matchByRegex[i + 1];
+        if (previousString === 'from' || previousString === 'join') {
+          masterObj[currentString] = {
+            ...data[currentString as keyof typeof data],
+          };
+
+          if (!keywords.has(nextString) && nextString)
+            tablesAndAlias[nextString] = currentString;
+          else tablesAndAlias[currentString] = currentString;
+        }
+      }
+      console.log('master:', masterObj);
+      console.log('alias:', tablesAndAlias);
+      // Get columns for each table and constraints to highlight to user
+      /*
+      SELECT * FROM PEOPLE
+      SELECT people.* from people
+      select name, hair_color, skin_color from people
+
+      select p.name, p.hair_color from people p
+      */
+      let afterFrom = false;
+      for (let i = 0; i < matchByRegex.length; i++) {
+        const currentString: string = matchByRegex[i];
+        const splitString = currentString.split('.');
+        const alias = splitString[0];
+        const columnName = splitString[1];
+        if (currentString === 'from') afterFrom = true;
+        // using alias' to select columns
+        if (splitString.length === 2 && !afterFrom) {
+          masterObj[tablesAndAlias[alias]][columnName].activeColumn = true;
+        }
+        // No alias, select columns
+        if (
+          alias in tablesAndAlias &&
+          masterObj[tablesAndAlias[alias]].hasOwnProperty(currentString) &&
+          !afterFrom
+        ) {
+          masterObj[tablesAndAlias[alias]][currentString].activeColumn = true;
+        }
+        // using alias' to highlight links (edges)
+        if (splitString.length === 2 && afterFrom) {
+          masterObj[tablesAndAlias[alias]][columnName].activeLink = true;
+        }
+      }
+    } else {
+      // OPTIONAL ERROR CHECKING
+    }
+    // Add linked tables to masterObj
+    for (const table in masterObj) {
+      for (const column in masterObj[table]) {
+        const linkedTable = masterObj[table][column]['linkedTable'];
+        if (linkedTable && !masterObj[linkedTable]) {
+          masterObj[linkedTable] = {
+            ...data[linkedTable as keyof typeof data],
+          };
+        }
+      }
+    }
+    return masterObj;
     /*
     SELECT col
     FROM table
@@ -140,52 +258,17 @@ $
   lookup table name in alias list, from there add cols to tables to render set
 
     */
-    const nodes = [];
-    const keywords = new Set([
-      'LEFT',
-      'RIGHT',
-      'INNER',
-      'OUTER',
-      'ON',
-      'WHERE',
-      'JOIN',
-    ]);
-    const tablesToRender = [];
-    const columnsToHighlight = {};
-    const tableAlias: Record<string, string> = {};
-    const re = new RegExp(
-      /(?<=")([^"]*)(?=")|(?<=`)([^`]*)(?=`)|[^\s"`]+/,
-      'gm'
-    );
-    console.log(re);
-    const splitBySpace = queryString.split(re);
+    // const nodes = [];
 
-    for (let i = 0; i < splitBySpace.length; i++) {
-      const currentString = splitBySpace[i];
-      const previousString = splitBySpace[i - 1];
-      const nextString = splitBySpace[i + 1];
-      if (previousString === 'FROM' || previousString === 'JOIN') {
-        tablesToRender.push(currentString);
-        if (!keywords.has(nextString)) tableAlias[nextString] = currentString;
-        else tableAlias[currentString] = currentString;
-      }
-    }
+    // const tablesToRender = [];
+    // const columnsToHighlight = {};
 
-    for (const table of tablesToRender) {
-      const tableObject: Record<string, any> = {};
-      tableObject.table_name = table;
-      tableObject.columns = [];
-      nodes.push(tableObject);
-    }
-    interface columnObj {
-      table_name: string;
-      column_name: string;
-      data_type: string;
-      primary_key?: boolean;
-      foreign_key?: boolean;
-      linkedTable?: string;
-      linkedTableColumn?: string;
-    }
+    // for (const table of tablesToRender) {
+    //   const tableObject: Record<string, any> = {};
+    //   tableObject.table_name = table;
+    //   tableObject.columns = [];
+    //   nodes.push(tableObject);
+    // }
 
     /*
 
@@ -193,59 +276,57 @@ $
     tableName2: {},
   }
   */
-    // interface innerObj {
-    //   string: columnObj;
-    // }
-    const nodesObj: Record<string, Record<string, columnObj>> = {};
-    for (const table of tablesToRender) nodesObj[table] = {};
-    console.log(splitBySpace);
-    // find columns in each table
-    if (Object.keys(tableAlias).length) {
-      for (let j = 0; j < splitBySpace.length; j++) {
-        const currEl = splitBySpace[j];
-        const prevEl = splitBySpace[j - 1];
-        if (currEl === 'FROM') break;
-        if (prevEl in tableAlias) {
-          if (currEl === '*') {
-            for (let k = 0; k < SampleData.length; k++) {
-              if (SampleData[k].table_name in nodesObj) {
-                for (let l = 0; l < SampleData[k].columns.length; l++) {
-                  if (nodes[l].table_name in nodesObj)
-                    nodes[l].columns = [...SampleData[k].columns];
-                  break;
-                }
-                break;
-              }
-            }
-          }
-          // currEl is the column
-        }
-      }
-    } else {
-      // There are no aliases
-      let start;
-      let end;
-      let tableName: string;
-      for (let i = 0; i < splitBySpace.length; i++) {
-        const currentString = splitBySpace[i];
-        if (currentString === 'SELECT') start = i + 1;
-        if (currentString === 'FROM') {
-          end = i - 1;
-          tableName = splitBySpace[i + 1];
-        }
-      }
-      const columnsRendered = splitBySpace.slice(start, end);
-      for (let i = 0; i < columnsRendered.length; i++) {
-        // nodesObj[tableName][columnsRendered[i]] =
-        //    {
-        //     table_name: tableName,
-        //     column_name: columnsRendered[i],
-        //   },
-      }
-    }
 
-    console.log('alias', tableAlias);
-    console.log('tables', tablesToRender);
+    // for (const table of tablesToRender) nodesObj[table] = {};
+    // console.log(splitBySpace);
+    // // find columns in each table
+    // if (Object.keys(tableAlias).length) {
+    //   for (let j = 0; j < splitBySpace.length; j++) {
+    //     const currEl = splitBySpace[j];
+    //     const prevEl = splitBySpace[j - 1];
+    //     if (currEl === 'FROM') break;
+    //     if (prevEl in tableAlias) {
+    //       if (currEl === '*') {
+    //         for (let k = 0; k < SampleData.length; k++) {
+    //           if (SampleData[k].table_name in nodesObj) {
+    //             for (let l = 0; l < SampleData[k].columns.length; l++) {
+    //               if (nodes[l].table_name in nodesObj)
+    //                 nodes[l].columns = [...SampleData[k].columns];
+    //               break;
+    //             }
+    //             break;
+    //           }
+    //         }
+    //       }
+    //       // currEl is the column
+    //     }
+    //   }
+    // } else {
+    //   // There are no aliases
+    //   let start;
+    //   let end;
+    //   let tableName: string;
+    //   for (let i = 0; i < splitBySpace.length; i++) {
+    //     const currentString = splitBySpace[i];
+    //     if (currentString === 'SELECT') start = i + 1;
+    //     if (currentString === 'FROM') {
+    //       end = i - 1;
+    //       tableName = splitBySpace[i + 1];
+    //     }
+    //   }
+    //   const columnsRendered = splitBySpace.slice(start, end);
+    //   for (let i = 0; i < columnsRendered.length; i++) {
+    //     // nodesObj[tableName][columnsRendered[i]] =
+    //     //    {
+    //     //     table_name: tableName,
+    //     //     column_name: columnsRendered[i],
+    //     //   },
+    //   }
+    // }
+
+    //   console.log('alias', tableAlias);
+    //   console.log('tables', tablesToRender);
+    // }
   }
 }
 parseQueryAndGenerateNodes(str, SampleData);

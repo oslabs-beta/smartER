@@ -5,6 +5,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_table: 'people',
     },
     title: {
       table_name: 'films',

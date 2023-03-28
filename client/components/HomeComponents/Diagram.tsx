@@ -18,7 +18,20 @@ import {
 } from './DiagramLogic/ParseNodes';
 import { getErrorMap } from 'zod';
 import { parse } from 'path';
-
+export const getERDiagram = async () => {
+  try {
+    const data = await fetch('/api/getSchema', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const parsedData = await data.json();
+    console.log(parsedData);
+    return parsedData;
+  } catch (error) {
+    console.log(`Error in getERDiagram: ${error}`);
+  }
+};
+getERDiagram();
 const Diagram: React.FC<{}> = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(testnodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(testEdges);
