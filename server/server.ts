@@ -68,6 +68,7 @@ app.post(
   userController.checkForEmail,
   userController.createUser,
   cookieController.setJwtCookie,
+  cookieController.setDbCookie,
   (req, res) => {
     return res.status(200).send();
   }
@@ -79,6 +80,7 @@ app.post(
   body('password').not().isEmpty(),
   userController.verifyUser,
   cookieController.setJwtCookie,
+  cookieController.setDbCookie,
   (req, res) => {
     return res.status(200).send();
   }
