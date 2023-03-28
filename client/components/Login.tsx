@@ -33,6 +33,8 @@ const Login: React.FC<{}> = () => {
       } else if (data.status === 400) {
         setEmail('');
         setPassword('');
+        // TODO: need to look into this 400 response, should it display for the user that the login is incorrect?
+        setValidCredentials(false);
       }
     } catch (error) {
       console.log(`Error in useEffect login ${error}`);

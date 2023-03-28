@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Router, Routes, Route } from 'react-router-dom';
 import { LoginContext, HomepageContext } from './Context';
 import Login from './components/Login';
 import Homepage from './components/Homepage';
 import Signup from './components/Signup';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import Protected from './Protected';
 
 const App = () => {
   const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ const App = () => {
   });
   const [queryResponse, setQueryResponse] = useState([]);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // (async () => {
   //   try {
@@ -67,9 +68,12 @@ const App = () => {
         }}
       >
         <Routes>
-          <Route path="/" element={<Login />} />;
+          <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/homepage" element={<Homepage />} />
+          <Route
+            path="/homepage"
+            element={loggedIn ? <Homepage /> : <Navigate to="/" replace />}
+          />
         </Routes>
       </HomepageContext.Provider>
     </LoginContext.Provider>
