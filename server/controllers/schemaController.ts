@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { getAllQuery } from '../helper/getAllQuery';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import { table } from 'console';
 dotenv.config();
 
 interface schemaControllers {
@@ -38,11 +39,12 @@ const schemaController: schemaControllers = {
         `SELECT current_schema FROM current_schema`
       );
 
+      const constraintArr: Record<string, string>[] = [];
       // Get Relationships, Tables names, Column names, Data types
       const schema = await pg.query(getAllQuery(currentSchema));
 
       // Initialize array to hold returned data
-      const erDiagram: Record<string, typeof tableObj> = {};
+      let erDiagram: Record<string, typeof tableObj> = {};
       let tableObj: Record<string, any> = {};
       // Make custom type for any on tableObj
       // Assign prev table name and tableObj.table_name to be the first table name from the query
@@ -74,18 +76,46 @@ const schemaController: schemaControllers = {
           tableObj[current.column_name].data_type = 'varchar';
         else tableObj[current.column_name].data_type = current.data_type;
         // Add relationships and constraints if there are any
-        if (current.is_primary_key)
+        if (current.is_primary_key) {
           tableObj[current.column_name].primary_key = true;
+          tableObj[current.column_name].foreign_tables = [];
+        }
+
         if (current.table_origin) {
+          const constraintObj: Record<string, string> = {};
+          constraintObj[`${[current.table_origin]}.${current.table_column}`] =
+            current.table_name;
           tableObj[current.column_name].foreign_key = true;
           tableObj[current.column_name].linkedTable = current.table_origin;
           tableObj[current.column_name].linkedTableColumn =
             current.table_column;
+          constraintArr.push({ ...constraintObj });
         }
 
         // Push the complete column object into columns array
       }
       // return res.json(erDiagram);
+      // if we find a foreign key
+      /*[
+        {
+          species._id = 'people'
+          },
+          {
+          planets._id = 'people'
+          },
+
+        ]
+         */
+      for (const constraint of constraintArr) {
+        for (const relationship in constraint) {
+          const string = relationship.split('.'); // [species, _id]
+          const tableName = string[0]; // species
+          const columnName = string[1]; // _id
+          const tableOrigin = constraint[relationship]; // people
+          erDiagram[tableName][columnName].foreign_tables.push(tableOrigin);
+        }
+      }
+
       res.locals.erDiagram = erDiagram;
       return next();
     } catch (error) {

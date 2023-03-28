@@ -5,6 +5,12 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: [
+        'people_in_films',
+        'planets_in_films',
+        'species_in_films',
+        'vessels_in_films',
+      ],
     },
     title: {
       table_name: 'films',
@@ -43,11 +49,13 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: ['people_in_films', 'pilots'],
     },
     name: {
       table_name: 'people',
       column_name: 'name',
       data_type: 'varchar',
+      activeColumn: true,
     },
     mass: {
       table_name: 'people',
@@ -58,6 +66,7 @@ export const SampleData = {
       table_name: 'people',
       column_name: 'hair_color',
       data_type: 'varchar',
+      activeColumn: true,
     },
     skin_color: {
       table_name: 'people',
@@ -107,6 +116,7 @@ export const SampleData = {
       column_name: 'person_id',
       data_type: 'bigint',
       primary_key: true,
+      foreign_tables: [],
       foreign_key: true,
       linkedTable: 'people',
       linkedTableColumn: '_id',
@@ -116,6 +126,7 @@ export const SampleData = {
       column_name: 'film_id',
       data_type: 'bigint',
       primary_key: true,
+      foreign_tables: [],
       foreign_key: true,
       linkedTable: 'films',
       linkedTableColumn: '_id',
@@ -127,6 +138,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: [],
     },
     person_id: {
       table_name: 'pilots',
@@ -151,6 +163,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: ['people', 'planets_in_films', 'species'],
     },
     name: {
       table_name: 'planets',
@@ -204,6 +217,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: [],
     },
     film_id: {
       table_name: 'planets_in_films',
@@ -228,6 +242,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: ['people', 'species_in_films'],
     },
     name: {
       table_name: 'species',
@@ -284,6 +299,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: [],
     },
     film_id: {
       table_name: 'species_in_films',
@@ -308,6 +324,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: [],
     },
     hyperdrive_rating: {
       table_name: 'starship_specs',
@@ -334,6 +351,7 @@ export const SampleData = {
       column_name: '_id',
       data_type: 'int',
       primary_key: true,
+      foreign_tables: ['pilots', 'starship_specs', 'vessels_in_films'],
     },
     name: {
       table_name: 'vessels',
