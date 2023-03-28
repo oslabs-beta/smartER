@@ -66,12 +66,18 @@ const cookieController: cookieControllers = {
           ORDER BY _id desc
           ;`);
 
-        const dbId = sql.rows[0]._id;
-
-        res.cookie('dbId', dbId, {
-          httpOnly: true,
-          secure: true,
-        });
+        if (sql.rowCount) {
+          const dbId = sql.rows[0]._id;
+          res.cookie('dbId', dbId, {
+            httpOnly: true,
+            secure: true,
+          });
+        } else if (req.cookies.dbId) {
+          res.cookie('dbId', 0, {
+            httpOnly: true,
+            secure: true,
+          });
+        }
         return next();
       } else throw new Error('user not set');
     } catch (error) {
