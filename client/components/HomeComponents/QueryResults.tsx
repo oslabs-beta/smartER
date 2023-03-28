@@ -32,7 +32,7 @@ const QueryResults: React.FC<{}> = () => {
   // console.log('line 29: ', columnsValue);
 
   // columns should be an object with the value being an array
-  console.log(columnsValue);
+  console.log('columnsValue: ', columnsValue);
   return (
     <>
       <div className="query-table-home">

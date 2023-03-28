@@ -13,6 +13,7 @@ RENAME COLUMN eye_colors TO "eye colors"
 select "eye colors" from species
 select `eye colors` from species
  */
+
 export function parseQueryAndGenerateNodes(
   queryString: string,
   data: typeof SampleData
@@ -59,6 +60,7 @@ export function parseQueryAndGenerateNodes(
   const tableObj: Record<string, columnObj> = {};
   const lowerCasedQuery = queryString.toLowerCase();
   const regexMatches = lowerCasedQuery.match(regex);
+  // [ select , s._id, poopoo, from, people_, s_]
 
   // Not necessary, but can be used.
   const tablesToRender: Record<string, Set<string>> = {};
@@ -86,6 +88,7 @@ export function parseQueryAndGenerateNodes(
       }
     }
     // Flag selected columns and links
+    // if (Object.keys(tablesAndAlias).length < 1) return;
     let beforeFrom = true;
     console.log('REGEXMATCHES: ', regexMatches);
     /*
