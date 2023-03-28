@@ -172,8 +172,8 @@ const userController: userControllers = {
                 req.user = {
                   email: email,
                   id: userId,
-                  token: res.locals.token,
-                  exp: res.locals.exp,
+                  token: token,
+                  exp: exp,
                 };
 
                 return next();
@@ -197,12 +197,12 @@ const userController: userControllers = {
   },
 
   blacklistToken: async (req, res, next) => {
-    console.log('blacklisting token');
     try {
       const { user } = req;
 
       if (user && user.token && user.exp) {
         const { token, exp } = user;
+        console.log('blacklisting token');
         const token_key = `bl_${token}`;
         await redisClient.set(token_key, token);
         redisClient.expireAt(token_key, exp);
