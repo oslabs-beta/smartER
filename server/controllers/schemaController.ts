@@ -130,8 +130,10 @@ const schemaController: schemaControllers = {
     try {
       const { queryString } = req.body;
       const pg = res.locals.pg;
+
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
+
       // Return query to FE
       const results = getQuery.rows;
       res.locals.queryResults = results;
@@ -145,6 +147,7 @@ const schemaController: schemaControllers = {
     }
   },
   getQueryPerformance: async (req, res, next) => {
+    // this isn't called from FE but may be useful for debugging - plug JSON result into SQL explain tool
     try {
       const pg = res.locals.pg;
       const currentSchema = await pg.query(

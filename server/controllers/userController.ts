@@ -53,10 +53,13 @@ const userController: userControllers = {
 
       const { email, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, SALTROUNDS);
-      await db.query(
-        `INSERT into users (email, password)
-        VALUES ('${email}', '${hashedPassword}')`
-      );
+      const newUser = await db.query(`
+        INSERT into users (email, password)
+        VALUES ('${email}', '${hashedPassword}')
+        RETURNING _id
+        ;`);
+
+      res.locals.user_id = newUser.rows[0]._id;
       return next();
     } catch (error) {
       return next({
@@ -72,8 +75,10 @@ const userController: userControllers = {
     try {
       const { email, password } = req.body;
       const pwLookup = await db.query(
-        `SELECT password FROM users WHERE email = '${email}'`
+        `SELECT _id, password FROM users WHERE email = '${email}'`
       );
+
+      res.locals.user_id = pwLookup.rows[0]._id;
 
       const hashedPassword = pwLookup.rows[0].password;
       const isValidPw = await comparePassword(password, hashedPassword);
@@ -114,15 +119,10 @@ const userController: userControllers = {
   // protect API routes by validating JWT
   authenticateToken: async (req, res, next) => {
     try {
-      // console.log('HEADER:', req.headers);
-      // const authHeader: any = req.headers.Authorization;
-
-      // const token = authHeader && authHeader.split(' ')[1];
-
       const token: string | undefined = req.cookies.JWT;
+      if (token) console.log('validating token');
 
       // reject request if no token provided
-      console.log('confirming token provided');
       if (!token) {
         return next({
           log: 'no token provided',
@@ -132,7 +132,6 @@ const userController: userControllers = {
       }
 
       // reject request if token is in deny list (user logged out)
-      console.log('confirming token not in deny list');
       const inDenyList = await redisClient.get(`bl_${token}`);
       if (inDenyList) {
         return next({
@@ -143,7 +142,7 @@ const userController: userControllers = {
       }
 
       // reject request if token is invalid
-      console.log('confirming token is valid');
+      // console.log('confirming token is valid');
       const secret = process.env.JWT_SECRET_KEY;
       if (token && secret) {
         jwt.verify(token, secret, (error, payload) => {
@@ -166,13 +165,20 @@ const userController: userControllers = {
             exp &&
             typeof exp === 'number'
           ) {
-            req.user = {
-              ...req.user,
-              email: email,
-              token: token,
-              exp: exp,
-            };
-            return next();
+            db.query(`SELECT _id FROM users WHERE email = '${email}'`).then(
+              (result: any) => {
+                const userId = result.rows[0]._id;
+
+                req.user = {
+                  email: email,
+                  id: userId,
+                  token: token,
+                  exp: exp,
+                };
+
+                return next();
+              }
+            );
           } else
             return next({
               log: 'JWT invalid',
@@ -191,12 +197,12 @@ const userController: userControllers = {
   },
 
   blacklistToken: async (req, res, next) => {
-    console.log('blacklisting token');
     try {
       const { user } = req;
 
-      if (user && user.token) {
+      if (user && user.token && user.exp) {
         const { token, exp } = user;
+        console.log('blacklisting token');
         const token_key = `bl_${token}`;
         await redisClient.set(token_key, token);
         redisClient.expireAt(token_key, exp);
