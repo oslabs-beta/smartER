@@ -113,17 +113,6 @@ const schemaController: schemaControllers = {
           const columnName = string[1]; // _id
           const tableOrigin = constraint[relationship]; // people
           erDiagram[tableName][columnName].foreign_tables.push(tableOrigin);
-          const copy = {
-            _id: null,
-          };
-          // const idCopy = { ...erDiagram[tableName] };
-          // idCopy.foreign_tables.push(tableOrigin);
-
-          // erDiagram[tableName] = Object.assign(copy, erDiagram[tableName]);
-          // for (const column in newEr) {
-          //   erDiagram[tableName][column] = newEr[column];
-          // }
-          // erDiagram[tableName] = { ...newEr };
         }
       }
       for (const key in erDiagram) {
