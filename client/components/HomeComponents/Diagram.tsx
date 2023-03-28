@@ -47,11 +47,10 @@ const Diagram: React.FC<{}> = () => {
       LEFT JOIN species s ON p.species_id = s._id
       LEFT JOIN planets h ON p.homeworld_id = h._id`;
       const queryParse = parseQueryAndGenerateNodes(query, parsedData);
-      // console.log('PARSED DATA FE', parsedData);
+
       const defaultNodes = parseNodes(queryParse);
       const defaultEdges = parseEdges(queryParse);
-      // console.log(defaultNodes);
-      // console.log(defaultEdges);
+
       setNodes(defaultNodes);
       setEdges(defaultEdges);
       return parsedData;

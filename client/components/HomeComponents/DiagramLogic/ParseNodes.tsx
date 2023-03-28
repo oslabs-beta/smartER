@@ -69,7 +69,7 @@ export function parseNodes(rawData: any): any {
         sourcePosition: 'right',
         targetPosition: 'left',
         draggable: false,
-        style: { opacity: '1' },
+        style: { opacity: '1', background: 'transparent' },
       };
 
       if (column.primary_key) {
@@ -77,6 +77,16 @@ export function parseNodes(rawData: any): any {
       }
       if (column.foreign_key) {
         newColumnNode.data.label = `〰️ ${columnObj} | ${column.data_type}`;
+      }
+      //check if active column
+      if (column.activeColumn) {
+        newColumnNode.style = {
+          background: 'skyblue',
+        };
+      } else {
+        newColumnNode.style = {
+          background: 'salmon',
+        };
       }
       nodes.push(newColumnNode);
       i++;
@@ -97,11 +107,17 @@ export function parseEdges(data: any): any {
           id: `${table}.${columnName}->${column.linkedTableColumn}${column.column_name}`,
           source: `${columnName}.${table}.node`,
           target: `${column.linkedTableColumn}.${column.linkedTable}.node`,
-          animated: false,
           style: {
-            // display: 'none',
+            color: 'green',
           },
         };
+        if (column.activeLink) {
+          newEdge.animated = false;
+        } else {
+          newEdge.animated = true;
+        }
+        // check if active connection
+
         edges.push(newEdge);
       }
     }
