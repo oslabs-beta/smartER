@@ -24,7 +24,7 @@ const TopComp = () => {
   // })();
   return (
     // <div>
-    <Split className="flex" sizes={[30, 70]} minSize={[270, 40]}>
+    <Split className="flex" sizes={[30, 70]} minSize={[300, 300]}>
       <InputContainer />
       <Diagram />
     </Split>
@@ -43,7 +43,7 @@ const Homepage: React.FC<{}> = () => {
           className={'TEST'}
           direction="vertical"
           sizes={[70, 30]}
-          minSize={[400, 200]}
+          minSize={[200, 200]}
           gutterSize={5}
         >
           <TopComp />
