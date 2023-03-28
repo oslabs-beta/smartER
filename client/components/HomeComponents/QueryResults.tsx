@@ -17,7 +17,7 @@ const QueryResults: React.FC<{}> = () => {
   }
 
   // table rows
-  const columnsValue: string | number[] = [];
+  const columnsValue: string | number[][] = [];
   let columnsValuesInner: any = [];
   // get an array of just the values from each object in the queryResponse array
   for (let i = 0; i < queryResponse.length; i++) {
@@ -29,7 +29,7 @@ const QueryResults: React.FC<{}> = () => {
     columnsValuesInner = [];
   }
   // select * from planets where _id < 5
-  console.log('line 29: ', columnsValue);
+  // console.log('line 29: ', columnsValue);
 
   // columns should be an object with the value being an array
   console.log(columnsValue);
@@ -50,15 +50,20 @@ const QueryResults: React.FC<{}> = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="query-header">
-              {columnsValue.map((column) => {
-                return (
-                  <td className="query-table-cell" key={column}>
-                    {column}
+            {columnsValue.map((column) => {
+              console.log(column);
+              let i = 0;
+              const columnsArray: JSX.Element[] = [];
+              column.map((data) => {
+                i++;
+                return columnsArray.push(
+                  <td className="query-table-cell" key={i}>
+                    {data}
                   </td>
                 );
-              })}
-            </tr>
+              });
+              return <tr className="query-rows">{columnsArray}</tr>;
+            })}
           </tbody>
         </table>
       </div>
