@@ -42,12 +42,12 @@ const Diagram: React.FC<{}> = () => {
       });
       const parsedData = await data.json();
       const query = `
-      SELECT p.*, s.name AS species,  h.name AS homeworld
+      SELECT s.name AS species,  h.name AS homeworld
       FROM people p
       LEFT JOIN species s ON p.species_id = s._id
       LEFT JOIN planets h ON p.homeworld_id = h._id`;
       const queryParse = parseQueryAndGenerateNodes(query, parsedData);
-      console.log('PARSED DATA FE', query);
+      // console.log('PARSED DATA FE', parsedData);
       const defaultNodes = parseNodes(queryParse);
       const defaultEdges = parseEdges(queryParse);
       // console.log(defaultNodes);
