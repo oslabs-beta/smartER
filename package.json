@@ -62,6 +62,7 @@
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express-validator": "^6.15.0",
+    "js-sql-parser": "^1.4.1",
     "morgan": "^1.10.0",
     "pg": "^8.10.0",
     "pgsql-ast-parser": "^11.0.1",
