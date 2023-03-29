@@ -95,6 +95,7 @@ button {
 
 .active-content {
   display: block;
+  height: 100%;
 }
 
 //QUERY STYLING
@@ -102,108 +103,153 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.query-input {
-  margin-top: 10%;
-  resize: none;
-  background-color: $color6;
-  outline: none;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 5px 5px 0 0;
-  width: 80%;
   height: 100%;
-  padding: 12px 20px;
-  font-family: 'Lato', sans-serif;
-  resize: vertical;
-  overflow: auto;
+
+  .query-main-inner {
+    position: relative;
+    margin: 10% 0;
+    width: 80%;
+    height: 100%;
+
+    .query-input {
+      resize: none;
+      background-color: $color6;
+      outline: none;
+      box-sizing: border-box;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 20px;
+      font-family: 'Lato', sans-serif;
+      // resize: vertical;
+      overflow: auto;
+    }
+
+    .query-input:focus {
+      outline: solid 1px lighten($color1, 15%);
+    }
+  }
+
+  .submit-query-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: $color6;
+    border-radius: 0 0 5px 0;
+    width: 20%;
+    height: 30px;
+    font-size: 20px;
+    text-align: right;
+  }
+
+  .submit-query-button:hover {
+    cursor: pointer;
+    color: lighten(black, 52%);
+  }
 }
 
-.submit-query-button {
-  background-color: $color6;
-  border-radius: 0 0 5px 5px;
-  width: 80%;
-  height: 5vh;
-  font-size: 20px;
-}
-
-.submit-query-button:hover {
-  cursor: pointer;
-  color: lighten(black, 52%);
-}
-
-.query-input:focus {
-  outline: solid 1px lighten($color1, 15%);
-}
 textarea {
   height: 100%;
   width: 100%;
 }
 
 //SETTINGS STYLING
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 .settings-main {
-  overflow-y: scroll;
+  overflow-y: auto;
   font-family: 'Lato', sans-serif;
   font-size: 11px;
-}
 
-.db-settings-input {
-  width: 15vh;
-  height: 20px;
-  border: 1px $color1;
-  background-color: $color6;
-  border-radius: 5px 0 0 5px;
-  color: black;
-  padding: 8px;
-}
-.settings-input {
-  width: 150px;
-  height: 20px;
-  border: 1px $color1;
-  background-color: $color6;
-  border-radius: 5px;
-  color: black;
-  padding: 8px;
-}
+  .uri-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 20%;
 
-.settings-input:focus {
-  outline: solid 1px lighten(rgba(128, 128, 128, 0.443), 15%);
-}
+    form {
+      width: 100%;
+      max-width: 250px;
 
-.settings-title {
-  text-align: center;
-  color: white;
-}
-.db-submit-settings {
-  background-color: $color6;
-  width: 11vh;
-  height: 4.7vh;
-  border-radius: 0 5px 5px 0;
-}
+      label {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
 
-.db-submit-settings:hover {
-  cursor: pointer;
-  color: lighten(black, 52%);
-}
-.submit-settings {
-  margin-top: 10px;
-  background-color: $color5;
-  border-radius: 5px;
-  border-width: 0;
-  height: 30px;
-  width: 100px;
-  font-size: 11px;
-  color: lighten(black, 5%);
-  cursor: pointer;
-}
+        .db-settings-input {
+          height: 20px;
+          border: 1px $color1;
+          background-color: $color6;
+          border-radius: 5px 0 0 5px;
+          color: black;
+          padding: 8px;
+          width: 80%;
+        }
 
-.submit-settings:hover {
-  background-color: darken($color5, 15%);
-  cursor: pointer;
+        .db-submit-settings {
+          background-color: $color6;
+          // width: 30%;
+          height: 36px;
+          border-radius: 0 5px 5px 0;
+          width: 20%;
+          min-width: 60px;
+        }
+
+        .db-submit-settings:hover {
+          cursor: pointer;
+          color: lighten(black, 52%);
+        }
+      }
+    }
+  }
+
+  .credentials-main {
+    margin: 40px 20%;
+
+    .settings-title {
+      text-align: center;
+      color: white;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      // max-width: 250px;
+
+      label {
+        margin-top: 5px;
+      }
+
+      .settings-input {
+        width: 100%;
+        max-width: 234px;
+        height: 20px;
+        border: 1px $color1;
+        background-color: $color6;
+        border-radius: 5px;
+        color: black;
+        padding: 8px;
+      }
+
+      .settings-input:focus {
+        outline: solid 1px lighten(rgba(128, 128, 128, 0.443), 15%);
+      }
+
+      .submit-settings {
+        margin-top: 10px;
+        background-color: $color5;
+        border-radius: 5px;
+        border-width: 0;
+        height: 30px;
+        width: 100px;
+        font-size: 11px;
+        color: lighten(black, 5%);
+        cursor: pointer;
+      }
+
+      .submit-settings:hover {
+        background-color: darken($color5, 15%);
+        cursor: pointer;
+      }
+    }
+  }
 }

@@ -57,13 +57,13 @@ const Settings: React.FC<{}> = () => {
   return (
     <div className="settings-main">
       <div className="uri-main">
-        <h2 className="settings-title">DB URI</h2>
+        <h2 className="settings-title">URI</h2>
         <form>
           <label htmlFor="uri">
             <input
               id="uri"
               className="db-settings-input"
-              type="text"
+              type="password"
               required
               onChange={(e) => setUri(e.target.value)}
               value={uri}
