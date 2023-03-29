@@ -16,9 +16,15 @@ import {
   parseEdges,
   parseNodes,
 } from './DiagramLogic/ParseNodes';
-import { getErrorMap } from 'zod';
-import { parse } from 'path';
+
 import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
+import CustomColumnNode from './DiagramLogic/CustomColumnNode';
+import CustomTitleNode from './DiagramLogic/CustomTitleNode';
+
+const nodeTypes = {
+  CustomColumnNode: CustomColumnNode,
+  CustomTitleNode: CustomTitleNode,
+};
 
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
@@ -72,6 +78,7 @@ const Diagram: React.FC<{}> = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           fitView
+          nodeTypes={nodeTypes}
         >
           <Controls />
           <MiniMap />
