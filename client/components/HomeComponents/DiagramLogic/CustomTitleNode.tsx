@@ -24,7 +24,9 @@ function CustomTitleNode({ data, isConnectable }: any) {
         style={handleStyleLeft}
       />
       <div>
-        <label htmlFor="text">{data.label}</label>
+        <label htmlFor="text">
+          <strong>{data.label}</strong>
+        </label>
       </div>
       <Handle
         type="source"

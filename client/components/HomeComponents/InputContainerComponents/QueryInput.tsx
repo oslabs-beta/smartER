@@ -13,11 +13,8 @@ const QueryInput: React.FC<{}> = () => {
   // on submit GET query result
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    setSubmit(!submit);
     // POST request to database with queryString
-
-    // GET request to database with object from the Query
-
     try {
       const created_at = String(Date.now());
       const data = await fetch('/api/getQueryResults', {

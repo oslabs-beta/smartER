@@ -26,20 +26,24 @@ const nodeTypes = {
   CustomTitleNode: CustomTitleNode,
 };
 
+//test query
+const query = `
+      SELECT s.name AS species,  h.name AS homeworld
+      FROM people p
+      LEFT JOIN species s ON p.species_id = s._id
+      LEFT JOIN planets h ON p.homeworld_id = h._id`;
+
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
   const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes
   const [edges, setEdges, onEdgesChange] = useEdgesState([]); //testEdges
-  // const [nodes, setNodes, onNodesChange] = useNodesState(parseEdges(ERDiagram));
-  // const [edges, setEdges, onEdgesChange] = useEdgesState(parseNodes());
+  const { queryString, submit } = useContext(HomepageContext)!;
   const [masterData, setMasterData] = useState({});
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-
-  const { queryString } = useContext(HomepageContext)!;
 
   const getERDiagram = async () => {
     try {
@@ -50,24 +54,12 @@ const Diagram: React.FC<{}> = () => {
       const parsedData = await data.json();
       //setState for parsedData
       setMasterData(parsedData);
-      const query = `
-      SELECT s.name AS species,  h.name AS homeworld
-      FROM people p
-      LEFT JOIN species s ON p.species_id = s._id
-      LEFT JOIN planets h ON p.homeworld_id = h._id`;
-      console.log('queryString: ', queryString);
-      const queryParse = parseQueryAndGenerateNodes(queryString, parsedData);
-      console.log('PARSE:', queryParse);
-      const defaultNodes = parseNodes(queryParse);
-      const defaultEdges = parseEdges(queryParse);
-
-      setNodes(defaultNodes);
-      setEdges(defaultEdges);
-      return parsedData;
+      return;
     } catch (error) {
       console.log(`Error in getERDiagram: ${error}`);
     }
   };
+
   useEffect(() => {
     getERDiagram();
   }, []);
@@ -78,7 +70,7 @@ const Diagram: React.FC<{}> = () => {
     const defaultEdges = parseEdges(queryParse);
     setNodes(defaultNodes);
     setEdges(defaultEdges);
-  }, [queryString]);
+  }, [submit]);
 
   return (
     <ReactFlowProvider>
