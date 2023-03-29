@@ -44,20 +44,22 @@ const QueryInput: React.FC<{}> = () => {
 
   return (
     <div className="query-main">
-      <textarea
-        className="query-input"
-        required
-        placeholder="type your query"
-        onChange={(e) => setQueryString(e.target.value)}
-        value={queryString}
-      ></textarea>
-      <button
-        type="submit"
-        className="submit-query-button"
-        onClick={handleSubmit}
-      >
-        →
-      </button>
+      <div className="query-main-inner">
+        <textarea
+          className="query-input"
+          required
+          placeholder="type your query"
+          onChange={(e) => setQueryString(e.target.value)}
+          value={queryString}
+        ></textarea>
+        <button
+          type="submit"
+          className="submit-query-button"
+          onClick={handleSubmit}
+        >
+          →
+        </button>
+      </div>
     </div>
   );
 };
