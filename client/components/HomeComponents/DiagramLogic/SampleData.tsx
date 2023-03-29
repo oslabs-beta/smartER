@@ -146,17 +146,17 @@ export function parseQueryAndGenerateNodes(
       if splitString has a length of 2, we know there is an alias/table name listed
 
       */
-      `select mass, average_height from people p
+      // `select mass, average_height from people p
 
-      left join species s on s._id = p.species_id
-      select mass, diameter, name from people p
+      // left join species s on s._id = p.species_id
+      // select mass, diameter, name from people p
 
-      left join planets pl on pl._id = p.homeworld_id
+      // left join planets pl on pl._id = p.homeworld_id
 
-      select mass, diameter as "from" from people p
-      left join planets pl on pl._id = p.homeworld_id
+      // select mass, diameter as "from" from people p
+      // left join planets pl on pl._id = p.homeworld_id
 
-      logic for wildcards`;
+      // logic for wildcards`;
       if (currentString === '*') {
         // loop through masterObj and mark active columns for the table following from statement?
       }

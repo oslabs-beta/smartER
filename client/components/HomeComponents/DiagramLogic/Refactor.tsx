@@ -62,48 +62,331 @@
 // if it follows a ., highlight all cols from that table
 // else highlight all cols from all tables in query
 
+// ----------------
+
+// select name from people
+const a = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        name: 'name',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+      },
+    },
+  ],
+  type: 'select',
+};
+
+// select p.name from people p
+// left join species s on s._id = p.species_id
+const s = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        table: {
+          name: 'p',
+        },
+        name: 'name',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+        alias: 'p',
+      },
+    },
+    {
+      type: 'table',
+      name: {
+        name: 'species',
+        alias: 's',
+      },
+      join: {
+        type: 'LEFT JOIN',
+        on: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            table: {
+              name: 's',
+            },
+            name: '_id',
+          },
+          right: {
+            type: 'ref',
+            table: {
+              name: 'p',
+            },
+            name: 'species_id',
+          },
+          op: '=',
+        },
+      },
+    },
+  ],
+  type: 'select',
+};
+
+// select 'person' as type, name, hair_color from people
+// union all
+// select 'species' as type, name, hair_colors from species
+const union = {
+  type: 'union all',
+  // -----------------LEFT-----------------
+  left: {
+    columns: [
+      {
+        expr: {
+          type: 'string',
+          value: 'person',
+        },
+        alias: {
+          name: 'type',
+        },
+      },
+      {
+        expr: {
+          type: 'ref',
+          name: 'name',
+        },
+      },
+      {
+        expr: {
+          type: 'ref',
+          name: 'hair_color',
+        },
+      },
+    ],
+    from: [
+      {
+        type: 'table',
+        name: {
+          name: 'people',
+        },
+      },
+    ],
+    type: 'select',
+  },
+  // ---------------RIGHT--------------
+  right: {
+    columns: [
+      {
+        expr: {
+          type: 'string',
+          value: 'species',
+        },
+        alias: {
+          name: 'type',
+        },
+      },
+      {
+        expr: {
+          type: 'ref',
+          name: 'name',
+        },
+      },
+      {
+        expr: {
+          type: 'ref',
+          name: 'hair_colors',
+        },
+      },
+    ],
+    from: [
+      {
+        type: 'table',
+        name: {
+          name: 'species',
+        },
+      },
+    ],
+    type: 'select',
+  },
+};
+
+// select * from people p
+// left join (select _id, true as luke from people where name like '%Luke%') luke on luke._id = p._id
+const subq = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        name: '*',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+        alias: 'p',
+      },
+    },
+    {
+      type: 'statement',
+      statement: {
+        columns: [
+          {
+            expr: {
+              type: 'ref',
+              name: '_id',
+            },
+          },
+          {
+            expr: {
+              type: 'boolean',
+              value: true,
+            },
+            alias: {
+              name: 'luke',
+            },
+          },
+        ],
+        from: [
+          {
+            type: 'table',
+            name: {
+              name: 'people',
+            },
+          },
+        ],
+        where: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            name: 'name',
+          },
+          right: {
+            type: 'string',
+            value: '%Luke%',
+          },
+          op: 'LIKE',
+        },
+        type: 'select',
+      },
+      alias: 'luke',
+      join: {
+        type: 'LEFT JOIN',
+        on: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            table: {
+              name: 'luke',
+            },
+            name: '_id',
+          },
+          right: {
+            type: 'ref',
+            table: {
+              name: 'p',
+            },
+            name: '_id',
+          },
+          op: '=',
+        },
+      },
+    },
+  ],
+  type: 'select',
+};
+
 /*
-TEST QUERIES
-table alias with AS keyword
-select * from people as p
-left join species s on s._id = p.species_id
+  recurse thru array/obj - look for
+  1. obj with key of type and val 'select'
+    - when we find this object, we call our main function
+  within that object:
+  2. columns array
+    - expr.name (possibly others)
+    - expr.table.name -> links to table alias
+  3. from array
+    - name.name
+    - name.alias
+    - join.on.left, join.on.right -> gives join col names/tables
 
-union
-select 'person' as type, name, hair_color from people
-union all
-select 'species' as type, name, hair_colors from species
 
-more complicated union 
-select 'person' as type, name, hair_color from people
-left join pilots on people._id = pilots.person_id
-where name like '% %'
-union all
-select 'species' as type, name, hair_colors from species
-where name like '% %'
+  functions to handle
+  - overall routing
+  - parsing cols array
+    - each column
+    - match cols to tables
+  - parsing from array
+    - each table
+    - joins
 
-col alias without AS keyword
-select name n from people
+// prettier-ignore
+{
+  - master function ids type: select objects
+    - select handler
+    - routes to from obj handler
+      - route joins to joins handler
+      - pass back object containing all relevant tables with cols from ER obj
+        - add join flags to colums
+        - separate alias obj { alias: tableName }
+      - sepearate object to track next level out?
+    - use tables obj (in closure) to cols handler
+      - find each col in AST obj, look for it in tables object based on
+        1. alias if we have one
+        2. else flag every column with the given name
+        3. * if no alias, flag every column of every table, else flag every column of relevant table
+    - once flagged cols passed back, add in next level out
+      - think about stretch goal of multiple levels when building
+    - calls itself recursively as additional nested select objects are found
+  ** along the way if we find errors, push to errors array (cols that don't exist, duplicate cols,
+   tables that don't exist, etc.)
+}
+*/
 
-subquery
-select * from people p
-left join (select _id, true as luke from people where name like '%Luke%') luke on luke._id = p._id
+/*
+mainfunc (AST) {
+  const errorArr = []
+  const mainObject = {}
+  const tableAlias = {}
 
-including a col that is named with a keyword (first renamed one of the people cols to join for this to be valid)
-select "join" from people
+    if (select) {
+      invoke select handler
+    } else {
+      keep searching at all levels of depth
+    }
 
-using a keyword as col alias 
-select mass, diameter as "from" from people p
-left join planets pl on pl._id = p.homeworld_id
+    selectHandler (obj) {
+      invoke tableHandler(obj.from)
+      invoke columnHandler(obj.columns)
+    }
 
-aggregation
-select concat(name, mass) from people
+    tableHandler () {
+      if (select) {
+        invoke selectHandler
+      } else if join {
+        apply join logic / joinHandler?
+      }
+      else {
+        apply logic
+      }
+    }
 
-aggregation with alias
-select concat(name, mass) test from people
+    columnHandler () {
+      if (select) {
+        invoke selectHandler
+      } else {
+        apply logic
+        if error found push to errorArr
+      }
+    }
+  return {errorArr: [], mainobj: {}}
+}
 
-column with space in the name
-select "eye colors" from species
-
-column with space in the name, using table alias
-select s."eye colors" from species s
 */
