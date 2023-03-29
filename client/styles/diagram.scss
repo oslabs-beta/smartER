@@ -22,4 +22,11 @@ $color4: #6bfbce;
   // vertical-align: center;
   height: 40px;
   width: 150px;
+  animation: fade 0.9s ease-in;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
 }
