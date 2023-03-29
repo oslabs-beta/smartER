@@ -23,12 +23,12 @@ const TopComp = () => {
   //   }
   // })();
   return (
-    <div>
-      <Split className="flex" sizes={[30, 70]} minSize={[270, 40]}>
-        <InputContainer />
-        <Diagram />
-      </Split>
-    </div>
+    // <div>
+    <Split className="flex" sizes={[30, 70]} minSize={[300, 300]}>
+      <InputContainer />
+      <Diagram />
+    </Split>
+    // </div>
   );
 };
 
@@ -39,11 +39,17 @@ const Homepage: React.FC<{}> = () => {
     <>
       <Header />
       <div className="main-container">
-        <Split direction="vertical" minSize={[600, 200]} gutterSize={5}>
+        <Split
+          className={'main-container-split'}
+          direction="vertical"
+          sizes={[70, 30]}
+          minSize={[200, 200]}
+          gutterSize={5}
+        >
           <TopComp />
+          <QueryResults />
         </Split>
       </div>
-      <QueryResults />
     </>
   );
 };
