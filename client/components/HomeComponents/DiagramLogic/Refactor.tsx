@@ -61,3 +61,49 @@
 // handle wildcards
 // if it follows a ., highlight all cols from that table
 // else highlight all cols from all tables in query
+
+/*
+TEST QUERIES
+table alias with AS keyword
+select * from people as p
+left join species s on s._id = p.species_id
+
+union
+select 'person' as type, name, hair_color from people
+union all
+select 'species' as type, name, hair_colors from species
+
+more complicated union 
+select 'person' as type, name, hair_color from people
+left join pilots on people._id = pilots.person_id
+where name like '% %'
+union all
+select 'species' as type, name, hair_colors from species
+where name like '% %'
+
+col alias without AS keyword
+select name n from people
+
+subquery
+select * from people p
+left join (select _id, true as luke from people where name like '%Luke%') luke on luke._id = p._id
+
+including a col that is named with a keyword (first renamed one of the people cols to join for this to be valid)
+select "join" from people
+
+using a keyword as col alias 
+select mass, diameter as "from" from people p
+left join planets pl on pl._id = p.homeworld_id
+
+aggregation
+select concat(name, mass) from people
+
+aggregation with alias
+select concat(name, mass) test from people
+
+column with space in the name
+select "eye colors" from species
+
+column with space in the name, using table alias
+select s."eye colors" from species s
+*/
