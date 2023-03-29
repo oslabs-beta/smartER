@@ -34,15 +34,13 @@ const nodeTypes = {
 //       LEFT JOIN species s ON p.species_id = s._id
 //       LEFT JOIN planets h ON p.homeworld_id = h._id`;
 
-const query = `select s."eye colors" from species s`;
+const query = `select * from people p
+left join (select _id, true as luke from people where name like '%Luke%') luke on luke._id = p._id`;
 
 const ast: Statement = parseFirst(query);
 console.log('AST:', ast);
 
-function parseData(data: any) {
-  // {p: 'people', people: 'people' }
-  //Create Tables and Alias' object
-  const tables: any = [];
+function parseData(data: any): void {
   const tableObj: Record<string, string> = {};
   for (let i = 0; i < data.from.length; i++) {
     const currentTable = data.from[i]; //Start flagging the master object for active links
@@ -69,10 +67,6 @@ function parseData(data: any) {
     columns[tableObj[tableName]] = columnName; //flag active column
   });
   console.log('columns', columns);
-  return {
-    tables: tables,
-    columns: columns,
-  };
 }
 // console.log(parseData(ast));
 // console.log('PARSE-GPT', parseQuery(query));
@@ -129,7 +123,7 @@ const Diagram: React.FC<{}> = () => {
           nodeTypes={nodeTypes}
         >
           <Controls />
-          <MiniMap />
+          {/* <MiniMap /> */}
           <Background gap={12} size={1} />
         </ReactFlow>
       </div>
