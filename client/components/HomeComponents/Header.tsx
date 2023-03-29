@@ -16,6 +16,8 @@ const Header: React.FC<{}> = () => {
       });
       setEmail('');
       setPassword('');
+      localStorage.setItem('userIn', 'false');
+      console.log('user should be logged out: ', localStorage.userIn);
       navigate('/');
     } catch (error) {
       console.log(`Error in useEffect logoutHandleClick ${error}`);

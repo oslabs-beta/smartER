@@ -5,12 +5,10 @@ import Login from './components/Login';
 import Homepage from './components/Homepage';
 import Signup from './components/Signup';
 import { Navigate } from 'react-router-dom';
-import Protected from './Protected';
 
 const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false);
   const [submit, setSubmit] = useState(false);
   const [queryString, setQueryString] = useState('');
   const [history, setHistory] = useState([
@@ -47,8 +45,6 @@ const App = () => {
         setEmail,
         password,
         setPassword,
-        loggedIn,
-        setLoggedIn,
       }}
     >
       <HomepageContext.Provider
@@ -72,7 +68,13 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/homepage"
-            element={loggedIn ? <Homepage /> : <Navigate to="/" replace />}
+            element={
+              localStorage.userIn === 'true' ? (
+                <Homepage />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
           />
         </Routes>
       </HomepageContext.Provider>
