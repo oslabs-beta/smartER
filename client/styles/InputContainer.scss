@@ -154,13 +154,17 @@ form {
 }
 
 .db-settings-input {
-  width: 15vh;
+  width: 50%;
   height: 20px;
   border: 1px $color1;
   background-color: $color6;
   border-radius: 5px 0 0 5px;
   color: black;
   padding: 8px;
+
+  #uri {
+    width: 30%;
+  }
 }
 .settings-input {
   width: 150px;
@@ -182,8 +186,8 @@ form {
 }
 .db-submit-settings {
   background-color: $color6;
-  width: 11vh;
-  height: 4.7vh;
+  width: 20%;
+  height: 36px;
   border-radius: 0 5px 5px 0;
 }
 
