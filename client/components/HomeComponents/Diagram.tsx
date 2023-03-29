@@ -16,7 +16,7 @@ import {
   parseEdges,
   parseNodes,
 } from './DiagramLogic/ParseNodes';
-
+import { parse, Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
 import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
 import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
@@ -26,19 +26,25 @@ const nodeTypes = {
   CustomTitleNode: CustomTitleNode,
 };
 
+//test query
+const query = `
+      SELECT s.name AS species,  h.name AS homeworld
+      FROM people p
+      LEFT JOIN species s ON p.species_id = s._id
+      LEFT JOIN planets h ON p.homeworld_id = h._id`;
+const ast: Statement = parseFirst(query);
+console.log('AST:', ast);
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
   const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes
   const [edges, setEdges, onEdgesChange] = useEdgesState([]); //testEdges
-  // const [nodes, setNodes, onNodesChange] = useNodesState(parseEdges(ERDiagram));
-  // const [edges, setEdges, onEdgesChange] = useEdgesState(parseNodes());
+  const { queryString, submit } = useContext(HomepageContext)!;
+  const [masterData, setMasterData] = useState({});
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-
-  const { queryString } = useContext(HomepageContext)!;
 
   const getERDiagram = async () => {
     try {
@@ -47,26 +53,25 @@ const Diagram: React.FC<{}> = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       const parsedData = await data.json();
-      const query = `
-      SELECT s.name AS species,  h.name AS homeworld
-      FROM people p
-      LEFT JOIN species s ON p.species_id = s._id
-      LEFT JOIN planets h ON p.homeworld_id = h._id`;
-      const queryParse = parseQueryAndGenerateNodes(query, parsedData);
-
-      const defaultNodes = parseNodes(queryParse);
-      const defaultEdges = parseEdges(queryParse);
-
-      setNodes(defaultNodes);
-      setEdges(defaultEdges);
-      return parsedData;
+      //setState for parsedData
+      setMasterData(parsedData);
+      return;
     } catch (error) {
       console.log(`Error in getERDiagram: ${error}`);
     }
   };
+
   useEffect(() => {
     getERDiagram();
   }, []);
+
+  useEffect(() => {
+    const queryParse = parseQueryAndGenerateNodes(queryString, masterData);
+    const defaultNodes = parseNodes(queryParse);
+    const defaultEdges = parseEdges(queryParse);
+    setNodes(defaultNodes);
+    setEdges(defaultEdges);
+  }, [submit]);
 
   return (
     <ReactFlowProvider>

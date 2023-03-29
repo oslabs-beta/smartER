@@ -12,6 +12,7 @@ RENAME COLUMN eye_colors TO "eye colors"
 select "eye colors" from species
 select `eye colors` from species
  */
+
 export function parseQueryAndGenerateNodes(
   queryString: string,
   data: typeof SampleData
@@ -56,6 +57,7 @@ export function parseQueryAndGenerateNodes(
   const tableObj: Record<string, columnObj> = {};
   const lowerCasedQuery = queryString.toLowerCase();
   const regexMatches = lowerCasedQuery.match(regex);
+  // [ select , s._id, poopoo, from, people_, s_]
 
   // Not necessary, but can be used.
   const tablesToRender: Record<string, Set<string>> = {};
@@ -83,6 +85,7 @@ export function parseQueryAndGenerateNodes(
       }
     }
     // Flag selected columns and links
+    // if (Object.keys(tablesAndAlias).length < 1) return;
     let beforeFrom = true;
     console.log('REGEXMATCHES: ', regexMatches);
     /*
@@ -137,7 +140,26 @@ export function parseQueryAndGenerateNodes(
       if (splitString.length === 2 && !beforeFrom) {
         masterObj[tablesAndAlias[alias]][columnName].activeLink = true;
       }
+      /*
+      if the currentString is a *
+        // mark all tables after the from statement
+      if splitString has a length of 2, we know there is an alias/table name listed
 
+      */
+      `select mass, average_height from people p
+
+      left join species s on s._id = p.species_id
+      select mass, diameter, name from people p
+
+      left join planets pl on pl._id = p.homeworld_id
+
+      select mass, diameter as "from" from people p
+      left join planets pl on pl._id = p.homeworld_id
+
+      logic for wildcards`;
+      if (currentString === '*') {
+        // loop through masterObj and mark active columns for the table following from statement?
+      }
       if (currentString === 'from') beforeFrom = false;
     }
   } else {

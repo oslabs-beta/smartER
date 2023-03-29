@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react';
 import { HomepageContext } from '../../../Context';
 import { historyType } from '../../../Context';
-
+import { parse, Statement, astVisitor } from 'pgsql-ast-parser';
 const QueryInput: React.FC<{}> = () => {
   const { queryString, setQueryString } = useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
@@ -13,11 +13,8 @@ const QueryInput: React.FC<{}> = () => {
   // on submit GET query result
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    setSubmit(!submit);
     // POST request to database with queryString
-
-    // GET request to database with object from the Query
-
     try {
       const created_at = String(Date.now());
       const data = await fetch('/api/getQueryResults', {

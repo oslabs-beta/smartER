@@ -32,11 +32,12 @@ export function parseNodes(rawData: any): any {
       position: { x: 180 * j, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
       data: { label: table },
       style: {
-        height: Object.keys(rawData[table]).length * 40 + 40 + 10,
+        height: Object.keys(rawData[table]).length * 40 + 40 + 0,
         width: 152,
         display: 'flex',
         opacity: 0.25,
         // border: '1px solid #000',
+        zIndex: 10,
       },
       draggable: true,
     };
@@ -49,7 +50,7 @@ export function parseNodes(rawData: any): any {
       type: 'CustomTitleNode', // swap for default of CustomTitleNode
       parentNode: `${table}.group`,
       extent: 'default',
-      position: { x: 0, y: 0 + 10 },
+      position: { x: 0, y: 0 + 0 },
       data: { label: table },
       sourcePosition: 'bottom',
       targetPosition: 'bottom',
@@ -57,6 +58,8 @@ export function parseNodes(rawData: any): any {
         background: '#1E3D59',
         color: 'F5F0E1',
         borderRadius: '5px',
+        opacity: 1,
+        transition: 'opacity 250ms ease-in',
       },
       draggable: false,
     };
@@ -71,12 +74,17 @@ export function parseNodes(rawData: any): any {
         type: 'CustomColumnNode', //swap for default or CustomColumnNode
         parentNode: `${table}.group`,
         extent: 'parent',
-        position: { x: 0, y: i === 0 ? 50 : i * 40 + 50 }, //Control spacing of tables here, Probably needs an algo
+        position: { x: 0, y: i === 0 ? 40 : i * 40 + 40 }, //Control spacing of tables here, Probably needs an algo
         data: { label: `${columnObj} | ${column.data_type}` },
         sourcePosition: 'right',
         targetPosition: 'left',
         draggable: false,
-        style: { background: 'transparent', borderRadius: '' },
+        style: {
+          background: 'transparent',
+          borderRadius: '',
+          opacity: 1,
+          transition: 'opacity 250ms ease-in',
+        },
       };
 
       if (column.primary_key) {
