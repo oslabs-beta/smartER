@@ -17,8 +17,7 @@ import {
   parseNodes,
 } from './DiagramLogic/ParseNodes';
 import { Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
-const parser = require('js-sql-parser');
-// import { parse } from 'js-sql-parser';
+
 import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
 import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
@@ -28,16 +27,56 @@ const nodeTypes = {
   CustomTitleNode: CustomTitleNode,
 };
 
-//test query
-const query = `
-      SELECT p.*, s._id, h.name
-      FROM people p
-      LEFT JOIN species s ON p.species_id = s._id
-      LEFT JOIN planets h ON p.homeworld_id = h._id`;
-const ast2 = parser.parse(query);
+// Test Query
+// const query = `
+//       SELECT p.*, s._id, h.name, people.name
+//       FROM people p
+//       LEFT JOIN species s ON p.species_id = s._id
+//       LEFT JOIN planets h ON p.homeworld_id = h._id`;
+
+const query = `select s."eye colors" from species s`;
+
 const ast: Statement = parseFirst(query);
 console.log('AST:', ast);
-console.log('AST2:', ast2);
+
+function parseData(data: any) {
+  // {p: 'people', people: 'people' }
+  //Create Tables and Alias' object
+  const tables: any = [];
+  const tableObj: Record<string, string> = {};
+  for (let i = 0; i < data.from.length; i++) {
+    const currentTable = data.from[i]; //Start flagging the master object for active links
+    // `${currentTable.join.on.left.table.name}.${currentTable.join.on.left.name}`
+    // `${currentTable.join.on.right.table.name}.${currentTable.join.on.right.name}`
+    // currentTable.join.on.op;
+    // currentTable.join.on.right;
+    const currentTableName = currentTable.name.name;
+    const currentTableAlias = currentTable.name.alias;
+
+    tableObj[currentTableName] = currentTableName;
+    tableObj[currentTableAlias] = currentTableName;
+
+    // if(tableObj[currentTableAlias] === )
+  }
+
+  console.log('TABLEDATA:', tableObj);
+
+  const columns: Record<string, string> = {};
+
+  data.columns.forEach((column: any) => {
+    const tableName = column.expr.table.name;
+    const columnName = column.expr.name;
+    columns[tableObj[tableName]] = columnName; //flag active column
+  });
+  console.log('columns', columns);
+  return {
+    tables: tables,
+    columns: columns,
+  };
+}
+// console.log(parseData(ast));
+// console.log('PARSE-GPT', parseQuery(query));
+
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
   const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes
