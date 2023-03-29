@@ -16,7 +16,7 @@ import {
   parseEdges,
   parseNodes,
 } from './DiagramLogic/ParseNodes';
-
+import { parse, Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
 import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
 import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
@@ -32,7 +32,8 @@ const query = `
       FROM people p
       LEFT JOIN species s ON p.species_id = s._id
       LEFT JOIN planets h ON p.homeworld_id = h._id`;
-
+const ast: Statement = parseFirst(query);
+console.log('AST:', ast);
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
   const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes

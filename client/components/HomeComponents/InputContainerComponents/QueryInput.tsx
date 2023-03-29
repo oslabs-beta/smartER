@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react';
 import { HomepageContext } from '../../../Context';
 import { historyType } from '../../../Context';
-
+import { parse, Statement, astVisitor } from 'pgsql-ast-parser';
 const QueryInput: React.FC<{}> = () => {
   const { queryString, setQueryString } = useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
