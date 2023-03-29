@@ -40,7 +40,7 @@ const Homepage: React.FC<{}> = () => {
       <Header />
       <div className="main-container">
         <Split
-          className={'TEST'}
+          className={'main-container-split'}
           direction="vertical"
           sizes={[70, 30]}
           minSize={[200, 200]}
