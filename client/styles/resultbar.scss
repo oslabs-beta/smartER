@@ -5,6 +5,7 @@ $color4: #6bfbce;
 
 .query-table-home {
   margin: 0.8%;
+  padding: 10px;
   background: rgb(0, 79, 119);
   background: linear-gradient(
     0deg,
@@ -15,20 +16,38 @@ $color4: #6bfbce;
   width: 98%;
   // table-layout: fixed;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .query-table {
+    margin: 0.8%;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.284);
+    color: black;
+    border-radius: 5px;
+    width: 98%;
+    table-layout: auto;
+    height: 100%;
+
+    th {
+      // background-color: $color2;
+      padding: 5px 5px 2px 5px;
+      border-bottom: 2px solid $color2;
+      vertical-align: bottom;
+    }
+
+    td {
+      border-bottom: 1px solid $color2;
+      vertical-align: top;
+    }
+  }
 }
 
-.query-table {
-  margin: 0.8%;
-  background: rgba(255, 255, 255, 0.284);
-  color: black;
-  border-radius: 5px;
-  width: 98%;
-  table-layout: fixed;
-}
-
-.query-table-cell {
-  border: 1px solid $color2;
-}
 .query-header {
   // position: absolute;
   // display: fixed;

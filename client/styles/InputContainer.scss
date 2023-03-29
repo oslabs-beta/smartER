@@ -213,42 +213,43 @@ textarea {
       flex-direction: column;
       align-items: center;
       width: 100%;
+      // max-width: 250px;
 
       label {
         margin-top: 5px;
       }
-    }
 
-    .settings-input {
-      width: 100%;
-      max-width: 250px;
-      height: 20px;
-      border: 1px $color1;
-      background-color: $color6;
-      border-radius: 5px;
-      color: black;
-      padding: 8px;
-    }
+      .settings-input {
+        width: 100%;
+        max-width: 234px;
+        height: 20px;
+        border: 1px $color1;
+        background-color: $color6;
+        border-radius: 5px;
+        color: black;
+        padding: 8px;
+      }
 
-    .settings-input:focus {
-      outline: solid 1px lighten(rgba(128, 128, 128, 0.443), 15%);
-    }
+      .settings-input:focus {
+        outline: solid 1px lighten(rgba(128, 128, 128, 0.443), 15%);
+      }
 
-    .submit-settings {
-      margin-top: 10px;
-      background-color: $color5;
-      border-radius: 5px;
-      border-width: 0;
-      height: 30px;
-      width: 100px;
-      font-size: 11px;
-      color: lighten(black, 5%);
-      cursor: pointer;
-    }
+      .submit-settings {
+        margin-top: 10px;
+        background-color: $color5;
+        border-radius: 5px;
+        border-width: 0;
+        height: 30px;
+        width: 100px;
+        font-size: 11px;
+        color: lighten(black, 5%);
+        cursor: pointer;
+      }
 
-    .submit-settings:hover {
-      background-color: darken($color5, 15%);
-      cursor: pointer;
+      .submit-settings:hover {
+        background-color: darken($color5, 15%);
+        cursor: pointer;
+      }
     }
   }
 }

@@ -36,7 +36,7 @@ const QueryResults: React.FC<{}> = () => {
   return (
     <>
       <div className="query-table-home">
-        Query Results
+        <h2>Query Results</h2>
         <table className="query-table">
           <thead>
             <tr className="query-header">
