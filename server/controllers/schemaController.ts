@@ -42,7 +42,7 @@ const schemaController: schemaControllers = {
       const constraintArr: Record<string, string>[] = [];
       // Get Relationships, Tables names, Column names, Data types
       const schema = await pg.query(getAllQuery(currentSchema));
-      console.log('SCHEMA', schema.rows);
+      // console.log('SCHEMA', schema.rows);
 
       // Initialize array to hold returned data
       let erDiagram: Record<string, typeof tableObj> = {};
