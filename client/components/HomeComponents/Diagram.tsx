@@ -11,16 +11,17 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { HomepageContext } from '../../Context';
 import {
-  testnodes,
-  testEdges,
+  // testnodes,
+  // testEdges,
   parseEdges,
   parseNodes,
 } from './DiagramLogic/ParseNodes';
 import { Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
 
-import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
+// import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
 import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
+import mainFunc from './DiagramLogic/ConditionalRender';
 
 const nodeTypes = {
   CustomColumnNode: CustomColumnNode,
@@ -34,43 +35,12 @@ const nodeTypes = {
 //       LEFT JOIN species s ON p.species_id = s._id
 //       LEFT JOIN planets h ON p.homeworld_id = h._id`;
 
-const query = `select 'person' as type, name, hair_color from people
-union all
-select 'species' as type, name, hair_colors from species`;
+// const query = `select name from people as p
+// left join species s on s._id = p.species_id`;
 
-const ast: Statement = parseFirst(query);
-console.log('AST:', ast);
-
-function parseData(data: any): void {
-  const tableObj: Record<string, string> = {};
-  for (let i = 0; i < data.from.length; i++) {
-    const currentTable = data.from[i]; //Start flagging the master object for active links
-    // `${currentTable.join.on.left.table.name}.${currentTable.join.on.left.name}`
-    // `${currentTable.join.on.right.table.name}.${currentTable.join.on.right.name}`
-    // currentTable.join.on.op;
-    // currentTable.join.on.right;
-    const currentTableName = currentTable.name.name;
-    const currentTableAlias = currentTable.name.alias;
-
-    tableObj[currentTableName] = currentTableName;
-    tableObj[currentTableAlias] = currentTableName;
-
-    // if(tableObj[currentTableAlias] === )
-  }
-
-  console.log('TABLEDATA:', tableObj);
-
-  const columns: Record<string, string> = {};
-
-  data.columns.forEach((column: any) => {
-    const tableName = column.expr.table.name;
-    const columnName = column.expr.name;
-    columns[tableObj[tableName]] = columnName; //flag active column
-  });
-  console.log('columns', columns);
-}
-// console.log(parseData(ast));
-// console.log('PARSE-GPT', parseQuery(query));
+// const ast: Statement = parseFirst(query);
+// // console.log('AST:', ast);
+// mainFunc(query);
 
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
@@ -91,7 +61,6 @@ const Diagram: React.FC<{}> = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       const parsedData = await data.json();
-      //setState for parsedData
       setMasterData(parsedData);
       return;
     } catch (error) {
@@ -104,11 +73,13 @@ const Diagram: React.FC<{}> = () => {
   }, []);
 
   useEffect(() => {
-    const queryParse = parseQueryAndGenerateNodes(queryString, masterData);
-    const defaultNodes = parseNodes(queryParse);
-    const defaultEdges = parseEdges(queryParse);
-    setNodes(defaultNodes);
-    setEdges(defaultEdges);
+    if (queryString) {
+      const queryParse = mainFunc(queryString).mainObj;
+      const defaultNodes = parseNodes(queryParse);
+      const defaultEdges = parseEdges(queryParse);
+      setNodes(defaultNodes);
+      setEdges(defaultEdges);
+    }
   }, [submit]);
 
   return (
