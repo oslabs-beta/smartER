@@ -33,7 +33,7 @@ export function parseNodes(rawData: any): any {
       data: { label: table },
       style: {
         height: Object.keys(rawData[table]).length * 40 + 40 + 0,
-        width: 152,
+        width: 180, //was 152
         display: 'flex',
         opacity: 0.25,
         // border: '1px solid #000',
@@ -60,6 +60,7 @@ export function parseNodes(rawData: any): any {
         borderRadius: '5px',
         opacity: 1,
         transition: 'opacity 250ms ease-in',
+        width: 180,
       },
       draggable: false,
     };
@@ -75,7 +76,11 @@ export function parseNodes(rawData: any): any {
         parentNode: `${table}.group`,
         extent: 'parent',
         position: { x: 0, y: i === 0 ? 40 : i * 40 + 40 }, //Control spacing of tables here, Probably needs an algo
-        data: { label: `${columnObj} | ${column.data_type}` },
+        data: {
+          label: `${columnObj} | ${column.data_type}`,
+          columnName: columnObj,
+          dataType: column.data_type,
+        },
         sourcePosition: 'right',
         targetPosition: 'left',
         draggable: false,
@@ -84,25 +89,32 @@ export function parseNodes(rawData: any): any {
           borderRadius: '',
           opacity: 1,
           transition: 'opacity 250ms ease-in',
+          width: 180,
         },
       };
 
       if (column.primary_key) {
-        newColumnNode.data.label = `🔑  ${columnObj} | ${column.data_type}`;
+        // newColumnNode.data.label = `🔑  ${columnObj} | ${column.data_type}`;
+        newColumnNode.data.columnName = `🔑  ${columnObj}`;
+        newColumnNode.data.dataType = `${column.data_type}`;
       }
       if (column.foreign_key) {
-        newColumnNode.data.label = `〰️ ${columnObj} | ${column.data_type}`;
+        // newColumnNode.data.label = `〰️ ${columnObj} | ${column.data_type}`;
+        newColumnNode.data.columnName = `🌐  ${columnObj}`;
+        newColumnNode.data.dataType = `${column.data_type}`;
       }
       //check if active column
       if (column.activeColumn) {
         newColumnNode.style = {
           background: '#FFC13B',
           borderRadius: '5px',
+          width: 180,
         };
       } else {
         newColumnNode.style = {
           background: '#6B7B8C',
           borderRadius: '5px',
+          width: 180,
         };
       }
       nodes.push(newColumnNode);
@@ -135,10 +147,11 @@ export function parseEdges(data: any): any {
             strokeWidth: '5',
           };
         } else {
-          newEdge.animated = true;
+          newEdge.animated = false;
           newEdge.style = {
-            strokeWidth: '5',
+            strokeWidth: '3',
             stroke: 'grey',
+            strokeDasharray: '5,5',
           };
         }
         // check if active connection
