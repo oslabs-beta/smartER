@@ -1,7 +1,24 @@
 import examples from './Refactor';
 import { SampleData } from '../../TestData';
-import { Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
-
+import {
+  Statement,
+  astVisitor,
+  parseFirst,
+  Name,
+  DataTypeDef,
+} from 'pgsql-ast-parser';
+interface columnObj {
+  table_name: string;
+  column_name: string;
+  data_type: string;
+  primary_key?: boolean;
+  foreign_key?: boolean;
+  linkedTable?: string;
+  linkedTableColumn?: string;
+  activeColumn?: boolean;
+  activeLink?: boolean;
+  foreign_tables?: string[];
+}
 type returnObj = {
   errorArr: string[];
   mainObj: typeof SampleData;
@@ -10,17 +27,14 @@ type returnObj = {
 function mainFunc(query: string): returnObj {
   const data = SampleData; // ER Diagram
   const errorArr: string[] = [];
-  const mainObj: any = {};
-  const tableAlias: any = {};
+  const mainObj: Record<string, Record<string, columnObj>> = {};
+  const tableAlias: Record<string, string> = {};
 
   const ast: Statement = parseFirst(query);
   console.log('AST', ast);
   console.log('query', query);
   const queue: any[] = [];
   queue.push(ast);
-
-  // select p.name from people p
-  // left join species s on s._id = p.species_id
 
   const selectHandler = (obj: any) => {
     tableHandler(obj.from);
@@ -52,12 +66,14 @@ function mainFunc(query: string): returnObj {
             // Deep copy the table from data
             mainObj[tableName] = { ...data[tableName as keyof typeof data] };
             // Update alias
+            if (currentTable.join) queue.push(currentTable);
             if (alias) tableAlias[alias] = tableName;
             else tableAlias[tableName] = tableName;
           } else {
             // Error to push because the table doesn't exist in our data
             errorArr.push(`Table name: ${tableName} is not found in database`);
           }
+
           break;
         }
         default: {
@@ -69,10 +85,8 @@ function mainFunc(query: string): returnObj {
   };
 
   const columnHandler = (arr: any[]) => {
-    console.log('column handler');
     for (let i = 0; i < arr.length; i++) {
       const currentColumn = arr[i];
-      console.log('current column', currentColumn);
       const type = currentColumn.expr.type;
       switch (type) {
         case 'ref':
@@ -118,7 +132,8 @@ function mainFunc(query: string): returnObj {
 
   const joinHandler = (obj: any) => {
     // const currentColumn =
-
+    console.log('inside joinHandler');
+    // return;
     for (let key in obj) {
       switch (key) {
         case 'type':
@@ -145,9 +160,10 @@ function mainFunc(query: string): returnObj {
                   const columnName = currentColumn[onKey].name;
                   let counter = 0;
                   for (let i = 0; i < tables.length; i++) {
+                    const tableName = tables[i];
                     //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
-                    if (mainObj[tables[i]][columnName]) {
-                      mainObj[tables[i]].activeLink = true;
+                    if (mainObj[tableName][columnName]) {
+                      mainObj[tableName][columnName].activeLink = true;
                       counter++;
                     }
                   }
@@ -157,7 +173,7 @@ function mainFunc(query: string): returnObj {
             }
           }
         default:
-          queue.push(obj[key]);
+        // queue.push(obj[key]);
       }
     }
   };
@@ -166,6 +182,7 @@ function mainFunc(query: string): returnObj {
     const obj = queue[0];
 
     for (let key in obj) {
+      console.log('queue object', obj);
       switch (key) {
         case 'type':
           switch (obj[key]) {
@@ -175,7 +192,7 @@ function mainFunc(query: string): returnObj {
             // case 'statement':
             //   break;
             default:
-              queue.push(obj);
+            // queue.push(obj);
           }
           break;
 
@@ -193,14 +210,36 @@ function mainFunc(query: string): returnObj {
         //   break;
       }
     }
-
     queue.shift();
   }
+  getTables1LayerOut(mainObj, data);
   console.log('end of conditional render', {
     errorArr: errorArr,
     mainObj: mainObj,
   });
   return { errorArr: errorArr, mainObj: mainObj };
 }
-
+function getTables1LayerOut(mainObj: any, data: typeof SampleData) {
+  for (const table in mainObj) {
+    for (const column in mainObj[table]) {
+      const linkedTable = mainObj[table][column]['linkedTable'];
+      const isForeignTable = mainObj[table][column]['foreign_tables'];
+      if (isForeignTable) {
+        // check if the foreign_tables is truthy
+        // if so, iterate through that array to check and see if we have that table already rendered in our mainObj
+        for (const foreignTable of isForeignTable) {
+          if (!mainObj[foreignTable])
+            mainObj[foreignTable] = {
+              ...data[foreignTable as keyof typeof data],
+            };
+        }
+        if (linkedTable && !mainObj[linkedTable]) {
+          mainObj[linkedTable] = {
+            ...data[linkedTable as keyof typeof data],
+          };
+        }
+      }
+    }
+  }
+}
 export default mainFunc;
