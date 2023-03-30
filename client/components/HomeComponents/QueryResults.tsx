@@ -32,7 +32,7 @@ const QueryResults: React.FC<{}> = () => {
   // console.log('line 29: ', columnsValue);
 
   // columns should be an object with the value being an array
-  console.log('columnsValue: ', columnsValue);
+  // console.log('columnsValue: ', columnsValue);
   return (
     <>
       <div className="query-table-home">
@@ -51,7 +51,7 @@ const QueryResults: React.FC<{}> = () => {
           </thead>
           <tbody>
             {columnsValue.map((column) => {
-              console.log(column);
+              // console.log(column);
               let i = 0;
               const columnsArray: JSX.Element[] = [];
               column.map((data) => {
