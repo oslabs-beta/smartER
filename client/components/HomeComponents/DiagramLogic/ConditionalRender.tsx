@@ -88,7 +88,9 @@ function mainFunc(query: string): returnObj {
           const alias = currentTable.name.alias;
           if (data[tableName as keyof typeof data]) {
             // Deep copy the table from data
-            mainObj[tableName] = { ...data[tableName as keyof typeof data] };
+            mainObj[tableName] = JSON.parse(
+              JSON.stringify(data[tableName as keyof typeof data])
+            );
             // Update alias
             if (currentTable.join) queue.push(currentTable);
             if (alias) tableAlias[alias] = tableName;
@@ -112,46 +114,54 @@ function mainFunc(query: string): returnObj {
     for (let i = 0; i < arr.length; i++) {
       const currentColumn = arr[i];
       const type = currentColumn.expr.type;
+
       switch (type) {
+        // Update master obj with active columns add activeColumn = true
         case 'ref':
-          // Update master obj with active columns add activeColumn = true
-          // if table name is accessible
+          let specifiedTable: string | undefined;
           if (currentColumn.expr.table && currentColumn.expr.table.name) {
-            const tableName = tableAlias[currentColumn.expr.table.name];
-            const columnName = currentColumn.expr.name;
-            mainObj[tableName][columnName].activeColumn = true;
-            console.log('table', tableName, 'column', columnName);
+            specifiedTable = tableAlias[currentColumn.expr.table.name];
+          }
+          const columnName = currentColumn.expr.name;
+
+          // if tableName is specified, tables is array of tableName, else tables is array of all tables in query
+          let tables: string[] = [];
+          if (specifiedTable) {
+            tables.push(specifiedTable);
           } else {
-            // else iterate through mainObj and check for a table that has a column name that matches
-            const tables = Object.keys(mainObj);
-            const columnName = currentColumn.expr.name;
-            console.log('CN: ', columnName);
-            let counter = 0;
-            for (let i = 0; i < tables.length; i++) {
-              //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
-              if (mainObj[tables[i]][columnName]) {
-                mainObj[tables[i]][columnName].activeColumn = true;
-                counter++;
+            tables = [...Object.keys(mainObj)];
+          }
+
+          let colMatchCount: number = 0;
+          for (let table of tables) {
+            if (columnName !== '*') {
+              if (mainObj[table][columnName]) {
+                colMatchCount++;
+                mainObj[table][columnName].activeColumn = true;
+              }
+            } else {
+              for (let column in mainObj[table]) {
+                mainObj[table][column].activeColumn = true;
               }
             }
-            if (counter === 0)
-              errorArr.push(`Column name: ${columnName} does not exist.`);
-            if (counter > 1)
-              errorArr.push(
-                `Column name: ${columnName} exists in more than one table.`
-              );
           }
+
+          if (colMatchCount === 0 && columnName !== '*')
+            errorArr.push(`Column ${columnName} does not exist`);
+          if (colMatchCount > 1)
+            errorArr.push(`Column ${columnName} exists in more than one table`);
+
         case 'string' || 'integer' || 'boolean':
           break;
 
         default:
         //push to the queue
       }
-      // if type is select, invoke selectHandler <- have not seen any columns with type select.
-      // if (columnObj.type && columnObj.type === 'select') {
-      //   selectHandler(columnObj)
-      // }
     }
+    // if type is select, invoke selectHandler <- have not seen any columns with type select.
+    // if (columnObj.type && columnObj.type === 'select') {
+    //   selectHandler(columnObj)
+    // }
   };
 
   const joinHandler = (obj: any) => {
@@ -202,6 +212,49 @@ function mainFunc(query: string): returnObj {
     }
   };
 
+  const connectedTablesHandler = (table: string) => {
+    const isJoinTable = (tableObj: any): boolean => {
+      for (let column in tableObj) {
+        const key =
+          tableObj[column].foreign_key || tableObj[column].primary_key;
+        if (!key) return false;
+      }
+      return true;
+    };
+
+    // for (const table in mainObj) {
+    for (const column in mainObj[table]) {
+      const linkedTable = mainObj[table][column].linkedTable;
+      const foreignTables = mainObj[table][column].foreign_tables;
+
+      if (foreignTables) {
+        // iterate through foreign_tables array and copy any missing tables to mainObj
+        for (const foreignTable of foreignTables) {
+          if (!mainObj[foreignTable])
+            mainObj[foreignTable] = {
+              ...data[foreignTable as keyof typeof data],
+            };
+
+          // if foreign table is a join table, go one layer out
+          // stretch: user option to toggle this feature on/off?
+          if (isJoinTable(mainObj[foreignTable]))
+            connectedTablesHandler(foreignTable);
+        }
+      }
+
+      if (linkedTable && !mainObj[linkedTable]) {
+        mainObj[linkedTable] = JSON.parse(
+          JSON.stringify(data[linkedTable as keyof typeof data])
+        );
+
+        // if linked table is a join table, go one layer out
+        if (isJoinTable(mainObj[linkedTable]))
+          connectedTablesHandler(linkedTable);
+      }
+    }
+    // }
+  };
+
   while (queue.length) {
     const obj = queue[0];
 
@@ -236,34 +289,10 @@ function mainFunc(query: string): returnObj {
     }
     queue.shift();
   }
-  getTables1LayerOut(mainObj, data);
-  console.log('end of conditional render', {
-    errorArr: errorArr,
-    mainObj: mainObj,
-  });
+
+  for (const table in mainObj) connectedTablesHandler(table);
+  console.log('FINAL OBJ', mainObj);
   return { errorArr: errorArr, mainObj: mainObj };
 }
-function getTables1LayerOut(mainObj: any, data: typeof SampleData) {
-  for (const table in mainObj) {
-    for (const column in mainObj[table]) {
-      const linkedTable = mainObj[table][column]['linkedTable'];
-      const isForeignTable = mainObj[table][column]['foreign_tables'];
-      if (isForeignTable) {
-        // check if the foreign_tables is truthy
-        // if so, iterate through that array to check and see if we have that table already rendered in our mainObj
-        for (const foreignTable of isForeignTable) {
-          if (!mainObj[foreignTable])
-            mainObj[foreignTable] = {
-              ...data[foreignTable as keyof typeof data],
-            };
-        }
-        if (linkedTable && !mainObj[linkedTable]) {
-          mainObj[linkedTable] = {
-            ...data[linkedTable as keyof typeof data],
-          };
-        }
-      }
-    }
-  }
-}
+
 export default mainFunc;
