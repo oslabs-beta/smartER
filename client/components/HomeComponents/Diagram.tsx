@@ -47,7 +47,43 @@ LEFT JOIN planets h ON p.homeworld_id = h._id;
 // const ast: Statement = parseFirst(query);
 // // console.log('AST:', ast);
 // mainFunc(query);
+const tables = new Set();
+let joins = 0;
+const query = `select concat(name, mass) test from people`;
 
+console.log(parseFirst(query));
+var currentTable: any;
+const visitor = astVisitor((map) => ({
+  // implement here AST parts you want to hook
+  selectionColumn: (z) => {
+    console.log('selectionColumn', currentTable, z);
+  },
+  tableRef: (t) => {
+    currentTable = t.name;
+    tables.add(t.name);
+    console.log('tableRef:', t);
+  },
+  join: (t) => {
+    console.log('join', t);
+    joins++;
+    // call the default implementation of 'join'
+    // this will ensure that the subtree is also traversed.
+    map.super().join(t);
+  },
+  call: (t) => {
+    console.log('call', t);
+  },
+  select: (val) => {
+    console.log('select', val);
+  },
+  // Overwrites anything from tableRef or selectionColumn
+  // union: (s) => {
+  //   console.log('union', s);
+  // },
+}));
+
+visitor.statement(parseFirst(query));
+console.log('tables:', tables);
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
   const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes

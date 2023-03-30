@@ -38,28 +38,6 @@ function mainFunc(query: string): returnObj {
   const queue: any[] = [];
   queue.push(ast);
 
-  const tables = new Set();
-  let joins = 0;
-  const visitor = astVisitor((map) => ({
-    // implement here AST parts you want to hook
-
-    tableRef: (t) => {
-      tables.add(t.name);
-      console.log('tableRef:', t);
-    },
-    join: (t) => {
-      console.log('join', t);
-      joins++;
-      // call the default implementation of 'join'
-      // this will ensure that the subtree is also traversed.
-      map.super().join(t);
-    },
-    ref: (z) => {
-      console.log('ref', z);
-    },
-  }));
-  visitor.statement(parseFirst(query));
-
   const selectHandler = (obj: any) => {
     tableHandler(obj.from);
     columnHandler(obj.columns);
@@ -236,6 +214,7 @@ function mainFunc(query: string): returnObj {
     }
     queue.shift();
   }
+
   getTables1LayerOut(mainObj, data);
   console.log('end of conditional render', {
     errorArr: errorArr,
@@ -246,6 +225,7 @@ function mainFunc(query: string): returnObj {
 function getTables1LayerOut(mainObj: any, data: typeof SampleData) {
   for (const table in mainObj) {
     for (const column in mainObj[table]) {
+      console.log('table: ', table, 'column: ', column, mainObj);
       const linkedTable = mainObj[table][column]['linkedTable'];
       const isForeignTable = mainObj[table][column]['foreign_tables'];
       if (isForeignTable) {
