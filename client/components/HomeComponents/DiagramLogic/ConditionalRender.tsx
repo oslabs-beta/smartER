@@ -165,6 +165,7 @@ function mainFunc(query: string): returnObj {
   };
 
   const joinHandler = (obj: any) => {
+    // const currentColumn =
     console.log('inside joinHandler');
 
     for (let key in obj) {
@@ -290,6 +291,7 @@ function mainFunc(query: string): returnObj {
   }
 
   for (const table in mainObj) connectedTablesHandler(table);
+  console.log('FINAL OBJ', mainObj);
   return { errorArr: errorArr, mainObj: mainObj };
 }
 
