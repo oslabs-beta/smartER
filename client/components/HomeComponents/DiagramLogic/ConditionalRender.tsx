@@ -88,7 +88,9 @@ function mainFunc(query: string): returnObj {
           const alias = currentTable.name.alias;
           if (data[tableName as keyof typeof data]) {
             // Deep copy the table from data
-            mainObj[tableName] = { ...data[tableName as keyof typeof data] };
+            mainObj[tableName] = JSON.parse(
+              JSON.stringify(data[tableName as keyof typeof data])
+            );
             // Update alias
             if (currentTable.join) queue.push(currentTable);
             if (alias) tableAlias[alias] = tableName;
@@ -163,7 +165,6 @@ function mainFunc(query: string): returnObj {
   };
 
   const joinHandler = (obj: any) => {
-    // const currentColumn =
     console.log('inside joinHandler');
 
     for (let key in obj) {
@@ -210,6 +211,47 @@ function mainFunc(query: string): returnObj {
     }
   };
 
+  const connectedTablesHandler = (table: string) => {
+    const isJoinTable = (tableObj: any): boolean => {
+      for (let column in tableObj) {
+        const key =
+          tableObj[column].foreign_key || tableObj[column].primary_key;
+        if (!key) return false;
+      }
+      return true;
+    };
+
+    // for (const table in mainObj) {
+    for (const column in mainObj[table]) {
+      const linkedTable = mainObj[table][column].linkedTable;
+      const foreignTables = mainObj[table][column].foreign_tables;
+
+      if (foreignTables) {
+        // iterate through foreign_tables array and copy any missing tables to mainObj
+        for (const foreignTable of foreignTables) {
+          if (!mainObj[foreignTable])
+            mainObj[foreignTable] = {
+              ...data[foreignTable as keyof typeof data],
+            };
+
+          // if foreign table is a join table, go one layer out
+          if (isJoinTable(mainObj[foreignTable]))
+            connectedTablesHandler(foreignTable);
+        }
+      }
+
+      if (linkedTable && !mainObj[linkedTable]) {
+        mainObj[linkedTable] = JSON.parse(
+          JSON.stringify(data[linkedTable as keyof typeof data])
+        );
+
+        if (isJoinTable(mainObj[linkedTable]))
+          connectedTablesHandler(linkedTable);
+      }
+    }
+    // }
+  };
+
   while (queue.length) {
     const obj = queue[0];
 
@@ -244,34 +286,14 @@ function mainFunc(query: string): returnObj {
     }
     queue.shift();
   }
-  getTables1LayerOut(mainObj, data);
+
+  console.log('before expanding out', { ...mainObj });
+  for (const table in mainObj) connectedTablesHandler(table);
   console.log('end of conditional render', {
     errorArr: errorArr,
     mainObj: mainObj,
   });
   return { errorArr: errorArr, mainObj: mainObj };
 }
-function getTables1LayerOut(mainObj: any, data: typeof SampleData) {
-  for (const table in mainObj) {
-    for (const column in mainObj[table]) {
-      const linkedTable = mainObj[table][column]['linkedTable'];
-      const isForeignTable = mainObj[table][column]['foreign_tables'];
-      if (isForeignTable) {
-        // check if the foreign_tables is truthy
-        // if so, iterate through that array to check and see if we have that table already rendered in our mainObj
-        for (const foreignTable of isForeignTable) {
-          if (!mainObj[foreignTable])
-            mainObj[foreignTable] = {
-              ...data[foreignTable as keyof typeof data],
-            };
-        }
-        if (linkedTable && !mainObj[linkedTable]) {
-          mainObj[linkedTable] = {
-            ...data[linkedTable as keyof typeof data],
-          };
-        }
-      }
-    }
-  }
-}
+
 export default mainFunc;
