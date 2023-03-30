@@ -253,3 +253,14 @@ textarea {
     }
   }
 }
+
+.history-query {
+  text-align: left;
+  border-top: 1px solid $color2;
+}
+
+.history-time {
+  width: 120px;
+  text-align: right;
+  border-top: 1px solid $color2;
+}

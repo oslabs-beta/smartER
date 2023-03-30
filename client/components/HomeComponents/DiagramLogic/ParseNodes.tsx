@@ -29,7 +29,7 @@ export function parseNodes(rawData: any): any {
     const newContainer = {
       id: `${table}.group`,
       type: 'group',
-      position: { x: 180 * j, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
+      position: { x: 200 * j, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
       data: { label: table },
       style: {
         height: Object.keys(rawData[table]).length * 40 + 40 + 0,

@@ -44,6 +44,7 @@ const dbController: dbControllers = {
           JOIN databases d on d._id = h.database_id
           WHERE d._id = ${dbId}
           ;`);
+        console.log('history', history);
         res.locals.queryHistory = history.rows;
         return next();
       } else throw new Error('db not found');
