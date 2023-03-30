@@ -6,8 +6,7 @@ import { parse } from 'path';
 // const Heading = ({title}: {title: string}) => <h2>{title}</h2>;
 
 const Login: React.FC<{}> = () => {
-  const { email, setEmail, password, setPassword, loggedIn, setLoggedIn } =
-    useContext(LoginContext)!;
+  const { email, setEmail, password, setPassword } = useContext(LoginContext)!;
   const [validCredentials, setValidCredentials] = useState(true);
   const navigate = useNavigate();
 
@@ -19,10 +18,14 @@ const Login: React.FC<{}> = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+
+      // if the user is authenticated 200
       if (data.status === 200) {
         setEmail('');
         setPassword('');
-        setLoggedIn(true);
+        // JOYCE: unsure if i need to keep this both in state and in localStorage
+        localStorage.setItem('userIn', 'true');
+        console.log('is user logged in? ', localStorage.userIn);
         navigate('/homepage');
       }
       // 401 incorrect pw , 400 middleware error
