@@ -42,31 +42,23 @@ const schemaController: schemaControllers = {
       const constraintArr: Record<string, string>[] = [];
       // Get Relationships, Tables names, Column names, Data types
       const schema = await pg.query(getAllQuery(currentSchema));
+      console.log('SCHEMA', schema.rows);
 
       // Initialize array to hold returned data
       let erDiagram: Record<string, typeof tableObj> = {};
       let tableObj: Record<string, any> = {};
       // Make custom type for any on tableObj
-      // Assign prev table name and tableObj.table_name to be the first table name from the query
-      let prevTableName = schema.rows[0].table_name;
 
       // Iterate through array of all table names, columns, and data types
       for (let i = 0; i < schema.rows.length; i++) {
+        let nextTableName;
+        if (schema.rows[i + 1]) nextTableName = schema.rows[i + 1].table_name;
         // current represents each object in the array
         const current = schema.rows[i];
         //column object type and declaration
 
-        // Check to see if the prev table name does not match the current table name
-        // if it doesn't match, we know we are in a different table
-        // push a deep copy of the tableObj, assign the current table_name to the tableObj.table_name
-        if (prevTableName !== current.table_name) {
-          erDiagram[prevTableName] = { ...tableObj };
-          tableObj = {};
-          prevTableName = current.table_name;
-        }
-
-        tableObj[current.column_name] = {};
         // Assign table name and column name
+        tableObj[current.column_name] = {};
         tableObj[current.column_name].table_name = current.table_name;
         tableObj[current.column_name].column_name = current.column_name;
         // Assign data type
@@ -93,20 +85,13 @@ const schemaController: schemaControllers = {
           constraintArr.push({ ...constraintObj });
         }
 
-        // Push the complete column object into columns array
+        // if table name at next row is a different table,
+        // push a deep copy of the tableObj to final ER diagram and reset tableObj
+        if (!nextTableName || nextTableName !== current.table_name) {
+          erDiagram[current.table_name] = { ...tableObj };
+          tableObj = {};
+        }
       }
-      // return res.json(erDiagram);
-      // if we find a foreign key
-      /*[
-        {
-          species._id = 'people'
-          },
-          {
-          planets._id = 'people'
-          },
-
-        ]
-         */
 
       for (const constraint of constraintArr) {
         for (const relationship in constraint) {
@@ -122,7 +107,7 @@ const schemaController: schemaControllers = {
       return next();
     } catch (error) {
       return next({
-        log: `Error in schemaController.getSchema ${error}`,
+        log: `Error in schemaController.getSchemaPostgreSQL ${error}`,
         status: 400,
         message: { error },
       });

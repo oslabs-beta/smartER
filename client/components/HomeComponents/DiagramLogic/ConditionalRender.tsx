@@ -235,6 +235,7 @@ function mainFunc(query: string): returnObj {
             };
 
           // if foreign table is a join table, go one layer out
+          // stretch: user option to toggle this feature on/off?
           if (isJoinTable(mainObj[foreignTable]))
             connectedTablesHandler(foreignTable);
         }
@@ -245,6 +246,7 @@ function mainFunc(query: string): returnObj {
           JSON.stringify(data[linkedTable as keyof typeof data])
         );
 
+        // if linked table is a join table, go one layer out
         if (isJoinTable(mainObj[linkedTable]))
           connectedTablesHandler(linkedTable);
       }
@@ -287,12 +289,7 @@ function mainFunc(query: string): returnObj {
     queue.shift();
   }
 
-  console.log('before expanding out', { ...mainObj });
   for (const table in mainObj) connectedTablesHandler(table);
-  console.log('end of conditional render', {
-    errorArr: errorArr,
-    mainObj: mainObj,
-  });
   return { errorArr: errorArr, mainObj: mainObj };
 }
 
