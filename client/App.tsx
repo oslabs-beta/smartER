@@ -11,9 +11,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [submit, setSubmit] = useState(false);
   const [queryString, setQueryString] = useState('');
-  const [history, setHistory] = useState([
-    { created_at: 'hello', query: 'world' },
-  ]);
+  const [history, setHistory] = useState([]);
   const [uri, setUri] = useState('');
   const [dbCredentials, setDBCredentials] = useState({
     host: '',

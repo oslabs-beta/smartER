@@ -23,8 +23,12 @@ function CustomColumnNode({ data, isConnectable }: any) {
         isConnectable={isConnectable}
         style={handleStyleLeft}
       />
-      <div>
+      {/* <div>
         <label htmlFor="text">{data.label}</label>
+      </div> */}
+      <div className="column-data">
+        <div>{data.columnName}</div>
+        <div>{data.dataType}</div>
       </div>
       <Handle
         type="source"

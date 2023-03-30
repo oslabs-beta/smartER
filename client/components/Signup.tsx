@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoginContext } from '../Context';
 
 const Signup: React.FC<{}> = () => {
-  const { email, setEmail, password, setPassword, loggedIn, setLoggedIn } =
-    useContext(LoginContext)!;
+  const { email, setEmail, password, setPassword } = useContext(LoginContext)!;
   const [secondPw, setSecondPW] = useState('');
   const [doPwMatch, setPwMatch] = useState(true);
   const [emailExistsError, setEmailExistsError] = useState(false);
@@ -53,7 +52,7 @@ const Signup: React.FC<{}> = () => {
         });
         //TODO: FETCH to authenticate Token
         if (data.status === 200) {
-          setLoggedIn(true);
+          localStorage.setItem('userIn', 'true');
           navigate('/homepage');
         }
         // 400 General Error | 409 User already exists | 200 Success

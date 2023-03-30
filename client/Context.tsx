@@ -27,7 +27,7 @@ export type HomepageContextType = {
   queryString: string;
   setQueryString: Dispatch<SetStateAction<string>>;
   history: historyType[];
-  setHistory: Dispatch<SetStateAction<historyType[]>>;
+  setHistory: Dispatch<SetStateAction<any>>;
   uri: string;
   setUri: Dispatch<SetStateAction<string>>;
   dbCredentials: dbCredentialsType;
