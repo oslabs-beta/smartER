@@ -191,7 +191,7 @@ function mainFunc(query: string): returnObj {
               break;
             // case 'statement':
             //   break;
-            default:
+            default: // This default causes an infinite loop
             // queue.push(obj);
           }
           break;
