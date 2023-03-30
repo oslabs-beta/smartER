@@ -34,8 +34,9 @@ const nodeTypes = {
 //       LEFT JOIN species s ON p.species_id = s._id
 //       LEFT JOIN planets h ON p.homeworld_id = h._id`;
 
-const query = `select * from people p
-left join (select _id, true as luke from people where name like '%Luke%') luke on luke._id = p._id`;
+const query = `select 'person' as type, name, hair_color from people
+union all
+select 'species' as type, name, hair_colors from species`;
 
 const ast: Statement = parseFirst(query);
 console.log('AST:', ast);
