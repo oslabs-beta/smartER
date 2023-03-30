@@ -12,11 +12,7 @@ export const SampleData = {
         'vessels_in_films',
       ],
     },
-    title: {
-      table_name: 'films',
-      column_name: 'title',
-      data_type: 'varchar',
-    },
+    title: { table_name: 'films', column_name: 'title', data_type: 'varchar' },
     episode_id: {
       table_name: 'films',
       column_name: 'episode_id',
@@ -51,16 +47,8 @@ export const SampleData = {
       primary_key: true,
       foreign_tables: ['people_in_films', 'pilots'],
     },
-    name: {
-      table_name: 'people',
-      column_name: 'name',
-      data_type: 'varchar',
-    },
-    mass: {
-      table_name: 'people',
-      column_name: 'mass',
-      data_type: 'varchar',
-    },
+    name: { table_name: 'people', column_name: 'name', data_type: 'varchar' },
+    mass: { table_name: 'people', column_name: 'mass', data_type: 'varchar' },
     hair_color: {
       table_name: 'people',
       column_name: 'hair_color',
@@ -102,11 +90,7 @@ export const SampleData = {
       linkedTable: 'planets',
       linkedTableColumn: '_id',
     },
-    height: {
-      table_name: 'people',
-      column_name: 'height',
-      data_type: 'int',
-    },
+    height: { table_name: 'people', column_name: 'height', data_type: 'int' },
   },
   people_in_films: {
     person_id: {
@@ -163,11 +147,7 @@ export const SampleData = {
       primary_key: true,
       foreign_tables: ['people', 'planets_in_films', 'species'],
     },
-    name: {
-      table_name: 'planets',
-      column_name: 'name',
-      data_type: 'varchar',
-    },
+    name: { table_name: 'planets', column_name: 'name', data_type: 'varchar' },
     rotation_period: {
       table_name: 'planets',
       column_name: 'rotation_period',
@@ -242,11 +222,7 @@ export const SampleData = {
       primary_key: true,
       foreign_tables: ['people', 'species_in_films'],
     },
-    name: {
-      table_name: 'species',
-      column_name: 'name',
-      data_type: 'varchar',
-    },
+    name: { table_name: 'species', column_name: 'name', data_type: 'varchar' },
     classification: {
       table_name: 'species',
       column_name: 'classification',
@@ -272,9 +248,9 @@ export const SampleData = {
       column_name: 'skin_colors',
       data_type: 'varchar',
     },
-    eye_colors: {
+    'eye colors': {
       table_name: 'species',
-      column_name: 'eye_colors',
+      column_name: 'eye colors',
       data_type: 'varchar',
     },
     language: {
@@ -351,11 +327,7 @@ export const SampleData = {
       primary_key: true,
       foreign_tables: ['pilots', 'starship_specs', 'vessels_in_films'],
     },
-    name: {
-      table_name: 'vessels',
-      column_name: 'name',
-      data_type: 'varchar',
-    },
+    name: { table_name: 'vessels', column_name: 'name', data_type: 'varchar' },
     manufacturer: {
       table_name: 'vessels',
       column_name: 'manufacturer',
@@ -391,11 +363,7 @@ export const SampleData = {
       column_name: 'max_atmosphering_speed',
       data_type: 'varchar',
     },
-    crew: {
-      table_name: 'vessels',
-      column_name: 'crew',
-      data_type: 'int',
-    },
+    crew: { table_name: 'vessels', column_name: 'crew', data_type: 'int' },
     passengers: {
       table_name: 'vessels',
       column_name: 'passengers',
@@ -410,6 +378,31 @@ export const SampleData = {
       table_name: 'vessels',
       column_name: 'consumables',
       data_type: 'varchar',
+    },
+  },
+  vessels_in_films: {
+    _id: {
+      table_name: 'vessels_in_films',
+      column_name: '_id',
+      data_type: 'int',
+      primary_key: true,
+      foreign_tables: [],
+    },
+    vessel_id: {
+      table_name: 'vessels_in_films',
+      column_name: 'vessel_id',
+      data_type: 'bigint',
+      foreign_key: true,
+      linkedTable: 'vessels',
+      linkedTableColumn: '_id',
+    },
+    film_id: {
+      table_name: 'vessels_in_films',
+      column_name: 'film_id',
+      data_type: 'bigint',
+      foreign_key: true,
+      linkedTable: 'films',
+      linkedTableColumn: '_id',
     },
   },
 };
