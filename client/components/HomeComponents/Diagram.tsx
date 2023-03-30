@@ -30,10 +30,16 @@ const nodeTypes = {
 
 // Test Query
 // const query = `
-//       SELECT p.*, s._id, h.name, people.name
-//       FROM people p
-//       LEFT JOIN species s ON p.species_id = s._id
-//       LEFT JOIN planets h ON p.homeworld_id = h._id`;
+// SELECT p.*, s._id, h.name, people.name
+// FROM people p
+// LEFT JOIN species s ON p.species_id = s._id
+// LEFT JOIN planets h ON p.homeworld_id = h._id`;
+/*
+SELECT s._id, h.name, p.name
+FROM people p
+LEFT JOIN species s ON p.species_id = s._id
+LEFT JOIN planets h ON p.homeworld_id = h._id;
+*/
 
 // const query = `select name from people as p
 // left join species s on s._id = p.species_id`;

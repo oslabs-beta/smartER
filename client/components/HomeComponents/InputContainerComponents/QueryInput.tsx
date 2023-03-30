@@ -24,7 +24,6 @@ const QueryInput: React.FC<{}> = () => {
       });
       const parsedData = await data.json();
       setQueryResponse(parsedData);
-      console.log('QUERY RETURN', parsedData);
       const newHistory: historyType[] = [
         { created_at: created_at, query: queryString },
         ...history,
