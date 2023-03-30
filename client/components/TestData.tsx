@@ -55,7 +55,6 @@ export const SampleData = {
       table_name: 'people',
       column_name: 'name',
       data_type: 'varchar',
-      activeColumn: true,
     },
     mass: {
       table_name: 'people',
@@ -66,7 +65,6 @@ export const SampleData = {
       table_name: 'people',
       column_name: 'hair_color',
       data_type: 'varchar',
-      activeColumn: true,
     },
     skin_color: {
       table_name: 'people',

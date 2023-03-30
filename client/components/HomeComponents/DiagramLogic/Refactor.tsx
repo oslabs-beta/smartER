@@ -64,8 +64,9 @@
 
 // ----------------
 
+const examples: any = {};
 // select name from people
-const a = {
+examples.simple = {
   columns: [
     {
       expr: {
@@ -87,7 +88,7 @@ const a = {
 
 // select p.name from people p
 // left join species s on s._id = p.species_id
-const s = {
+examples.join = {
   columns: [
     {
       expr: {
@@ -142,9 +143,8 @@ const s = {
 // select 'person' as type, name, hair_color from people
 // union all
 // select 'species' as type, name, hair_colors from species
-const union = {
+examples.union = {
   type: 'union all',
-  // -----------------LEFT-----------------
   left: {
     columns: [
       {
@@ -179,7 +179,6 @@ const union = {
     ],
     type: 'select',
   },
-  // ---------------RIGHT--------------
   right: {
     columns: [
       {
@@ -218,7 +217,7 @@ const union = {
 
 // select * from people p
 // left join (select _id, true as luke from people where name like '%Luke%') luke on luke._id = p._id
-const subq = {
+examples.subq = {
   columns: [
     {
       expr: {
@@ -303,6 +302,40 @@ const subq = {
   ],
   type: 'select',
 };
+
+examples.agg = {
+  columns: [
+    {
+      expr: {
+        type: 'call',
+        function: {
+          name: 'concat',
+        },
+        args: [
+          {
+            type: 'ref',
+            name: 'name',
+          },
+          {
+            type: 'ref',
+            name: 'mass',
+          },
+        ],
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+      },
+    },
+  ],
+  type: 'select',
+};
+
+export default examples;
 
 /*
   recurse thru array/obj - look for
