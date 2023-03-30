@@ -18,25 +18,6 @@ function mainFunc(query: string): returnObj {
   console.log('query', query);
   const queue: any[] = [];
   queue.push(ast);
-  // const a = {
-  //   columns: [
-  //     {
-  //       expr: {
-  //         type: 'ref',
-  //         name: 'name',
-  //       },
-  //     },
-  //   ],
-  //   from: [
-  //     {
-  //       type: 'table',
-  //       name: {
-  //         name: 'people',
-  //       },
-  //     },
-  //   ],
-  //   type: 'select',
-  // };
 
   // select p.name from people p
   // left join species s on s._id = p.species_id
