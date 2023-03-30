@@ -6,7 +6,9 @@ import {
   parseFirst,
   Name,
   DataTypeDef,
+  ArrayDataTypeDef,
 } from 'pgsql-ast-parser';
+
 interface columnObj {
   table_name: string;
   column_name: string;
@@ -21,7 +23,7 @@ interface columnObj {
 }
 type returnObj = {
   errorArr: string[];
-  mainObj: typeof SampleData;
+  mainObj: Record<string, Record<string, columnObj>>;
 };
 
 function mainFunc(query: string): returnObj {
@@ -35,6 +37,28 @@ function mainFunc(query: string): returnObj {
   console.log('query', query);
   const queue: any[] = [];
   queue.push(ast);
+
+  const tables = new Set();
+  let joins = 0;
+  const visitor = astVisitor((map) => ({
+    // implement here AST parts you want to hook
+
+    tableRef: (t) => {
+      tables.add(t.name);
+      console.log('tableRef:', t);
+    },
+    join: (t) => {
+      console.log('join', t);
+      joins++;
+      // call the default implementation of 'join'
+      // this will ensure that the subtree is also traversed.
+      map.super().join(t);
+    },
+    ref: (z) => {
+      console.log('ref', z);
+    },
+  }));
+  visitor.statement(parseFirst(query));
 
   const selectHandler = (obj: any) => {
     tableHandler(obj.from);
@@ -133,7 +157,7 @@ function mainFunc(query: string): returnObj {
   const joinHandler = (obj: any) => {
     // const currentColumn =
     console.log('inside joinHandler');
-    // return;
+
     for (let key in obj) {
       switch (key) {
         case 'type':
