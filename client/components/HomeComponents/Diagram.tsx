@@ -10,12 +10,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { HomepageContext } from '../../Context';
-import {
-  // testnodes,
-  // testEdges,
-  parseEdges,
-  parseNodes,
-} from './DiagramLogic/ParseNodes';
+import { parseEdges, parseNodes } from './DiagramLogic/ParseNodes';
 import { Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
 
 // import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
@@ -50,10 +45,11 @@ LEFT JOIN planets h ON p.homeworld_id = h._id;
 
 const Diagram: React.FC<{}> = () => {
   // const data = await getERDiagram()
-  const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]); //testEdges
-  const { queryString, submit } = useContext(HomepageContext)!;
-  const [masterData, setMasterData] = useState({});
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { queryString, submit, masterData, setMasterData } =
+    useContext(HomepageContext)!;
+  // const [masterData, setMasterData] = useState({});
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
@@ -80,7 +76,7 @@ const Diagram: React.FC<{}> = () => {
 
   useEffect(() => {
     if (queryString) {
-      const queryParse = mainFunc(queryString).mainObj;
+      const queryParse = mainFunc(queryString, masterData).mainObj;
       const defaultNodes = parseNodes(queryParse);
       const defaultEdges = parseEdges(queryParse);
       setNodes(defaultNodes);

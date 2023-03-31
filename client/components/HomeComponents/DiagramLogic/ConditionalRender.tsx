@@ -1,5 +1,7 @@
 import examples from './Refactor';
-import { SampleData } from '../../TestData';
+import { useContext } from 'react';
+import { HomepageContext } from '../../../Context';
+// import { SampleData } from '../../TestData';
 import {
   Statement,
   astVisitor,
@@ -26,8 +28,10 @@ type returnObj = {
   mainObj: Record<string, Record<string, columnObj>>;
 };
 
-function mainFunc(query: string): returnObj {
-  const data = SampleData; // ER Diagram
+function mainFunc(query: string, data: any): returnObj {
+  // const { masterData } = useContext(HomepageContext)!;
+
+  // const data = masterData; // ER Diagram
   const errorArr: string[] = [];
   const mainObj: Record<string, Record<string, columnObj>> = {};
   const tableAlias: Record<string, string> = {};

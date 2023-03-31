@@ -34,6 +34,8 @@ export type HomepageContextType = {
   setDBCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
   queryResponse: any;
   setQueryResponse: Dispatch<SetStateAction<any>>;
+  masterData: any;
+  setMasterData: Dispatch<SetStateAction<any>>;
 };
 
 const defaultHomeState = {
@@ -55,6 +57,8 @@ const defaultHomeState = {
   setDBCredentials: () => {},
   queryResponse: [],
   setQueryResponse: () => {},
+  masterData: {},
+  setMasterData: () => {},
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(

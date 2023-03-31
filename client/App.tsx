@@ -21,6 +21,7 @@ const App = () => {
     database: '',
   });
   const [queryResponse, setQueryResponse] = useState([]);
+  const [masterData, setMasterData] = useState({});
 
   // const navigate = useNavigate();
 
@@ -59,6 +60,8 @@ const App = () => {
           setDBCredentials,
           queryResponse,
           setQueryResponse,
+          masterData,
+          setMasterData,
         }}
       >
         <Routes>
