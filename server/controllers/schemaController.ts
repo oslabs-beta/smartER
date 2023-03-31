@@ -30,8 +30,7 @@ const schemaController: schemaControllers = {
       // const pg_uri = decodeURIComponent(dbResult.rows[0].uri);
       // console.log('uri', decodeURIComponent(dbResult.rows[0].uri));
       // const { pg_uri } = req.body;
-      const pg_uri =
-        'postgres://naydweec:C5ZoDnjkCBQbB0dOAd5Z_yEqdEelE2zT@suleiman.db.elephantsql.com/naydweec';
+      const pg_uri = process.env.PG_URL_STARWARS;
       var envCredentials: any = { connectionString: pg_uri };
       // const pg = new Pool(programmaticCredentials || envCredentials);
       res.locals.pg = new Pool(envCredentials);
