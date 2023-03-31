@@ -1,25 +1,4 @@
 import CustomColumnNode from './CustomColumnNode';
-import { SampleData } from '../../TestData';
-
-export const testnodes = parseNodes(SampleData);
-
-const nodeTypes = {
-  CustomColumnNode: CustomColumnNode,
-};
-
-//Reusable function for getting DB ER Data to then parse
-export const getERDiagram = async () => {
-  try {
-    const data = await fetch('/api/getSchema', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const parsedData = await data.json();
-    return parsedData;
-  } catch (error) {
-    console.log(`Error in getERDiagram: ${error}`);
-  }
-};
 
 export function parseNodes(rawData: any): any {
   const nodes: any = [];
@@ -94,12 +73,10 @@ export function parseNodes(rawData: any): any {
       };
 
       if (column.primary_key) {
-        // newColumnNode.data.label = `🔑  ${columnObj} | ${column.data_type}`;
         newColumnNode.data.columnName = `🔑  ${columnObj}`;
         newColumnNode.data.dataType = `${column.data_type}`;
       }
       if (column.foreign_key) {
-        // newColumnNode.data.label = `〰️ ${columnObj} | ${column.data_type}`;
         newColumnNode.data.columnName = `🌐  ${columnObj}`;
         newColumnNode.data.dataType = `${column.data_type}`;
       }
@@ -109,12 +86,16 @@ export function parseNodes(rawData: any): any {
           background: '#FFC13B',
           borderRadius: '5px',
           width: 180,
+          opacity: 1,
+          transition: 'opacity 250ms ease-in',
         };
       } else {
         newColumnNode.style = {
           background: '#6B7B8C',
           borderRadius: '5px',
           width: 180,
+          opacity: 1,
+          transition: 'opacity 250ms ease-in',
         };
       }
       nodes.push(newColumnNode);
@@ -123,7 +104,6 @@ export function parseNodes(rawData: any): any {
   }
   return nodes;
 }
-export const testEdges = parseEdges(SampleData);
 
 export function parseEdges(data: any): any {
   const edges: any = [];

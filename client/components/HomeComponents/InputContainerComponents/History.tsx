@@ -15,7 +15,7 @@ const History: React.FC<{}> = () => {
       });
       const parsedHistory = await data.json();
       setHistory((prev: any) => {
-        console.log('prev in setHistory:', prev);
+        // console.log('prev in setHistory:', prev);
         prev.push(...parsedHistory);
         return prev;
       });

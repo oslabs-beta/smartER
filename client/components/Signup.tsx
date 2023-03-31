@@ -6,6 +6,8 @@ const Signup: React.FC<{}> = () => {
   const { email, setEmail, password, setPassword } = useContext(LoginContext)!;
   const [secondPw, setSecondPW] = useState('');
   const [doPwMatch, setPwMatch] = useState(true);
+
+  // TODO: Set up an email already exists function
   const [emailExistsError, setEmailExistsError] = useState(false);
 
   const navigate = useNavigate();

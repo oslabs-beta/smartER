@@ -72,7 +72,7 @@ const schemaController: schemaControllers = {
           tableObj[current.column_name].primary_key = true;
           tableObj[current.column_name].foreign_tables = [];
         }
-
+        // table_origin is only given when column is a foreign key
         if (current.table_origin) {
           const constraintObj: Record<string, string> = {};
           constraintObj[`${[current.table_origin]}.${current.table_column}`] =
