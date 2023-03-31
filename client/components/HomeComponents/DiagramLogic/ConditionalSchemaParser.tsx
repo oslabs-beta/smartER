@@ -1,13 +1,4 @@
-import examples from './Refactor';
-import { SampleData } from '../../TestData';
-import {
-  Statement,
-  astVisitor,
-  parseFirst,
-  Name,
-  DataTypeDef,
-  ArrayDataTypeDef,
-} from 'pgsql-ast-parser';
+import { Statement, parseFirst } from 'pgsql-ast-parser';
 
 interface columnObj {
   table_name: string;
@@ -26,9 +17,10 @@ type returnObj = {
   mainObj: Record<string, Record<string, columnObj>>;
 };
 
-function mainFunc(query: string): returnObj {
-  const data = SampleData; // ER Diagram
+function conditionalSchemaParser(query: string, schema: any): returnObj {
+  // errorArr contains errors that we find in the query when running mainFunc
   const errorArr: string[] = [];
+  // mainObj contains a partial copy of the ER diagram with flagged columns and tables
   const mainObj: Record<string, Record<string, columnObj>> = {};
   const tableAlias: Record<string, string> = {};
 
@@ -64,10 +56,10 @@ function mainFunc(query: string): returnObj {
         case 'table': {
           const tableName = currentTable.name.name;
           const alias = currentTable.name.alias;
-          if (data[tableName as keyof typeof data]) {
+          if (schema[tableName as keyof typeof schema]) {
             // Deep copy the table from data
             mainObj[tableName] = JSON.parse(
-              JSON.stringify(data[tableName as keyof typeof data])
+              JSON.stringify(schema[tableName as keyof typeof schema])
             );
             // Update alias
             if (currentTable.join) queue.push(currentTable);
@@ -210,7 +202,7 @@ function mainFunc(query: string): returnObj {
         for (const foreignTable of foreignTables) {
           if (!mainObj[foreignTable])
             mainObj[foreignTable] = {
-              ...data[foreignTable as keyof typeof data],
+              ...schema[foreignTable as keyof typeof schema],
             };
 
           // if foreign table is a join table, go one layer out
@@ -222,7 +214,7 @@ function mainFunc(query: string): returnObj {
 
       if (linkedTable && !mainObj[linkedTable]) {
         mainObj[linkedTable] = JSON.parse(
-          JSON.stringify(data[linkedTable as keyof typeof data])
+          JSON.stringify(schema[linkedTable as keyof typeof schema])
         );
 
         // if linked table is a join table, go one layer out
@@ -272,27 +264,5 @@ function mainFunc(query: string): returnObj {
   console.log('FINAL OBJ', mainObj);
   return { errorArr: errorArr, mainObj: mainObj };
 }
-function getTables1LayerOut(mainObj: any, data: typeof SampleData) {
-  for (const table in mainObj) {
-    for (const column in mainObj[table]) {
-      const linkedTable = mainObj[table][column]['linkedTable'];
-      const isForeignTable = mainObj[table][column]['foreign_tables'];
-      if (isForeignTable) {
-        // check if the foreign_tables is truthy
-        // if so, iterate through that array to check and see if we have that table already rendered in our mainObj
-        for (const foreignTable of isForeignTable) {
-          if (!mainObj[foreignTable])
-            mainObj[foreignTable] = {
-              ...data[foreignTable as keyof typeof data],
-            };
-        }
-        if (linkedTable && !mainObj[linkedTable]) {
-          mainObj[linkedTable] = {
-            ...data[linkedTable as keyof typeof data],
-          };
-        }
-      }
-    }
-  }
-}
-export default mainFunc;
+
+export default conditionalSchemaParser;
