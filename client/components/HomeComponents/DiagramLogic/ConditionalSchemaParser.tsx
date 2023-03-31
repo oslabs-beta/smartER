@@ -1,15 +1,4 @@
-import examples from './Refactor';
-import { useContext } from 'react';
-import { HomepageContext } from '../../../Context';
-// import { SampleData } from '../../TestData';
-import {
-  Statement,
-  astVisitor,
-  parseFirst,
-  Name,
-  DataTypeDef,
-  ArrayDataTypeDef,
-} from 'pgsql-ast-parser';
+import { Statement, parseFirst } from 'pgsql-ast-parser';
 
 interface columnObj {
   table_name: string;
@@ -28,11 +17,10 @@ type returnObj = {
   mainObj: Record<string, Record<string, columnObj>>;
 };
 
-function mainFunc(query: string, data: any): returnObj {
-  // const { masterData } = useContext(HomepageContext)!;
-
-  // const data = masterData; // ER Diagram
+function conditionalSchemaParser(query: string, schema: any): returnObj {
+  // errorArr contains errors that we find in the query when running mainFunc
   const errorArr: string[] = [];
+  // mainObj contains a partial copy of the ER diagram with flagged columns and tables
   const mainObj: Record<string, Record<string, columnObj>> = {};
   const tableAlias: Record<string, string> = {};
 
@@ -41,28 +29,6 @@ function mainFunc(query: string, data: any): returnObj {
   console.log('query', query);
   const queue: any[] = [];
   queue.push(ast);
-
-  const tables = new Set();
-  let joins = 0;
-  const visitor = astVisitor((map) => ({
-    // implement here AST parts you want to hook
-
-    tableRef: (t) => {
-      tables.add(t.name);
-      console.log('tableRef:', t);
-    },
-    join: (t) => {
-      console.log('join', t);
-      joins++;
-      // call the default implementation of 'join'
-      // this will ensure that the subtree is also traversed.
-      map.super().join(t);
-    },
-    ref: (z) => {
-      console.log('ref', z);
-    },
-  }));
-  visitor.statement(parseFirst(query));
 
   const selectHandler = (obj: any) => {
     tableHandler(obj.from);
@@ -90,10 +56,10 @@ function mainFunc(query: string, data: any): returnObj {
         case 'table': {
           const tableName = currentTable.name.name;
           const alias = currentTable.name.alias;
-          if (data[tableName as keyof typeof data]) {
+          if (schema[tableName as keyof typeof schema]) {
             // Deep copy the table from data
             mainObj[tableName] = JSON.parse(
-              JSON.stringify(data[tableName as keyof typeof data])
+              JSON.stringify(schema[tableName as keyof typeof schema])
             );
             // Update alias
             if (currentTable.join) queue.push(currentTable);
@@ -236,7 +202,7 @@ function mainFunc(query: string, data: any): returnObj {
         for (const foreignTable of foreignTables) {
           if (!mainObj[foreignTable])
             mainObj[foreignTable] = {
-              ...data[foreignTable as keyof typeof data],
+              ...schema[foreignTable as keyof typeof schema],
             };
 
           // if foreign table is a join table, go one layer out
@@ -248,7 +214,7 @@ function mainFunc(query: string, data: any): returnObj {
 
       if (linkedTable && !mainObj[linkedTable]) {
         mainObj[linkedTable] = JSON.parse(
-          JSON.stringify(data[linkedTable as keyof typeof data])
+          JSON.stringify(schema[linkedTable as keyof typeof schema])
         );
 
         // if linked table is a join table, go one layer out
@@ -299,4 +265,4 @@ function mainFunc(query: string, data: any): returnObj {
   return { errorArr: errorArr, mainObj: mainObj };
 }
 
-export default mainFunc;
+export default conditionalSchemaParser;
