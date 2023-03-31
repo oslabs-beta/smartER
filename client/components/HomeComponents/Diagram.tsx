@@ -1,6 +1,5 @@
-import React, { FC, useContext, useState, useCallback, useEffect } from 'react';
+import React, { FC, useContext, useCallback, useEffect } from 'react';
 import ReactFlow, {
-  MiniMap,
   Controls,
   Background,
   useNodesState,
@@ -10,50 +9,21 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { HomepageContext } from '../../Context';
-import {
-  // testnodes,
-  // testEdges,
-  parseEdges,
-  parseNodes,
-} from './DiagramLogic/ParseNodes';
-import { Statement, astVisitor, parseFirst } from 'pgsql-ast-parser';
-
-// import { parseQueryAndGenerateNodes } from './DiagramLogic/SampleData';
+import { parseEdges, parseNodes } from './DiagramLogic/ParseNodes';
 import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
-import mainFunc from './DiagramLogic/ConditionalRender';
+import conditionalSchemaParser from './DiagramLogic/ConditionalSchemaParser';
 
 const nodeTypes = {
   CustomColumnNode: CustomColumnNode,
   CustomTitleNode: CustomTitleNode,
 };
 
-// Test Query
-// const query = `
-// SELECT p.*, s._id, h.name, people.name
-// FROM people p
-// LEFT JOIN species s ON p.species_id = s._id
-// LEFT JOIN planets h ON p.homeworld_id = h._id`;
-/*
-SELECT s._id, h.name, p.name
-FROM people p
-LEFT JOIN species s ON p.species_id = s._id
-LEFT JOIN planets h ON p.homeworld_id = h._id;
-*/
-
-// const query = `select name from people as p
-// left join species s on s._id = p.species_id`;
-
-// const ast: Statement = parseFirst(query);
-// // console.log('AST:', ast);
-// mainFunc(query);
-
-const Diagram: React.FC<{}> = () => {
-  // const data = await getERDiagram()
-  const [nodes, setNodes, onNodesChange] = useNodesState([]); //testnodes
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]); //testEdges
-  const { queryString, submit } = useContext(HomepageContext)!;
-  const [masterData, setMasterData] = useState({});
+const Diagram: FC<{}> = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { queryString, submit, masterData, setMasterData } =
+    useContext(HomepageContext)!;
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
@@ -80,7 +50,10 @@ const Diagram: React.FC<{}> = () => {
 
   useEffect(() => {
     if (queryString) {
-      const queryParse = mainFunc(queryString).mainObj;
+      const queryParse = conditionalSchemaParser(
+        queryString,
+        masterData
+      ).mainObj;
       const defaultNodes = parseNodes(queryParse);
       const defaultEdges = parseEdges(queryParse);
       setNodes(defaultNodes);
@@ -109,70 +82,3 @@ const Diagram: React.FC<{}> = () => {
 };
 
 export default Diagram;
-
-//Hide nodes docs, but hides ALL nodes: https://reactflow.dev/docs/examples/nodes/hidden/
-//Edge styling: https://reactflow.dev/docs/examples/edges/custom-edge/
-
-//SAMPLE DATA for Initial rendering:
-
-//To use, paste outside of functional component and update
-//useNodeState and useEdgeState default values to initialNodes and initialEdges
-/*
-const initialNodes = [
-  {
-    id: '0',
-    type: 'group',
-    position: {x: 200, y: 200},
-    data: {label: '0'},
-    style: {
-      display: 'flex',
-      width: 150,
-      height: 80,
-      border: '1px solid #000',
-    },
-  },
-  {
-    id: '1',
-    type: 'input',
-    parentNode: '0',
-    extent: 'parent',
-    position: {x: 0, y: 0},
-    data: {label: '1'},
-    sourcePosition: 'right',
-    targetPosition: 'left',
-  },
-  {
-    id: '2',
-    type: 'input',
-    parentNode: '0',
-    extent: 'parent',
-    position: {x: 0, y: 40},
-    data: {label: '2'},
-    sourcePosition: 'right',
-    targetPosition: 'left',
-  },
-
-  {
-    id: '3',
-    position: {x: 400, y: 400},
-    data: {label: '3'},
-    sourcePosition: 'right',
-    targetPosition: 'left',
-  },
-  {
-    id: '4',
-    position: {x: 100, y: 200},
-    data: {label: '4'},
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    content: [
-      {id: 'test', data: {label: 'hello'}, x: 0, y: 0},
-      {id: 'test2', data: {label: 'world'}, x: 0, y: 0},
-    ],
-  },
-];
-const initialEdges = [
-  {id: 'e1-2', source: '1', target: '2', animated: true},
-  {id: 'e2-3', source: '2', target: '3', animated: true},
-];
-*/

@@ -34,6 +34,8 @@ export type HomepageContextType = {
   setDBCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
   queryResponse: any;
   setQueryResponse: Dispatch<SetStateAction<any>>;
+  masterData: any;
+  setMasterData: Dispatch<SetStateAction<any>>;
 };
 
 const defaultHomeState = {
@@ -55,13 +57,13 @@ const defaultHomeState = {
   setDBCredentials: () => {},
   queryResponse: [],
   setQueryResponse: () => {},
+  masterData: {},
+  setMasterData: () => {},
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(
   defaultHomeState
 );
-
-//History [{created_at: string, query: string}]
 
 //TYPES
 export interface historyType {
@@ -76,13 +78,3 @@ export interface dbCredentialsType {
   dbPassword: string;
   database: string;
 }
-
-//TODO: Create state for Nodes
-/*
-//State to manage:
-[]Nodes
-[x]Query
-[x]History
-[x]Settings
-
-*/

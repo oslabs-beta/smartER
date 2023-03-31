@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { getAllQuery } from '../helper/getAllQuery';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import db from '../models/userModel';
 import { table } from 'console';
 dotenv.config();
 
@@ -9,16 +9,29 @@ interface schemaControllers {
   connectDb: RequestHandler;
   getSchemaPostgreSQL: RequestHandler;
   getQueryResults: RequestHandler;
-  getQueryPerformance: RequestHandler;
 }
 //
 const schemaController: schemaControllers = {
   connectDb: async (req, res, next) => {
     try {
-      // we should probably refactor this to get URI from db based on user/JWT
-      const { pg_url } = req.body;
-      const PG_URL = pg_url || process.env.PG_URL_STARWARS;
-      var envCredentials: any = { connectionString: PG_URL };
+      console.log('running connectDb');
+      // const { dbId } = req.cookies;
+      // if (!dbId) throw new Error('no db cookie');
+      // const query = `
+      //   SELECT _id FROM databases
+      //   WHERE _id = 1
+      // ;`;
+      // console.log('query', query);
+      // const dbResult = await db.query(`
+      //   SELECT _id FROM databases
+      //   WHERE _id = 1
+      // ;`);
+
+      // const pg_uri = decodeURIComponent(dbResult.rows[0].uri);
+      // console.log('uri', decodeURIComponent(dbResult.rows[0].uri));
+      // const { pg_uri } = req.body;
+      const pg_uri = process.env.PG_URL_STARWARS;
+      var envCredentials: any = { connectionString: pg_uri };
       // const pg = new Pool(programmaticCredentials || envCredentials);
       res.locals.pg = new Pool(envCredentials);
       return next();
@@ -35,13 +48,41 @@ const schemaController: schemaControllers = {
       const pg = res.locals.pg;
       // Get all relationships between all tables
       // Identify the current schema name for use in full schema query
-      const currentSchema = await pg.query(
+      const currentSchemaSQL = await pg.query(
         `SELECT current_schema FROM current_schema`
       );
 
+      const currentSchema = currentSchemaSQL.rows[0].current_schema;
+
       const constraintArr: Record<string, string>[] = [];
       // Get Relationships, Tables names, Column names, Data types
-      const schema = await pg.query(getAllQuery(currentSchema));
+      const query = `SELECT * FROM (
+        SELECT DISTINCT ON (c.table_name, c.column_name)
+            c.table_name, 
+            c.column_name, 
+            c.data_type,
+            c. ordinal_position,
+            max(case when tc.constraint_type = 'PRIMARY KEY' then 1 else 0 end) OVER(PARTITION BY c.table_name, c.column_name) AS is_primary_key,
+            cc.table_name as table_origin,
+            cc.column_name as table_column
+
+        FROM information_schema.key_column_usage kc
+
+        INNER JOIN information_schema.table_constraints tc
+        ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema AND kc.constraint_name = tc.constraint_name 
+
+        LEFT JOIN information_schema.constraint_column_usage cc
+        ON cc.constraint_name = kc.constraint_name AND tc.constraint_type = 'FOREIGN KEY'
+
+        RIGHT JOIN information_schema.columns c
+        ON c.table_name = kc.table_name AND c.column_name = kc.column_name
+
+        WHERE c.table_schema = '${currentSchema}' AND is_updatable = 'YES'
+
+        ORDER BY c.table_name, c.column_name, is_primary_key desc, table_origin) subquery
+      
+      ORDER BY table_name, ordinal_position;`;
+      const schema = await pg.query(query);
       // console.log('SCHEMA', schema.rows);
 
       // Initialize array to hold returned data
@@ -72,7 +113,7 @@ const schemaController: schemaControllers = {
           tableObj[current.column_name].primary_key = true;
           tableObj[current.column_name].foreign_tables = [];
         }
-
+        // table_origin is only given when column is a foreign key
         if (current.table_origin) {
           const constraintObj: Record<string, string> = {};
           constraintObj[`${[current.table_origin]}.${current.table_column}`] =
@@ -128,30 +169,6 @@ const schemaController: schemaControllers = {
     } catch (error) {
       return next({
         log: `Error in schemaController.getQueryResults ${error}`,
-        status: 400,
-        message: { error },
-      });
-    }
-  },
-  getQueryPerformance: async (req, res, next) => {
-    // this isn't called from FE but may be useful for debugging - plug JSON result into SQL explain tool
-    try {
-      const pg = res.locals.pg;
-      const currentSchema = await pg.query(
-        `SELECT current_schema FROM current_schema`
-      );
-
-      // Get Relationships, Tables names, Column names, Data types
-      const schema = await pg.query(
-        `EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON) ${getAllQuery(
-          currentSchema
-        )}`
-      );
-
-      res.json(schema.rows[0]['QUERY PLAN'][0]);
-    } catch (error) {
-      return next({
-        log: `Error in schemaController.getQueryPerformance ${error}`,
         status: 400,
         message: { error },
       });

@@ -28,10 +28,8 @@ const QueryInput: React.FC<{}> = () => {
       setQueryResponse(parsedData);
 
       //Update History State, for re-rendering History.tsx
-      // const newHistory =
-
       setHistory(() => {
-        console.log('history: ', history);
+        // console.log('history: ', history);
         return [...history, { created_at: created_at, query: queryString }];
       });
     } catch (error) {
@@ -40,7 +38,7 @@ const QueryInput: React.FC<{}> = () => {
     }
 
     // response from GET should be sent to the Query Result component
-    console.log('QUERY HANDLE SUBMIT ', queryString);
+    // console.log('QUERY HANDLE SUBMIT ', queryString);
   };
 
   return (
