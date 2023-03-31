@@ -25,12 +25,6 @@ router.get(
   }
 );
 
-router.get(
-  '/getSchemaPerformance',
-  schemaController.connectDb,
-  schemaController.getQueryPerformance
-);
-
 router.get('/getHistory', dbController.getHistory, (req, res) => {
   res.status(200).json(res.locals.queryHistory);
 });
