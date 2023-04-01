@@ -1,15 +1,15 @@
 import request from 'supertest';
-import { app } from '../../server/server';
-const PORT = process.env.PORT || 9001;
-const server = `http://localhost:${PORT}`;
+import app from '../../server/app';
 
 // API Route testing
 describe('/api', () => {
   describe('/getQueryResults', () => {
     describe('POST', () => {
       it('responds with 200 status and application/json content type', async () => {
-        const res = await request(app).post('/api/getQueryResults').send({});
-        expect(res).toEqual('something');
+        const res = await request(app)
+          .post('/api/getQueryResults')
+          .send({ queryString: 'SELECT name from people' });
+        expect(res.statusCode).toEqual(200);
       });
     });
   });
@@ -52,4 +52,13 @@ describe('/user', () => {
 });
 
 // Catch all 404 testing
-describe('/', () => {});
+describe('/', () => {
+  it('Should return 404 and status message when sending invalid URL', async () => {
+    const res = await request(app).get('/DKLSJA');
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toEqual(
+      `This is not the page you are looking for ¯\\_(ツ)_/¯`
+    );
+    return;
+  });
+});
