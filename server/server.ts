@@ -68,7 +68,6 @@ app.post(
   userController.checkForEmail,
   userController.createUser,
   cookieController.setJwtCookie,
-  cookieController.setDbCookie,
   (req, res) => {
     return res.status(200).send();
   }
