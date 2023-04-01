@@ -84,6 +84,7 @@ const Login: React.FC<{}> = () => {
         <button type="submit" className="submit" onClick={handleSubmit}>
           Login
         </button>
+
         {!validCredentials && (
           <div className="small-text">Incorrect Password or Email</div>
         )}
