@@ -1,9 +1,17 @@
-import { Request, Response } from 'supertest';
-const server = 'http://localhost:9001';
+import request from 'supertest';
+import { app } from '../../server/server';
+const PORT = process.env.PORT || 9001;
+const server = `http://localhost:${PORT}`;
 
+// API Route testing
 describe('/api', () => {
   describe('/getQueryResults', () => {
-    describe('POST', () => {});
+    describe('POST', () => {
+      it('responds with 200 status and application/json content type', async () => {
+        const res = await request(app).post('/api/getQueryResults').send({});
+        expect(res).toEqual('something');
+      });
+    });
   });
   describe('/getSchema', () => {
     describe('GET', () => {});
@@ -16,6 +24,7 @@ describe('/api', () => {
   });
 });
 
+// User route testing
 describe('/user', () => {
   describe('/emailCheck', () => {
     describe('POST', () => {});
@@ -41,3 +50,6 @@ describe('/user', () => {
     describe('GET', () => {});
   });
 });
+
+// Catch all 404 testing
+describe('/', () => {});

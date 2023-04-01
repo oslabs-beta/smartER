@@ -136,4 +136,4 @@ app.listen(PORT, () => {
   console.log(`⚡️Express:${PORT} ⚡️`);
 });
 
-export { redisClient };
+export { redisClient, app };
