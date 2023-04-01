@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Login from '../client/components/Login';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom/extend-expect';
 
 describe('Unit testing for Login', () => {
   beforeEach(() => {
@@ -42,8 +43,10 @@ describe('Unit testing for Login', () => {
     // userEvent.click(loginButton);
     fireEvent.click(loginButton!);
 
-    const errorMessage = document.getElementsByClassName('small-text');
-    console.log('errorMessage', errorMessage);
-    expect(errorMessage).toHaveLength(1);
+    //expect to see error message "Incorrect Password or Email"
+    expect(screen.getByText('Incorrect Password or Email')).toBeDefined();
+    // const errorMessage = document.getElementsByClassName('small-text');
+    // console.log('errorMessage', errorMessage);
+    // expect(errorMessage).toHaveLength(1);
   });
 });
