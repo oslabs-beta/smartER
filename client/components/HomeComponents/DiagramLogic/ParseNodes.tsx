@@ -1,6 +1,8 @@
 import CustomColumnNode from './CustomColumnNode';
 
 export function parseNodes(rawData: any): any {
+  const standardHeight = 40;
+
   const nodes: any = [];
   let j = 0;
   for (const table in rawData) {
@@ -40,6 +42,7 @@ export function parseNodes(rawData: any): any {
         opacity: 1,
         transition: 'opacity 250ms ease-in',
         width: 180,
+        height: standardHeight,
       },
       draggable: false,
     };
@@ -69,6 +72,7 @@ export function parseNodes(rawData: any): any {
           opacity: 1,
           transition: 'opacity 250ms ease-in',
           width: 180,
+          height: standardHeight,
         },
       };
 
@@ -88,6 +92,7 @@ export function parseNodes(rawData: any): any {
           width: 180,
           opacity: 1,
           transition: 'opacity 250ms ease-in',
+          height: standardHeight,
         };
       } else {
         newColumnNode.style = {
@@ -96,6 +101,7 @@ export function parseNodes(rawData: any): any {
           width: 180,
           opacity: 1,
           transition: 'opacity 250ms ease-in',
+          height: standardHeight,
         };
       }
       nodes.push(newColumnNode);
@@ -113,7 +119,7 @@ export function parseEdges(data: any): any {
       const column = data[table][columnObj];
       if (column.foreign_key) {
         const newEdge = {
-          id: `${table}.${columnName}->${column.linkedTableColumn}${column.column_name}`,
+          id: `${table}.${columnName}->${column.linkedTableColumn}.${column.column_name}`,
           source: `${columnName}.${table}.node`,
           target: `${column.linkedTableColumn}.${column.linkedTable}.node`,
           type: 'default',

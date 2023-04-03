@@ -13,18 +13,22 @@ import { parseEdges, parseNodes } from './DiagramLogic/ParseNodes';
 import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
 import conditionalSchemaParser from './DiagramLogic/ConditionalSchemaParser';
+import { getElkData } from './DiagramLogic/LayoutCalc';
 
+const proOptions = { hideAttribution: true };
 const nodeTypes = {
   CustomColumnNode: CustomColumnNode,
   CustomTitleNode: CustomTitleNode,
 };
 
 const Diagram: FC<{}> = () => {
+  // STATE
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { queryString, submit, masterData, setMasterData } =
     useContext(HomepageContext)!;
 
+  // HOOKS
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
@@ -50,14 +54,19 @@ const Diagram: FC<{}> = () => {
 
   useEffect(() => {
     if (queryString) {
-      const queryParse = conditionalSchemaParser(
-        queryString,
-        masterData
-      ).mainObj;
-      const defaultNodes = parseNodes(queryParse);
-      const defaultEdges = parseEdges(queryParse);
-      setNodes(defaultNodes);
-      setEdges(defaultEdges);
+      async function updateNodes() {
+        const queryParse = conditionalSchemaParser(
+          queryString,
+          masterData
+        ).mainObj;
+        const defaultNodes = parseNodes(queryParse);
+        const defaultEdges = parseEdges(queryParse);
+        const testElk = await getElkData(defaultNodes, defaultEdges);
+        console.log('testElk', testElk);
+        setNodes(testElk);
+        setEdges(defaultEdges);
+      }
+      updateNodes();
     }
   }, [submit]);
 
@@ -71,6 +80,7 @@ const Diagram: FC<{}> = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           fitView
+          proOptions={proOptions}
           nodeTypes={nodeTypes}
         >
           <Controls />

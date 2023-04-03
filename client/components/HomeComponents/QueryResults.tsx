@@ -50,7 +50,7 @@ const QueryResults: React.FC<{}> = () => {
             </tr>
           </thead>
           <tbody>
-            {columnsValue.map((column) => {
+            {columnsValue.map((column, index) => {
               // console.log(column);
               let i = 0;
               const columnsArray: JSX.Element[] = [];
@@ -62,7 +62,11 @@ const QueryResults: React.FC<{}> = () => {
                   </td>
                 );
               });
-              return <tr className="query-rows">{columnsArray}</tr>;
+              return (
+                <tr key={`tr${index}`} className="query-rows">
+                  {columnsArray}
+                </tr>
+              );
             })}
           </tbody>
         </table>
