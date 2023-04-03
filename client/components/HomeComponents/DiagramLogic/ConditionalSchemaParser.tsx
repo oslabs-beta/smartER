@@ -16,13 +16,27 @@ type returnObj = {
   errorArr: string[];
   mainObj: Record<string, Record<string, columnObj>>;
 };
+type tableAlias = {
+  [key: string]: string;
+};
+type mainObj = {
+  [key: string]: Record<string, columnObj>;
+};
+type joinObj = {
+  [key: string]: key;
+};
+type key = {
+  name: string;
+  table: { name: string };
+  type: string;
+};
 
 function conditionalSchemaParser(query: string, schema: any): returnObj {
   // errorArr contains errors that we find in the query when running mainFunc
   const errorArr: string[] = [];
   // mainObj contains a partial copy of the ER diagram with flagged columns and tables
-  const mainObj: Record<string, Record<string, columnObj>> = {};
-  const tableAlias: Record<string, string> = {};
+  const mainObj: mainObj = {};
+  const tableAlias: tableAlias = {};
 
   const ast: Statement = parseFirst(query);
   console.log('AST', ast);
@@ -135,51 +149,15 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   };
 
   const joinHandler = (obj: any) => {
-    // const currentColumn =
-    console.log('inside joinHandler');
-
-    for (let key in obj) {
-      switch (key) {
-        case 'type':
-          break;
-        case 'on':
-          for (let onKey in obj.on) {
-            switch (onKey) {
-              case 'type':
-                break;
-              case 'left' || 'right':
-                const currentColumn = obj.on;
-                // if left/right object has a property table with a name
-                if (currentColumn[onKey].table.name) {
-                  // attempt to lookup table name by alias
-                  const tableName = tableAlias[currentColumn[onKey].table.name];
-                  if (tableName) {
-                    // identify col name and flag it in mainObj
-                    const columnName = currentColumn[onKey].name;
-                    mainObj[tableName][columnName].activeLink = true;
-                  }
-                } else {
-                  // else iterate through mainObj and check for a table that has a column name that matches
-                  const tables = Object.keys(mainObj);
-                  const columnName = currentColumn[onKey].name;
-                  let counter = 0;
-                  for (let i = 0; i < tables.length; i++) {
-                    const tableName = tables[i];
-                    //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
-                    if (mainObj[tableName][columnName]) {
-                      mainObj[tableName][columnName].activeLink = true;
-                      counter++;
-                    }
-                  }
-                  if (counter === 0) errorArr.push('no cols found');
-                  else if (counter > 1) errorArr.push('too many cols');
-                }
-            }
-          }
-        default:
-        // queue.push(obj[key]);
-      }
-    }
+    const left = obj.on.left;
+    const right = obj.on.right;
+    // for (let key in on) {
+    if (left) flagActiveLinks(left, tableAlias, mainObj, errorArr);
+    else errorArr.push(`No column found for left position of ${obj.type}`);
+    if (right) flagActiveLinks(right, tableAlias, mainObj, errorArr);
+    else errorArr.push(`No column found for right position of ${obj.type}`);
+    // }
+    // queue.push(obj[key]);
   };
 
   const connectedTablesHandler = (table: string) => {
@@ -263,6 +241,39 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   for (const table in mainObj) connectedTablesHandler(table);
   console.log('FINAL OBJ', mainObj);
   return { errorArr: errorArr, mainObj: mainObj };
+}
+
+function flagActiveLinks(
+  onKey: key,
+  tableAlias: tableAlias,
+  mainObj: mainObj,
+  errorArr: string[]
+) {
+  if (onKey.table.name) {
+    // attempt to lookup table name by alias
+    const tableName = tableAlias[onKey.table.name];
+    if (tableName) {
+      // identify col name and flag it in mainObj
+      const columnName = onKey.name;
+      mainObj[tableName][columnName].activeLink = true;
+    } // Potential error push here if tableName was not found?
+  } else {
+    // else iterate through mainObj and check for a table that has a column name that matches
+    const tables = Object.keys(mainObj);
+    const columnName = onKey.name;
+    let counter = 0;
+    for (let i = 0; i < tables.length; i++) {
+      const tableName = tables[i];
+      //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
+      if (mainObj[tableName][columnName]) {
+        mainObj[tableName][columnName].activeLink = true;
+        counter++;
+      }
+      // Potential error push here if tableName/columnName was not found?
+    }
+    if (counter === 0) errorArr.push('no cols found');
+    else if (counter > 1) errorArr.push('too many cols');
+  }
 }
 
 export default conditionalSchemaParser;
