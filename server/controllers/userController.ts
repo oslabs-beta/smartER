@@ -1,7 +1,10 @@
 import db from '../models/userModel';
 import { RequestHandler } from 'express';
-import { body, validationResult } from 'express-validator';
-import { User } from '../../types/custom';
+
+//Potential clean up?
+// import { body, validationResult } from 'express-validator';
+// import { User } from '../../types/custom';
+
 import jwt from 'jsonwebtoken';
 import { redisClient } from '../server';
 import bcrypt from 'bcrypt';

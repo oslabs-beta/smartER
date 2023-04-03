@@ -15,24 +15,17 @@ const schemaController: schemaControllers = {
   connectDb: async (req, res, next) => {
     try {
       console.log('running connectDb');
-      // const { dbId } = req.cookies;
-      // if (!dbId) throw new Error('no db cookie');
-      // const query = `
-      //   SELECT _id FROM databases
-      //   WHERE _id = 1
-      // ;`;
-      // console.log('query', query);
-      // const dbResult = await db.query(`
-      //   SELECT _id FROM databases
-      //   WHERE _id = 1
-      // ;`);
+      const { dbId } = req.cookies;
+      if (!dbId) throw new Error('no db cookie');
 
-      // const pg_uri = decodeURIComponent(dbResult.rows[0].uri);
-      // console.log('uri', decodeURIComponent(dbResult.rows[0].uri));
-      // const { pg_uri } = req.body;
-      const pg_uri = process.env.PG_URL_STARWARS;
+      const dbResult = await db.query(`
+        SELECT uri FROM databases
+        WHERE _id = ${dbId}
+      ;`);
+      const pg_uri = decodeURIComponent(dbResult.rows[0].uri);
+
+      // const pg_uri = process.env.PG_URL_STARWARS;
       var envCredentials: any = { connectionString: pg_uri };
-      // const pg = new Pool(programmaticCredentials || envCredentials);
       res.locals.pg = new Pool(envCredentials);
       return next();
     } catch (error) {
@@ -58,8 +51,8 @@ const schemaController: schemaControllers = {
       // Get Relationships, Tables names, Column names, Data types
       const query = `SELECT * FROM (
         SELECT DISTINCT ON (c.table_name, c.column_name)
-            c.table_name, 
-            c.column_name, 
+            c.table_name,
+            c.column_name,
             c.data_type,
             c. ordinal_position,
             max(case when tc.constraint_type = 'PRIMARY KEY' then 1 else 0 end) OVER(PARTITION BY c.table_name, c.column_name) AS is_primary_key,
@@ -69,7 +62,7 @@ const schemaController: schemaControllers = {
         FROM information_schema.key_column_usage kc
 
         INNER JOIN information_schema.table_constraints tc
-        ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema AND kc.constraint_name = tc.constraint_name 
+        ON kc.table_name = tc.table_name AND kc.table_schema = tc.table_schema AND kc.constraint_name = tc.constraint_name
 
         LEFT JOIN information_schema.constraint_column_usage cc
         ON cc.constraint_name = kc.constraint_name AND tc.constraint_type = 'FOREIGN KEY'
@@ -80,7 +73,7 @@ const schemaController: schemaControllers = {
         WHERE c.table_schema = '${currentSchema}' AND is_updatable = 'YES'
 
         ORDER BY c.table_name, c.column_name, is_primary_key desc, table_origin) subquery
-      
+
       ORDER BY table_name, ordinal_position;`;
       const schema = await pg.query(query);
       // console.log('SCHEMA', schema.rows);
