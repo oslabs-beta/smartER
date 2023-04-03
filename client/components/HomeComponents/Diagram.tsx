@@ -62,7 +62,6 @@ const Diagram: FC<{}> = () => {
         const defaultNodes = parseNodes(queryParse);
         const defaultEdges = parseEdges(queryParse);
         const testElk = await getElkData(defaultNodes, defaultEdges);
-        console.log('testElk', testElk);
         setNodes(testElk);
         setEdges(defaultEdges);
       }

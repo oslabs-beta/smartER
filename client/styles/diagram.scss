@@ -13,6 +13,7 @@ $color4: #6bfbce;
 
 .column-node {
   border: 1px solid #1e3d59;
+  border-radius: 5px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -31,6 +32,15 @@ $color4: #6bfbce;
   margin-left: 5px;
   margin-right: 5px;
   // text-overflow: wrap;
+}
+
+.column-name {
+  color: $color4;
+  text-align: left;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  // white-space: wrap;
 }
 
 @keyframes fade {

@@ -17,7 +17,6 @@ export function parseNodes(rawData: any): any {
         width: 180, //was 152
         display: 'flex',
         opacity: 0.25,
-        // border: '1px solid #000',
         zIndex: 10,
       },
       draggable: true,

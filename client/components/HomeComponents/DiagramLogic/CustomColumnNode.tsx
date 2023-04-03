@@ -24,8 +24,8 @@ function CustomColumnNode({ data, isConnectable }: any) {
         style={handleStyleLeft}
       />
       <div className="column-data">
-        <div>{data.columnName}</div>
-        <div>{data.dataType}</div>
+        <div className="column-name">{data.columnName}</div>
+        <div className="column-type">{data.dataType}</div>
       </div>
       <Handle
         type="source"
