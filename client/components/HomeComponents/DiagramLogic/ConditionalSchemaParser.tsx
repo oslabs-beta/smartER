@@ -268,6 +268,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           break;
         case 'type':
           break;
+        case 'where':
+          break;
         default:
           queue.push(obj[key]);
       }
@@ -389,11 +391,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           if (colMatchCount > 1)
             errorArr.push(`Column ${columnName} exists in more than one table`);
 
-        case 'string' || 'integer' || 'boolean':
-          break;
-
         default:
-        //push to the queue
+          queue.push(currentColumn.expr);
       }
     }
     // if type is select, invoke selectHandler <- have not seen any columns with type select.
@@ -508,11 +507,13 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
       } else if (type === 'statement') {
         currentSubqueryAlias = obj.alias;
         for (let key in obj) {
-          if (typeof obj[key] === 'object') queue.push(obj[key]);
+          if (key.toLowerCase() !== 'where' && typeof obj[key] === 'object')
+            queue.push(obj[key]);
         }
       } else {
         for (let key in obj) {
-          if (typeof obj[key] === 'object') queue.push(obj[key]);
+          if (key.toLowerCase() !== 'where' && typeof obj[key] === 'object')
+            queue.push(obj[key]);
         }
       }
     }
@@ -532,19 +533,7 @@ const x = {
     {
       expr: {
         type: 'ref',
-        table: {
-          name: 'p',
-        },
         name: 'name',
-      },
-    },
-    {
-      expr: {
-        type: 'ref',
-        table: {
-          name: 'l',
-        },
-        name: '_id',
       },
     },
   ],
@@ -553,163 +542,47 @@ const x = {
       type: 'table',
       name: {
         name: 'people',
-        alias: 'p',
-      },
-    },
-    {
-      type: 'statement',
-      statement: {
-        columns: [
-          {
-            expr: {
-              type: 'ref',
-              name: '_id',
-            },
-          },
-          {
-            expr: {
-              type: 'boolean',
-              value: true,
-            },
-            alias: {
-              name: 'luke',
-            },
-          },
-        ],
-        from: [
-          {
-            type: 'table',
-            name: {
-              name: 'people',
-            },
-          },
-        ],
-        where: {
-          type: 'binary',
-          left: {
-            type: 'ref',
-            name: 'name',
-          },
-          right: {
-            type: 'string',
-            value: '%Luke%',
-          },
-          op: 'LIKE',
-        },
-        type: 'select',
-      },
-      alias: 'l',
-      join: {
-        type: 'LEFT JOIN',
-        on: {
-          type: 'binary',
-          left: {
-            type: 'ref',
-            table: {
-              name: 'l',
-            },
-            name: '_id',
-          },
-          right: {
-            type: 'ref',
-            table: {
-              name: 'p',
-            },
-            name: '_id',
-          },
-          op: '=',
-        },
       },
     },
   ],
-  type: 'select',
-};
-
-const y = {
-  columns: [
-    {
-      expr: {
-        type: 'ref',
-        table: {
-          name: 's',
-        },
-        name: 'name',
-      },
+  where: {
+    type: 'binary',
+    left: {
+      type: 'ref',
+      name: '_id',
     },
-    {
-      expr: {
-        type: 'ref',
-        table: {
-          name: 'l',
-        },
-        name: '_id',
-      },
-    },
-  ],
-  from: [
-    {
-      type: 'table',
-      name: {
-        name: 'species',
-        alias: 's',
-      },
-    },
-    {
-      type: 'statement',
-      statement: {
-        columns: [
-          {
-            expr: {
-              type: 'ref',
-              name: '_id',
-            },
-          },
-        ],
-        from: [
-          {
-            type: 'table',
-            name: {
-              name: 'people',
-            },
-          },
-        ],
-        where: {
-          type: 'binary',
-          left: {
+    right: {
+      columns: [
+        {
+          expr: {
             type: 'ref',
-            name: 'name',
-          },
-          right: {
-            type: 'string',
-            value: '%Luke%',
-          },
-          op: 'LIKE',
-        },
-        type: 'select',
-      },
-      alias: 'l',
-      join: {
-        type: 'LEFT JOIN',
-        on: {
-          type: 'binary',
-          left: {
-            type: 'ref',
-            table: {
-              name: 'l',
-            },
             name: '_id',
           },
-          right: {
-            type: 'ref',
-            table: {
-              name: 's',
-            },
-            name: '_id',
-          },
-          op: '=',
         },
+      ],
+      from: [
+        {
+          type: 'table',
+          name: {
+            name: 'people',
+          },
+        },
+      ],
+      where: {
+        type: 'binary',
+        left: {
+          type: 'ref',
+          name: 'name',
+        },
+        right: {
+          type: 'string',
+          value: '%Luke%',
+        },
+        op: 'LIKE',
       },
+      type: 'select',
     },
-  ],
+    op: 'IN',
+  },
   type: 'select',
 };
