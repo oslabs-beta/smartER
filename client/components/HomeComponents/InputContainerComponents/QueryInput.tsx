@@ -23,7 +23,7 @@ const QueryInput: React.FC<{}> = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ created_at, queryString }),
       });
-      if ((await data.status) === 200) {
+      if (data.status === 200) {
         const parsedData = await data.json();
         //setState query result for rendering QueryResults.tsx
         setQueryResponse(parsedData);

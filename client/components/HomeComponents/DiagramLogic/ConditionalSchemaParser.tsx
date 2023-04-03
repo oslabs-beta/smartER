@@ -236,6 +236,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   const mainObj: Record<string, Record<string, columnObj>> = {};
   const tableAliasLookup: Record<string, string> = {};
   let activeTables: string[];
+  const columnsWithUndefinedAlias: Record<string, string[]> = {};
+  let currentSubqueryAlias: string;
 
   const ast: Statement = parseFirst(query);
   console.log('SCHEMA', schema);
@@ -248,6 +250,15 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
     activeTables = [];
     tableHandler(obj.from);
     columnHandler(obj.columns);
+
+    // cleanup aliases
+    if (
+      currentSubqueryAlias &&
+      columnsWithUndefinedAlias[currentSubqueryAlias]
+    ) {
+      delete columnsWithUndefinedAlias[currentSubqueryAlias];
+    }
+    currentSubqueryAlias = '';
 
     for (let key in obj) {
       switch (key) {
@@ -273,14 +284,19 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           const alias = currentTable.name.alias;
           if (schema[tableName as keyof typeof schema]) {
             // Deep copy the table from data
-            mainObj[tableName] = JSON.parse(
-              JSON.stringify(schema[tableName as keyof typeof schema])
-            );
+            if (!mainObj[tableName]) {
+              mainObj[tableName] = JSON.parse(
+                JSON.stringify(schema[tableName as keyof typeof schema])
+              );
+            }
             activeTables.push(tableName);
             // Update alias
             if (currentTable.join) queue.push(currentTable); // find example of this
+
+            console.log('ALIAS from table handler: ', alias);
             if (alias) tableAliasLookup[alias] = tableName;
             else tableAliasLookup[tableName] = tableName;
+            console.log('table alias lookup', tableAliasLookup);
           } else {
             // Error to push because the table doesn't exist in our data
             errorArr.push(`Table name ${tableName} is not found in database`);
@@ -304,17 +320,54 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
       switch (type) {
         // Update master obj with active columns add activeColumn = true
         case 'ref':
+          const columnName = currentColumn.expr.name;
+
+          // subquery logic: if current col array is part of a subquery and the col is not referenced in the main query, skip it
+          if (
+            (currentSubqueryAlias &&
+              !columnsWithUndefinedAlias[currentSubqueryAlias]) ||
+            (columnsWithUndefinedAlias[currentSubqueryAlias] &&
+              !columnsWithUndefinedAlias[currentSubqueryAlias][columnName])
+          ) {
+            console.log(
+              'ALIAS',
+              currentSubqueryAlias,
+              'col w undefined',
+              columnsWithUndefinedAlias,
+              'current col',
+              currentColumn
+            );
+            break;
+          }
+
           let specifiedTable: string | undefined;
           if (currentColumn.expr.table && currentColumn.expr.table.name) {
-            specifiedTable = tableAliasLookup[currentColumn.expr.table.name];
+            const lookupAlias = currentColumn.expr.table.name;
+            console.log('table alias lookup', tableAliasLookup);
+            console.log('lookup value', lookupAlias);
+            specifiedTable = tableAliasLookup[lookupAlias];
+
+            // if no specified table is found (alias is defined in subquery)
+            if (!specifiedTable) {
+              console.log('line 342', currentColumn);
+              // if column with alias already exists, push to key value pair
+              if (columnsWithUndefinedAlias[lookupAlias]) {
+                columnsWithUndefinedAlias[lookupAlias].push(columnName);
+              } else columnsWithUndefinedAlias[lookupAlias] = [columnName];
+              console.log(
+                'columns with undefined: ',
+                columnsWithUndefinedAlias
+              );
+              break;
+            }
           }
-          const columnName = currentColumn.expr.name;
 
           // if tableName is specified, tables is array of tableName, else tables is array of all tables in query
           let tables: string[] = [];
           if (specifiedTable) {
             tables.push(specifiedTable);
           } else {
+            console.log('no specified table');
             tables = [...activeTables];
           }
 
@@ -323,6 +376,12 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             if (columnName !== '*') {
               if (mainObj[table][columnName]) {
                 colMatchCount++;
+                console.log(
+                  'col flag info: table:',
+                  table,
+                  'column:',
+                  columnName
+                );
                 mainObj[table][columnName].activeColumn = true;
               }
             } else {
@@ -444,6 +503,7 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
 
   while (queue.length) {
     const obj = queue[0];
+    console.log('next in queue', obj);
 
     let type = obj.type;
     if (type) {
@@ -452,9 +512,14 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
         selectHandler(obj);
       } else if (type.includes('join')) {
         joinHandler(obj);
+      } else if (type === 'statement') {
+        currentSubqueryAlias = obj.alias;
+        for (let key in obj) {
+          if (typeof obj[key] === 'object') queue.push(obj[key]);
+        }
       } else {
         for (let key in obj) {
-          if (typeof obj[key] !== 'object') queue.push(obj[key]);
+          if (typeof obj[key] === 'object') queue.push(obj[key]);
         }
       }
     }
@@ -573,7 +638,7 @@ const y = {
       expr: {
         type: 'ref',
         table: {
-          name: 'p',
+          name: 's',
         },
         name: 'name',
       },
@@ -593,7 +658,7 @@ const y = {
       type: 'table',
       name: {
         name: 'species',
-        alias: 'p',
+        alias: 's',
       },
     },
     {
@@ -604,15 +669,6 @@ const y = {
             expr: {
               type: 'ref',
               name: '_id',
-            },
-          },
-          {
-            expr: {
-              type: 'boolean',
-              value: true,
-            },
-            alias: {
-              name: 'luke',
             },
           },
         ],
@@ -653,7 +709,7 @@ const y = {
           right: {
             type: 'ref',
             table: {
-              name: 'p',
+              name: 's',
             },
             name: '_id',
           },
