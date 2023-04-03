@@ -23,9 +23,11 @@ const QueryInput: React.FC<{}> = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ created_at, queryString }),
       });
-      const parsedData = await data.json();
-      //setState query result for rendering QueryResults.tsx
-      setQueryResponse(parsedData);
+      if ((await data.status) === 200) {
+        const parsedData = await data.json();
+        //setState query result for rendering QueryResults.tsx
+        setQueryResponse(parsedData);
+      }
 
       //Update History State, for re-rendering History.tsx
       setHistory(() => {

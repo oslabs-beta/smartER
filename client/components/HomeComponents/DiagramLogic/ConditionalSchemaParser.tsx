@@ -458,36 +458,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
         }
       }
     }
-
-    // what other keys are at top level that we need to look at?
-
-    //   switch (key) {
-    //     case 'type':
-    //       switch (obj[key]) {
-    //         case 'select':
-    //           selectHandler(obj);
-    //           break;
-    //         // case 'statement':
-    //         //   break;
-    //         default: // This default causes an infinite loop
-    //         // queue.push(obj);
-    //       }
-    //       break;
-
-    //     // case 'statement':
-    //     //   queue.push(obj[key]);
-    //     //   break;
-    //     // case 'alias':
-    //     //   break;
-    //     case 'join':
-    //       joinHandler(obj[key]);
-    //       break;
-    //     // case 'where':
-    //     //   // not sure this would actually happen as the where is in the select obj
-    //     //   queue.push(obj[key]);
-    //     //   break;
-    //   }
-    // }
     queue.shift();
   }
 
@@ -498,3 +468,199 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
 }
 
 export default conditionalSchemaParser;
+
+const x = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        table: {
+          name: 'p',
+        },
+        name: 'name',
+      },
+    },
+    {
+      expr: {
+        type: 'ref',
+        table: {
+          name: 'l',
+        },
+        name: '_id',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+        alias: 'p',
+      },
+    },
+    {
+      type: 'statement',
+      statement: {
+        columns: [
+          {
+            expr: {
+              type: 'ref',
+              name: '_id',
+            },
+          },
+          {
+            expr: {
+              type: 'boolean',
+              value: true,
+            },
+            alias: {
+              name: 'luke',
+            },
+          },
+        ],
+        from: [
+          {
+            type: 'table',
+            name: {
+              name: 'people',
+            },
+          },
+        ],
+        where: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            name: 'name',
+          },
+          right: {
+            type: 'string',
+            value: '%Luke%',
+          },
+          op: 'LIKE',
+        },
+        type: 'select',
+      },
+      alias: 'l',
+      join: {
+        type: 'LEFT JOIN',
+        on: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            table: {
+              name: 'l',
+            },
+            name: '_id',
+          },
+          right: {
+            type: 'ref',
+            table: {
+              name: 'p',
+            },
+            name: '_id',
+          },
+          op: '=',
+        },
+      },
+    },
+  ],
+  type: 'select',
+};
+
+const y = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        table: {
+          name: 'p',
+        },
+        name: 'name',
+      },
+    },
+    {
+      expr: {
+        type: 'ref',
+        table: {
+          name: 'l',
+        },
+        name: '_id',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'species',
+        alias: 'p',
+      },
+    },
+    {
+      type: 'statement',
+      statement: {
+        columns: [
+          {
+            expr: {
+              type: 'ref',
+              name: '_id',
+            },
+          },
+          {
+            expr: {
+              type: 'boolean',
+              value: true,
+            },
+            alias: {
+              name: 'luke',
+            },
+          },
+        ],
+        from: [
+          {
+            type: 'table',
+            name: {
+              name: 'people',
+            },
+          },
+        ],
+        where: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            name: 'name',
+          },
+          right: {
+            type: 'string',
+            value: '%Luke%',
+          },
+          op: 'LIKE',
+        },
+        type: 'select',
+      },
+      alias: 'l',
+      join: {
+        type: 'LEFT JOIN',
+        on: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            table: {
+              name: 'l',
+            },
+            name: '_id',
+          },
+          right: {
+            type: 'ref',
+            table: {
+              name: 'p',
+            },
+            name: '_id',
+          },
+          op: '=',
+        },
+      },
+    },
+  ],
+  type: 'select',
+};
