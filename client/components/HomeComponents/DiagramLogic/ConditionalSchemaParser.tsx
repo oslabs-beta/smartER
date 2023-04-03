@@ -22,31 +22,254 @@ type tableAlias = {
 type mainObj = {
   [key: string]: Record<string, columnObj>;
 };
-type joinObj = {
-  [key: string]: key;
-};
 type key = {
   name: string;
   table: { name: string };
   type: string;
 };
 
+/*
+// SUBQUERY IN FROM:
+let a = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        name: '*',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+        alias: 'p',
+      },
+    },
+    {
+      type: 'statement',
+      statement: {
+        columns: [
+          {
+            expr: {
+              type: 'ref',
+              name: '_id',
+            },
+          },
+          {
+            expr: {
+              type: 'boolean',
+              value: true,
+            },
+            alias: {
+              name: 'luke',
+            },
+          },
+        ],
+        from: [
+          {
+            type: 'table',
+            name: {
+              name: 'people',
+            },
+          },
+        ],
+        where: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            name: 'name',
+          },
+          right: {
+            type: 'string',
+            value: '%Luke%',
+          },
+          op: 'LIKE',
+        },
+        type: 'select',
+      },
+      alias: 'luke',
+      join: {
+        type: 'LEFT JOIN',
+        on: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            table: {
+              name: 'luke',
+            },
+            name: '_id',
+          },
+          right: {
+            type: 'ref',
+            table: {
+              name: 'p',
+            },
+            name: '_id',
+          },
+          op: '=',
+        },
+      },
+    },
+  ],
+  type: 'select',
+};
+
+// SUBQUERY IN COLUMNS:
+a = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        name: 'name',
+      },
+    },
+    {
+      expr: {
+        columns: [
+          {
+            expr: {
+              type: 'ref',
+              name: 'name',
+            },
+          },
+        ],
+        from: [
+          {
+            type: 'table',
+            name: {
+              name: 'people',
+            },
+          },
+        ],
+        where: {
+          type: 'binary',
+          left: {
+            type: 'ref',
+            name: 'name',
+          },
+          right: {
+            type: 'string',
+            value: '%luke%',
+          },
+          op: 'LIKE',
+        },
+        type: 'select',
+      },
+      alias: {
+        name: 'luke',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+      },
+    },
+  ],
+  type: 'select',
+};
+
+// SUBQUERY IN WHERE:
+a = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        name: '_id',
+      },
+    },
+    {
+      expr: {
+        type: 'ref',
+        name: 'name',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+      },
+    },
+  ],
+  where: {
+    type: 'binary',
+    left: {
+      type: 'ref',
+      name: '_id',
+    },
+    right: {
+      columns: [
+        {
+          expr: {
+            type: 'ref',
+            name: '_id',
+          },
+        },
+      ],
+      from: [
+        {
+          type: 'table',
+          name: {
+            name: 'people',
+          },
+        },
+      ],
+      where: {
+        type: 'binary',
+        left: {
+          type: 'ref',
+          name: 'name',
+        },
+        right: {
+          type: 'string',
+          value: '%Luke%',
+        },
+        op: 'LIKE',
+      },
+      type: 'select',
+    },
+    op: 'IN',
+  },
+  type: 'select',
+};
+*/
+
 function conditionalSchemaParser(query: string, schema: any): returnObj {
   // errorArr contains errors that we find in the query when running mainFunc
   const errorArr: string[] = [];
   // mainObj contains a partial copy of the ER diagram with flagged columns and tables
   const mainObj: mainObj = {};
-  const tableAlias: tableAlias = {};
+  const tableAliasLookup: tableAlias = {};
+  let activeTables: string[];
+  const columnsWithUndefinedAlias: Record<string, Set<string>> = {};
+  let currentSubqueryAlias: string;
 
   const ast: Statement = parseFirst(query);
+  console.log('SCHEMA', schema);
   console.log('AST', ast);
   console.log('query', query);
   const queue: any[] = [];
   queue.push(ast);
 
   const selectHandler = (obj: any) => {
+    activeTables = [];
     tableHandler(obj.from);
     columnHandler(obj.columns);
+
+    // cleanup aliases
+    if (
+      currentSubqueryAlias &&
+      columnsWithUndefinedAlias[currentSubqueryAlias]
+    ) {
+      delete columnsWithUndefinedAlias[currentSubqueryAlias];
+    }
+    currentSubqueryAlias = '';
 
     for (let key in obj) {
       switch (key) {
@@ -55,6 +278,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
         case 'columns':
           break;
         case 'type':
+          break;
+        case 'where':
           break;
         default:
           queue.push(obj[key]);
@@ -72,16 +297,22 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           const alias = currentTable.name.alias;
           if (schema[tableName as keyof typeof schema]) {
             // Deep copy the table from data
-            mainObj[tableName] = JSON.parse(
-              JSON.stringify(schema[tableName as keyof typeof schema])
-            );
+            if (!mainObj[tableName]) {
+              mainObj[tableName] = JSON.parse(
+                JSON.stringify(schema[tableName as keyof typeof schema])
+              );
+            }
+            activeTables.push(tableName);
             // Update alias
-            if (currentTable.join) queue.push(currentTable);
-            if (alias) tableAlias[alias] = tableName;
-            else tableAlias[tableName] = tableName;
+            if (currentTable.join) queue.push(currentTable); // find example of this
+
+            // console.log('ALIAS from table handler: ', alias);
+            if (alias) tableAliasLookup[alias] = tableName;
+            else tableAliasLookup[tableName] = tableName;
+            // console.log('table alias lookup', tableAliasLookup);
           } else {
             // Error to push because the table doesn't exist in our data
-            errorArr.push(`Table name: ${tableName} is not found in database`);
+            errorArr.push(`Table name ${tableName} is not found in database`);
           }
 
           break;
@@ -102,18 +333,48 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
       switch (type) {
         // Update master obj with active columns add activeColumn = true
         case 'ref':
+          const columnName = currentColumn.expr.name;
+
+          // subquery logic: if current col array is part of a subquery and the col is not referenced in the main query, skip it
+          if (
+            (currentSubqueryAlias &&
+              !columnsWithUndefinedAlias[currentSubqueryAlias]) ||
+            (columnsWithUndefinedAlias[currentSubqueryAlias] &&
+              !columnsWithUndefinedAlias[currentSubqueryAlias].has(columnName))
+          ) {
+            break;
+          }
+
           let specifiedTable: string | undefined;
           if (currentColumn.expr.table && currentColumn.expr.table.name) {
-            specifiedTable = tableAlias[currentColumn.expr.table.name];
+            const lookupAlias = currentColumn.expr.table.name;
+            // console.log('table alias lookup', tableAliasLookup);
+            // console.log('lookup value', lookupAlias);
+            specifiedTable = tableAliasLookup[lookupAlias];
+
+            // if no specified table is found (alias is defined in subquery)
+            if (!specifiedTable) {
+              // console.log('line 342', currentColumn);
+              // if column with alias already exists, push to key value pair
+              if (columnsWithUndefinedAlias[lookupAlias]) {
+                columnsWithUndefinedAlias[lookupAlias].add(columnName);
+              } else
+                columnsWithUndefinedAlias[lookupAlias] = new Set([columnName]);
+              console.log(
+                'columns with undefined: ',
+                columnsWithUndefinedAlias
+              );
+              break;
+            }
           }
-          const columnName = currentColumn.expr.name;
 
           // if tableName is specified, tables is array of tableName, else tables is array of all tables in query
           let tables: string[] = [];
           if (specifiedTable) {
             tables.push(specifiedTable);
           } else {
-            tables = [...Object.keys(mainObj)];
+            console.log('no specified table');
+            tables = [...activeTables];
           }
 
           let colMatchCount: number = 0;
@@ -121,6 +382,12 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             if (columnName !== '*') {
               if (mainObj[table][columnName]) {
                 colMatchCount++;
+                console.log(
+                  'col flag info: table:',
+                  table,
+                  'column:',
+                  columnName
+                );
                 mainObj[table][columnName].activeColumn = true;
               }
             } else {
@@ -135,11 +402,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           if (colMatchCount > 1)
             errorArr.push(`Column ${columnName} exists in more than one table`);
 
-        case 'string' || 'integer' || 'boolean':
-          break;
-
         default:
-        //push to the queue
+          queue.push(currentColumn.expr);
       }
     }
     // if type is select, invoke selectHandler <- have not seen any columns with type select.
@@ -149,15 +413,52 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   };
 
   const joinHandler = (obj: any) => {
-    const left = obj.on.left;
-    const right = obj.on.right;
-    // for (let key in on) {
-    if (left) flagActiveLinks(left, tableAlias, mainObj, errorArr);
-    else errorArr.push(`No column found for left position of ${obj.type}`);
-    if (right) flagActiveLinks(right, tableAlias, mainObj, errorArr);
-    else errorArr.push(`No column found for right position of ${obj.type}`);
-    // }
-    // queue.push(obj[key]);
+    // const currentColumn =
+    console.log('inside joinHandler');
+
+    for (let key in obj) {
+      switch (key) {
+        case 'type':
+          break;
+        case 'on':
+          for (let onKey in obj.on) {
+            switch (onKey) {
+              case 'type':
+                break;
+              case 'left' || 'right':
+                const currentColumn = obj.on;
+                // if left/right object has a property table with a name
+                if (currentColumn[onKey].table.name) {
+                  // attempt to lookup table name by alias
+                  const tableName =
+                    tableAliasLookup[currentColumn[onKey].table.name];
+                  if (tableName) {
+                    // identify col name and flag it in mainObj
+                    const columnName = currentColumn[onKey].name;
+                    mainObj[tableName][columnName].activeLink = true;
+                  }
+                } else {
+                  // else iterate through mainObj and check for a table that has a column name that matches
+                  const tables = Object.keys(mainObj);
+                  const columnName = currentColumn[onKey].name;
+                  let counter = 0;
+                  for (let i = 0; i < tables.length; i++) {
+                    const tableName = tables[i];
+                    //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
+                    if (mainObj[tableName][columnName]) {
+                      mainObj[tableName][columnName].activeLink = true;
+                      counter++;
+                    }
+                  }
+                  if (counter === 0) errorArr.push('no cols found');
+                  else if (counter > 1) errorArr.push('too many cols');
+                }
+            }
+          }
+        default:
+        // queue.push(obj[key]);
+      }
+    }
   };
 
   const connectedTablesHandler = (table: string) => {
@@ -205,34 +506,26 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
 
   while (queue.length) {
     const obj = queue[0];
+    console.log('next in queue', obj);
 
-    for (let key in obj) {
-      console.log('queue object', obj);
-      switch (key) {
-        case 'type':
-          switch (obj[key]) {
-            case 'select':
-              selectHandler(obj);
-              break;
-            // case 'statement':
-            //   break;
-            default: // This default causes an infinite loop
-            // queue.push(obj);
-          }
-          break;
-
-        // case 'statement':
-        //   queue.push(obj[key]);
-        //   break;
-        // case 'alias':
-        //   break;
-        case 'join':
-          joinHandler(obj[key]);
-          break;
-        // case 'where':
-        //   // not sure this would actually happen as the where is in the select obj
-        //   queue.push(obj[key]);
-        //   break;
+    let type = obj.type;
+    if (type) {
+      type = type.toLowerCase();
+      if (type === 'select') {
+        selectHandler(obj);
+      } else if (type.includes('join')) {
+        joinHandler(obj);
+      } else if (type === 'statement') {
+        currentSubqueryAlias = obj.alias;
+        for (let key in obj) {
+          if (key.toLowerCase() !== 'where' && typeof obj[key] === 'object')
+            queue.push(obj[key]);
+        }
+      } else {
+        for (let key in obj) {
+          if (key.toLowerCase() !== 'where' && typeof obj[key] === 'object')
+            queue.push(obj[key]);
+        }
       }
     }
     queue.shift();
@@ -240,6 +533,7 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
 
   for (const table in mainObj) connectedTablesHandler(table);
   console.log('FINAL OBJ', mainObj);
+  console.log('Error Arr: ', errorArr);
   return { errorArr: errorArr, mainObj: mainObj };
 }
 
@@ -277,3 +571,62 @@ function flagActiveLinks(
 }
 
 export default conditionalSchemaParser;
+
+const x = {
+  columns: [
+    {
+      expr: {
+        type: 'ref',
+        name: 'name',
+      },
+    },
+  ],
+  from: [
+    {
+      type: 'table',
+      name: {
+        name: 'people',
+      },
+    },
+  ],
+  where: {
+    type: 'binary',
+    left: {
+      type: 'ref',
+      name: '_id',
+    },
+    right: {
+      columns: [
+        {
+          expr: {
+            type: 'ref',
+            name: '_id',
+          },
+        },
+      ],
+      from: [
+        {
+          type: 'table',
+          name: {
+            name: 'people',
+          },
+        },
+      ],
+      where: {
+        type: 'binary',
+        left: {
+          type: 'ref',
+          name: 'name',
+        },
+        right: {
+          type: 'string',
+          value: '%Luke%',
+        },
+        op: 'LIKE',
+      },
+      type: 'select',
+    },
+    op: 'IN',
+  },
+  type: 'select',
+};
