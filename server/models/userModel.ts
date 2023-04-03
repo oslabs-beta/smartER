@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
-import * as dotenv from 'dotenv';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const PG_URI = process.env.DATABASE_API;
 
 // create a new pool here using the connection string above

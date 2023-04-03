@@ -1,6 +1,5 @@
 import React, { FC, useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import DataTable, { Direction } from 'react-data-table-component';
 import { useNavigate } from 'react-router-dom';
 import { HomepageContext } from '../../Context';
 
@@ -28,11 +27,7 @@ const QueryResults: React.FC<{}> = () => {
     columnsValue.push(columnsValuesInner);
     columnsValuesInner = [];
   }
-  // select * from planets where _id < 5
-  // console.log('line 29: ', columnsValue);
 
-  // columns should be an object with the value being an array
-  // console.log('columnsValue: ', columnsValue);
   return (
     <>
       <div className="query-table-home">
