@@ -236,7 +236,7 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   const mainObj: Record<string, Record<string, columnObj>> = {};
   const tableAliasLookup: Record<string, string> = {};
   let activeTables: string[];
-  const columnsWithUndefinedAlias: Record<string, string[]> = {};
+  const columnsWithUndefinedAlias: Record<string, Set<string>> = {};
   let currentSubqueryAlias: string;
 
   const ast: Statement = parseFirst(query);
@@ -293,10 +293,10 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             // Update alias
             if (currentTable.join) queue.push(currentTable); // find example of this
 
-            console.log('ALIAS from table handler: ', alias);
+            // console.log('ALIAS from table handler: ', alias);
             if (alias) tableAliasLookup[alias] = tableName;
             else tableAliasLookup[tableName] = tableName;
-            console.log('table alias lookup', tableAliasLookup);
+            // console.log('table alias lookup', tableAliasLookup);
           } else {
             // Error to push because the table doesn't exist in our data
             errorArr.push(`Table name ${tableName} is not found in database`);
@@ -327,33 +327,26 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             (currentSubqueryAlias &&
               !columnsWithUndefinedAlias[currentSubqueryAlias]) ||
             (columnsWithUndefinedAlias[currentSubqueryAlias] &&
-              !columnsWithUndefinedAlias[currentSubqueryAlias][columnName])
+              !columnsWithUndefinedAlias[currentSubqueryAlias].has(columnName))
           ) {
-            console.log(
-              'ALIAS',
-              currentSubqueryAlias,
-              'col w undefined',
-              columnsWithUndefinedAlias,
-              'current col',
-              currentColumn
-            );
             break;
           }
 
           let specifiedTable: string | undefined;
           if (currentColumn.expr.table && currentColumn.expr.table.name) {
             const lookupAlias = currentColumn.expr.table.name;
-            console.log('table alias lookup', tableAliasLookup);
-            console.log('lookup value', lookupAlias);
+            // console.log('table alias lookup', tableAliasLookup);
+            // console.log('lookup value', lookupAlias);
             specifiedTable = tableAliasLookup[lookupAlias];
 
             // if no specified table is found (alias is defined in subquery)
             if (!specifiedTable) {
-              console.log('line 342', currentColumn);
+              // console.log('line 342', currentColumn);
               // if column with alias already exists, push to key value pair
               if (columnsWithUndefinedAlias[lookupAlias]) {
-                columnsWithUndefinedAlias[lookupAlias].push(columnName);
-              } else columnsWithUndefinedAlias[lookupAlias] = [columnName];
+                columnsWithUndefinedAlias[lookupAlias].add(columnName);
+              } else
+                columnsWithUndefinedAlias[lookupAlias] = new Set([columnName]);
               console.log(
                 'columns with undefined: ',
                 columnsWithUndefinedAlias
