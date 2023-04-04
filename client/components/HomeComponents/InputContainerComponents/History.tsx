@@ -2,10 +2,9 @@ import React, { FC, useState, useContext, useEffect } from 'react';
 import { HomepageContext } from '../../../Context';
 
 const History: React.FC<{}> = () => {
-  const { history, setHistory } = useContext(HomepageContext)!;
-  const { submit, setSubmit } = useContext(HomepageContext)!;
+  const { history, setHistory, setQueryString, submit, setSubmit } =
+    useContext(HomepageContext)!;
   const [historyElements, setHistoryElements] = useState([]);
-  //TODO: Get history from database and display it in a list
 
   const getHistory = async () => {
     try {
@@ -15,7 +14,6 @@ const History: React.FC<{}> = () => {
       });
       const parsedHistory = await data.json();
       setHistory((prev: any) => {
-        // console.log('prev in setHistory:', prev);
         prev.push(...parsedHistory);
         return prev;
       });
@@ -24,7 +22,11 @@ const History: React.FC<{}> = () => {
         const date = object.created_at;
         const formatDate = date.substring(0, 10);
         return (
-          <tr className="history-rows" key={`${index}-row`}>
+          <tr
+            className="history-rows"
+            key={`${index}-row`}
+            onClick={setHistoricalQuery}
+          >
             <td className="query-table-cell history-query" key={index}>
               {object.query}
             </td>
@@ -43,6 +45,12 @@ const History: React.FC<{}> = () => {
   useEffect(() => {
     getHistory();
   }, []);
+
+  const setHistoricalQuery = (e: any) => {
+    console.log('clicked historical event');
+    setQueryString(e.target.innerText);
+    setSubmit(!submit);
+  };
 
   return (
     <div className="history-table">

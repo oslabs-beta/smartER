@@ -70,6 +70,7 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
+    "elkjs": "^0.8.2",
     "express-validator": "^6.15.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
@@ -87,6 +88,7 @@
     "redis-server": "^1.2.2",
     "sass": "^1.59.3",
     "supertest": "^6.3.3",
-    "ts-jest": "^29.0.5"
+    "ts-jest": "^29.0.5",
+    "web-worker": "^1.2.0"
   }
 }
