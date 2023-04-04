@@ -16,6 +16,17 @@ type returnObj = {
   errorArr: string[];
   mainObj: Record<string, Record<string, columnObj>>;
 };
+type tableAlias = {
+  [key: string]: string;
+};
+type mainObj = {
+  [key: string]: Record<string, columnObj>;
+};
+type key = {
+  name: string;
+  table: { name: string };
+  type: string;
+};
 
 /*
 // SUBQUERY IN FROM:
@@ -233,8 +244,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   // errorArr contains errors that we find in the query when running mainFunc
   const errorArr: string[] = [];
   // mainObj contains a partial copy of the ER diagram with flagged columns and tables
-  const mainObj: Record<string, Record<string, columnObj>> = {};
-  const tableAliasLookup: Record<string, string> = {};
+  const mainObj: mainObj = {};
+  const tableAliasLookup: tableAlias = {};
   let activeTables: string[];
   const columnsWithUndefinedAlias: Record<string, Set<string>> = {};
   let currentSubqueryAlias: string;
@@ -524,6 +535,39 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   console.log('FINAL OBJ', mainObj);
   console.log('Error Arr: ', errorArr);
   return { errorArr: errorArr, mainObj: mainObj };
+}
+
+function flagActiveLinks(
+  onKey: key,
+  tableAlias: tableAlias,
+  mainObj: mainObj,
+  errorArr: string[]
+) {
+  if (onKey.table.name) {
+    // attempt to lookup table name by alias
+    const tableName = tableAlias[onKey.table.name];
+    if (tableName) {
+      // identify col name and flag it in mainObj
+      const columnName = onKey.name;
+      mainObj[tableName][columnName].activeLink = true;
+    } // Potential error push here if tableName was not found?
+  } else {
+    // else iterate through mainObj and check for a table that has a column name that matches
+    const tables = Object.keys(mainObj);
+    const columnName = onKey.name;
+    let counter = 0;
+    for (let i = 0; i < tables.length; i++) {
+      const tableName = tables[i];
+      //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
+      if (mainObj[tableName][columnName]) {
+        mainObj[tableName][columnName].activeLink = true;
+        counter++;
+      }
+      // Potential error push here if tableName/columnName was not found?
+    }
+    if (counter === 0) errorArr.push('no cols found');
+    else if (counter > 1) errorArr.push('too many cols');
+  }
 }
 
 export default conditionalSchemaParser;
