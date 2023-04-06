@@ -154,7 +154,6 @@ const schemaController: schemaControllers = {
     try {
       const { queryString } = req.body;
       const pg = res.locals.pg;
-
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
 

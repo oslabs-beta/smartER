@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import db from '../models/userModel';
 import dotenv from 'dotenv';
-import { redirect } from 'react-router';
+import {} from 'pg';
 dotenv.config();
 
 interface dbControllers {
@@ -38,8 +38,8 @@ const dbController: dbControllers = {
       const { dbId } = req.cookies;
       if (dbId) {
         const history = await db.query(`
-          SELECT 
-          h.created_at, h.query 
+          SELECT
+          h.created_at, h.query
           FROM history h
           JOIN databases d on d._id = h.database_id
           WHERE d._id = ${dbId}
@@ -60,12 +60,13 @@ const dbController: dbControllers = {
   postHistory: async (req, res, next) => {
     try {
       const { dbId } = req.cookies;
-      if (dbId) {
+      if (req.cookies.dbId) {
         const { created_at, queryString } = req.body;
         const dateInt = Math.floor(parseInt(created_at) / 1000);
         const saveHistory = await db.query(
           `INSERT INTO history (database_id, created_at, query)
-          VALUES (${dbId}, to_timestamp(${dateInt}), '${queryString}');`
+          VALUES (${dbId}, to_timestamp(${dateInt}), $1);`,
+          [queryString]
         );
         return next();
       } else throw new Error('db not found');
