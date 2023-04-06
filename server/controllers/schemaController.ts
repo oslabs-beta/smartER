@@ -15,7 +15,10 @@ const schemaController: schemaControllers = {
   connectDb: async (req, res, next) => {
     try {
       console.log('running connectDb');
-      const { dbId } = req.cookies;
+      let dbId;
+      if (res.locals.dbId) dbId = res.locals.dbId;
+      if (!dbId) dbId = req.cookies.dbId;
+
       if (!dbId) throw new Error('no db cookie');
 
       const dbResult = await db.query(`
@@ -151,7 +154,6 @@ const schemaController: schemaControllers = {
     try {
       const { queryString } = req.body;
       const pg = res.locals.pg;
-
       // Make a query based on the passed in queryString
       const getQuery = await pg.query(queryString);
 

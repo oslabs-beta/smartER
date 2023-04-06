@@ -13,9 +13,9 @@ const pool = new Pool({
 // This will be required in the controllers to be the access point to the database
 
 export default {
-  query: (text: string) => {
+  query: (text: string, arr?: string[]) => {
     console.log('executed query', text);
-    return pool.query(text);
+    return pool.query(text, arr);
   },
 };
 

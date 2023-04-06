@@ -30,41 +30,43 @@ const QueryResults: React.FC<{}> = () => {
 
   return (
     <>
-      <div className="query-table-home">
+      <div className="query-table-outer-container">
         <h2>Query Results</h2>
-        <table className="query-table">
-          <thead>
-            <tr className="query-header">
-              {columnNames.map((column) => {
+        <div className="query-table-container">
+          <table className="query-table">
+            <thead>
+              <tr className="query-header">
+                {columnNames.map((column) => {
+                  return (
+                    <th className="query-table-cell" key={column}>
+                      {column}
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {columnsValue.map((column, index) => {
+                // console.log(column);
+                let i = 0;
+                const columnsArray: JSX.Element[] = [];
+                column.map((data) => {
+                  i++;
+                  return columnsArray.push(
+                    <td className="query-table-cell" key={i}>
+                      {data}
+                    </td>
+                  );
+                });
                 return (
-                  <th className="query-table-cell" key={column}>
-                    {column}
-                  </th>
+                  <tr key={`tr${index}`} className="query-rows">
+                    {columnsArray}
+                  </tr>
                 );
               })}
-            </tr>
-          </thead>
-          <tbody>
-            {columnsValue.map((column, index) => {
-              // console.log(column);
-              let i = 0;
-              const columnsArray: JSX.Element[] = [];
-              column.map((data) => {
-                i++;
-                return columnsArray.push(
-                  <td className="query-table-cell" key={i}>
-                    {data}
-                  </td>
-                );
-              });
-              return (
-                <tr key={`tr${index}`} className="query-rows">
-                  {columnsArray}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

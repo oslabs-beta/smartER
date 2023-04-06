@@ -4,10 +4,17 @@ import {
   HomepageContextType,
   dbCredentialsType,
 } from '../../../Context';
+import { parse } from 'path';
 
 const Settings: React.FC<{}> = () => {
-  const { uri, setUri, dbCredentials, setDBCredentials } =
-    useContext(HomepageContext)!;
+  const {
+    uri,
+    setUri,
+    dbCredentials,
+    setDBCredentials,
+    masterData,
+    setMasterData,
+  } = useContext(HomepageContext)!;
   //Handle submission of new URI
   const handleUriSubmit = async (e: any) => {
     e.preventDefault();
@@ -22,6 +29,10 @@ const Settings: React.FC<{}> = () => {
       if (data.status === 200) {
         //TODO: add a success indicator
         setUri('');
+        const parsedData = await data.json();
+        console.log(parsedData);
+        setMasterData(parsedData);
+        return;
       }
     } catch (error) {
       console.log(`Error in Settings.tsx ${error}`);
