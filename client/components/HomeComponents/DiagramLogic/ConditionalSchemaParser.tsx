@@ -113,15 +113,37 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
     }
   };
 
+  [
+    {
+      expr: {
+        type: 'call',
+        function: {
+          name: 'max',
+        },
+        args: [
+          {
+            type: 'ref',
+            table: {
+              name: 'p',
+            },
+            name: 'height',
+          },
+        ],
+      },
+    },
+  ];
+
   const columnHandler = (arr: any[]) => {
+    console.log('handling columns', arr);
     for (let i = 0; i < arr.length; i++) {
       const currentColumn = arr[i];
-      const type = currentColumn.expr.type;
+      const currentColDetails = currentColumn.expr || currentColumn;
+      const type = currentColDetails.type;
 
       switch (type) {
         // Update master obj with active columns add activeColumn = true
         case 'ref':
-          const columnName = currentColumn.expr.name;
+          const columnName = currentColDetails.name;
 
           // subquery logic: if current col array is part of a subquery and the col is not referenced in the main query, skip it
           if (
@@ -134,8 +156,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           }
 
           let specifiedTable: string | undefined;
-          if (currentColumn.expr.table && currentColumn.expr.table.name) {
-            const lookupAlias = currentColumn.expr.table.name;
+          if (currentColDetails.table && currentColDetails.table.name) {
+            const lookupAlias = currentColDetails.table.name;
             // console.log('table alias lookup', tableAliasLookup);
             // console.log('lookup value', lookupAlias);
             specifiedTable = tableAliasLookup[lookupAlias];
@@ -189,9 +211,13 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             errorArr.push(`Column ${columnName} does not exist`);
           if (colMatchCount > 1)
             errorArr.push(`Column ${columnName} exists in more than one table`);
+          break;
 
+        case 'call':
+          columnHandler(currentColDetails.args);
+          break;
         default:
-          queue.push(currentColumn.expr);
+          queue.push(currentColDetails);
       }
     }
     // if type is select, invoke selectHandler <- have not seen any columns with type select.
