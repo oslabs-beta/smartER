@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import db from '../models/userModel';
 import dotenv from 'dotenv';
 import {} from 'pg';
+import Cryptr from 'cryptr';
 dotenv.config();
 
 interface dbControllers {
@@ -16,11 +17,19 @@ const dbController: dbControllers = {
       if (req.user) {
         const { id } = req.user;
         const { encodedURI } = req.body;
+
+        const cryptr = new Cryptr(process.env.URI_SECRET_KEY || 'test', {
+          pbkdf2Iterations: 10000,
+          saltLength: 10,
+        });
+
+        const encryptedUri = cryptr.encrypt(encodedURI);
         const postUri = await db.query(`
           INSERT INTO databases (user_id, uri)
-          VALUES (${id}, '${encodedURI}')
+          VALUES (${id}, '${encryptedUri}')
           RETURNING _id
           ;`);
+
         res.locals.dbId = postUri.rows[0]._id;
         return next();
       } else throw new Error('user not set');
