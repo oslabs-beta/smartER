@@ -33,8 +33,10 @@ router.post(
   '/addURI',
   dbController.saveURI,
   cookieController.setDbCookie,
+  schemaController.connectDb,
+  schemaController.getSchemaPostgreSQL,
   (req, res) => {
-    res.status(200).send();
+    res.status(200).json(res.locals.erDiagram);
   }
 );
 
