@@ -46,13 +46,21 @@ const QueryInput: React.FC<{}> = () => {
     setQueryString(e.target.value);
     const lastChar = e.target.value[e.target.value.length - 1];
     const keys = new Set([' ', ',', ';']);
-    if (keys.has(lastChar)) {
+    const lowerCaseQuery = e.target.value.toLowerCase();
+    if (
+      keys.has(lastChar) &&
+      lowerCaseQuery.includes('select') &&
+      lowerCaseQuery.includes('from')
+    ) {
       setSubmit(!submit);
     }
   };
 
   const handlePause = debounce(() => {
-    setSubmit(!submit);
+    const lowerCaseQuery = queryString.toLowerCase();
+    if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
+      setSubmit(!submit);
+    }
   }, 1000);
 
   return (
