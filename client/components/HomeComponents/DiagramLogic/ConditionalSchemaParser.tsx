@@ -113,28 +113,7 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
     }
   };
 
-  [
-    {
-      expr: {
-        type: 'call',
-        function: {
-          name: 'max',
-        },
-        args: [
-          {
-            type: 'ref',
-            table: {
-              name: 'p',
-            },
-            name: 'height',
-          },
-        ],
-      },
-    },
-  ];
-
   const columnHandler = (arr: any[]) => {
-    console.log('handling columns', arr);
     for (let i = 0; i < arr.length; i++) {
       const currentColumn = arr[i];
       const currentColDetails = currentColumn.expr || currentColumn;
@@ -170,10 +149,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
                 columnsWithUndefinedAlias[lookupAlias].add(columnName);
               } else
                 columnsWithUndefinedAlias[lookupAlias] = new Set([columnName]);
-              console.log(
-                'columns with undefined: ',
-                columnsWithUndefinedAlias
-              );
               break;
             }
           }
