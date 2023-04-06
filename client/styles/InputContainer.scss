@@ -103,7 +103,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 90%;
+  height: 100%;
 
   .query-main-inner {
     position: relative;
@@ -122,29 +122,54 @@ button {
       font-family: 'Lato', sans-serif;
       // resize: vertical;
       overflow: auto;
+      max-height: 100%;
+      min-height: 80%;
     }
 
     .query-input:focus {
       outline: solid 1px lighten($color1, 15%);
     }
-  }
 
-  .submit-query-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: $color6;
-    border-radius: 0 0 5px 0;
-    width: 20%;
-    height: 30px;
-    font-size: 20px;
-    text-align: right;
+    .error-message-container {
+      .error-message {
+        background-color: lighten(red, 20%);
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+        font-size: 10px;
+        font-family: 'Lato', sans-serif;
+        padding: 5px 5px 5px 5px;
+        margin-bottom: 3px;
+        @keyframes fadeInDown {
+          0% {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      }
+    }
   }
+}
 
-  .submit-query-button:hover {
-    cursor: pointer;
-    color: lighten(black, 52%);
-  }
+.submit-query-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: $color6;
+  border-radius: 0 0 5px 0;
+  width: 20%;
+  height: 30px;
+  font-size: 20px;
+  text-align: right;
+}
+
+.submit-query-button:hover {
+  cursor: pointer;
+  color: lighten(black, 52%);
 }
 
 textarea {
@@ -263,29 +288,6 @@ textarea {
   width: 120px;
   text-align: right;
   border-top: 1px solid $color2;
-}
-
-// error message
-
-.error-message {
-  background-color: lighten(red, 20%);
-  border-radius: 5px;
-  color: white;
-  text-align: center;
-  font-size: 10px;
-  font-family: 'Lato', sans-serif;
-  padding: 5px 5px 5px 5px;
-  margin-bottom: 3px;
-  @keyframes fadeInDown {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 .query-table-cell {

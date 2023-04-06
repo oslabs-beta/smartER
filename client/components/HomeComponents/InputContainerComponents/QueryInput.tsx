@@ -53,11 +53,11 @@ const QueryInput: React.FC<{}> = () => {
         }
       }
       //Update History State, for re-rendering History.tsx
-      setHistory((prev: any) => {
-        console.log('IN QUERY SUBMIT history: ', history);
-        prev.push({ created_at, query: queryString });
-        return prev;
-      });
+      // setHistory((prev: any) => {
+      //   console.log('IN QUERY SUBMIT history: ', history);
+      //   prev.push({ created_at, query: queryString });
+      //   return prev;
+      // });
     } catch (error) {
       console.log(`Error in QueryInput.tsx ${error}`);
       return `Error in QueryInput.tsx ${error}`;
