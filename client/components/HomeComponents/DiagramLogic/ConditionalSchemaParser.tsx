@@ -39,9 +39,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   let currentSubqueryAlias: string;
 
   const ast: Statement = parseFirst(query);
-  console.log('SCHEMA', schema);
-  console.log('AST', ast);
-  console.log('query', query);
   const queue: any[] = [];
   queue.push(ast);
 
@@ -94,10 +91,8 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             // Update alias
             if (currentTable.join) queue.push(currentTable); // find example of this
 
-            // console.log('ALIAS from table handler: ', alias);
             if (alias) tableAliasLookup[alias] = tableName;
             else tableAliasLookup[tableName] = tableName;
-            // console.log('table alias lookup', tableAliasLookup);
           } else {
             // Error to push because the table doesn't exist in our data
             errorArr.push(`Table name ${tableName} is not found in database`);
@@ -136,22 +131,16 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           let specifiedTable: string | undefined;
           if (currentColumn.expr.table && currentColumn.expr.table.name) {
             const lookupAlias = currentColumn.expr.table.name;
-            // console.log('table alias lookup', tableAliasLookup);
-            // console.log('lookup value', lookupAlias);
+
             specifiedTable = tableAliasLookup[lookupAlias];
 
             // if no specified table is found (alias is defined in subquery)
             if (!specifiedTable) {
-              // console.log('line 342', currentColumn);
               // if column with alias already exists, push to key value pair
               if (columnsWithUndefinedAlias[lookupAlias]) {
                 columnsWithUndefinedAlias[lookupAlias].add(columnName);
               } else
                 columnsWithUndefinedAlias[lookupAlias] = new Set([columnName]);
-              console.log(
-                'columns with undefined: ',
-                columnsWithUndefinedAlias
-              );
               break;
             }
           }
@@ -161,7 +150,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
           if (specifiedTable) {
             tables.push(specifiedTable);
           } else {
-            console.log('no specified table');
             tables = [...activeTables];
           }
 
@@ -170,12 +158,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
             if (columnName !== '*') {
               if (mainObj[table][columnName]) {
                 colMatchCount++;
-                console.log(
-                  'col flag info: table:',
-                  table,
-                  'column:',
-                  columnName
-                );
                 mainObj[table][columnName].activeColumn = true;
               }
             } else {
@@ -254,7 +236,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
 
   while (queue.length) {
     const obj = queue[0];
-    console.log('next in queue', obj);
 
     let type = obj.type;
     if (type) {
@@ -280,8 +261,6 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   }
 
   for (const table in mainObj) connectedTablesHandler(table);
-  console.log('FINAL OBJ', mainObj);
-  console.log('Error Arr: ', errorArr);
   return { errorArr: errorArr, mainObj: mainObj };
 }
 

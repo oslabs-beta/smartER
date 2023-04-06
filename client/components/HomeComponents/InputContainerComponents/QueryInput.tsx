@@ -3,6 +3,7 @@ import { HomepageContext } from '../../../Context';
 import { historyType } from '../../../Context';
 import { parse, Statement, astVisitor } from 'pgsql-ast-parser';
 import { create } from 'domain';
+import { debounce } from 'lodash';
 
 const QueryInput: React.FC<{}> = () => {
   const { queryString, setQueryString } = useContext(HomepageContext)!;
@@ -30,18 +31,29 @@ const QueryInput: React.FC<{}> = () => {
       }
 
       //Update History State, for re-rendering History.tsx
-      setHistory(() => {
-        // console.log('history: ', history);
-        return [...history, { created_at: created_at, query: queryString }];
+      setHistory((prev: any) => {
+        console.log('IN QUERY SUBMIT history: ', history);
+        prev.push({ created_at, query: queryString });
+        return prev;
       });
     } catch (error) {
       console.log(`Error in QueryInput.tsx ${error}`);
       return `Error in QueryInput.tsx ${error}`;
     }
-
-    // response from GET should be sent to the Query Result component
-    // console.log('QUERY HANDLE SUBMIT ', queryString);
   };
+
+  const handleTyping = (e: any) => {
+    setQueryString(e.target.value);
+    const lastChar = e.target.value[e.target.value.length - 1];
+    const keys = new Set([' ', ',', ';']);
+    if (keys.has(lastChar)) {
+      setSubmit(!submit);
+    }
+  };
+
+  const handlePause = debounce(() => {
+    setSubmit(!submit);
+  }, 1000);
 
   return (
     <div className="query-main">
@@ -50,8 +62,9 @@ const QueryInput: React.FC<{}> = () => {
           className="query-input"
           required
           placeholder="type your query"
-          onChange={(e) => setQueryString(e.target.value)}
+          onChange={handleTyping}
           value={queryString}
+          onKeyUp={handlePause}
         ></textarea>
         <button
           type="submit"

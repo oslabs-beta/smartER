@@ -18,39 +18,57 @@ const History: React.FC<{}> = () => {
         return prev;
       });
 
-      const elements: any = history.map((object, index) => {
-        const date = object.created_at;
-        const formatDate = date.substring(0, 10);
-        return (
-          <tr
-            className="history-rows"
-            key={`${index}-row`}
-            onClick={setHistoricalQuery}
-          >
-            <td className="query-table-cell history-query" key={index}>
-              {object.query}
-            </td>
-            <td className="query-table-cell history-time" key={`${index}-time`}>
-              {formatDate}
-            </td>
-          </tr>
-        );
-      });
-      setHistoryElements(elements.reverse());
+      makeHistoryElements();
     } catch (error) {
       console.log('history error', error);
     }
+  };
+
+  const makeHistoryElements = () => {
+    const elements: any = history.map((object, index) => {
+      const localTime = convertToPST(object.created_at);
+      return (
+        <tr
+          className="history-rows"
+          key={`${index}-row`}
+          onClick={setHistoricalQuery}
+        >
+          <td className="query-table-cell history-query" key={index}>
+            {object.query}
+          </td>
+          <td className="query-table-cell history-time" key={`${index}-time`}>
+            {localTime}
+          </td>
+        </tr>
+      );
+    });
+    setHistoryElements(elements.reverse());
   };
 
   useEffect(() => {
     getHistory();
   }, []);
 
+  useEffect(() => {
+    makeHistoryElements();
+  }, [submit]);
+
   const setHistoricalQuery = (e: any) => {
-    console.log('clicked historical event');
     setQueryString(e.target.innerText);
     setSubmit(!submit);
   };
+
+  function convertToPST(dateString: string): string {
+    const date = new Date(dateString);
+    const utcOffset = date.getTimezoneOffset();
+    const utcOffsetMs = utcOffset * 60 * 1000;
+    const pstDate = new Date(date.getTime() - utcOffsetMs - 7 * 60 * 60 * 1000);
+    const pstDateString = pstDate
+      .toISOString()
+      .replace('T', ' ')
+      .replace('.000Z', '');
+    return pstDateString.substring(0, 10);
+  }
 
   return (
     <div className="history-table">
