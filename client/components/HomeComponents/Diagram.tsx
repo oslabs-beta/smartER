@@ -21,6 +21,10 @@ const nodeTypes = {
   CustomTitleNode: CustomTitleNode,
 };
 
+const fitViewOptions = {
+  padding: 10,
+};
+
 const Diagram: FC<{}> = () => {
   // STATE
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -78,7 +82,7 @@ const Diagram: FC<{}> = () => {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          fitView
+          fitView={true}
           proOptions={proOptions}
           nodeTypes={nodeTypes}
         >
