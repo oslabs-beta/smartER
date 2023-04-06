@@ -1,3 +1,4 @@
+import { on } from 'events';
 import { Statement, parseFirst } from 'pgsql-ast-parser';
 
 interface columnObj {
@@ -413,52 +414,12 @@ function conditionalSchemaParser(query: string, schema: any): returnObj {
   };
 
   const joinHandler = (obj: any) => {
-    // const currentColumn =
-    console.log('inside joinHandler');
-
-    for (let key in obj) {
-      switch (key) {
-        case 'type':
-          break;
-        case 'on':
-          for (let onKey in obj.on) {
-            switch (onKey) {
-              case 'type':
-                break;
-              case 'left' || 'right':
-                const currentColumn = obj.on;
-                // if left/right object has a property table with a name
-                if (currentColumn[onKey].table.name) {
-                  // attempt to lookup table name by alias
-                  const tableName =
-                    tableAliasLookup[currentColumn[onKey].table.name];
-                  if (tableName) {
-                    // identify col name and flag it in mainObj
-                    const columnName = currentColumn[onKey].name;
-                    mainObj[tableName][columnName].activeLink = true;
-                  }
-                } else {
-                  // else iterate through mainObj and check for a table that has a column name that matches
-                  const tables = Object.keys(mainObj);
-                  const columnName = currentColumn[onKey].name;
-                  let counter = 0;
-                  for (let i = 0; i < tables.length; i++) {
-                    const tableName = tables[i];
-                    //keep track of matches, if no matches, add to errorArr, if >1 flag both and add to errArr that column exists in more than one table
-                    if (mainObj[tableName][columnName]) {
-                      mainObj[tableName][columnName].activeLink = true;
-                      counter++;
-                    }
-                  }
-                  if (counter === 0) errorArr.push('no cols found');
-                  else if (counter > 1) errorArr.push('too many cols');
-                }
-            }
-          }
-        default:
-        // queue.push(obj[key]);
-      }
-    }
+    const left = obj.on.left;
+    const right = obj.on.right;
+    if (left) flagActiveLinks(left, tableAliasLookup, mainObj, errorArr);
+    else errorArr.push(`No column found for left position of ${obj.type}`);
+    if (right) flagActiveLinks(right, tableAliasLookup, mainObj, errorArr);
+    else errorArr.push(`No column found for right position of ${obj.type}`);
   };
 
   const connectedTablesHandler = (table: string) => {
@@ -543,6 +504,7 @@ function flagActiveLinks(
   mainObj: mainObj,
   errorArr: string[]
 ) {
+  console.log('ONKEY', onKey);
   if (onKey.table.name) {
     // attempt to lookup table name by alias
     const tableName = tableAlias[onKey.table.name];
