@@ -3,13 +3,15 @@ import { HomepageContext } from '../../../Context';
 import { historyType } from '../../../Context';
 import { parse, Statement, astVisitor } from 'pgsql-ast-parser';
 import { create } from 'domain';
+import conditionalSchemaParser from '../DiagramLogic/ConditionalSchemaParser';
 
 const QueryInput: React.FC<{}> = () => {
-  const { queryString, setQueryString } = useContext(HomepageContext)!;
+  const { queryString, setQueryString, masterData, setMasterData } =
+    useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
   const { submit, setSubmit } = useContext(HomepageContext)!;
   const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
-
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
   // Handle submit of queryString
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -27,8 +29,28 @@ const QueryInput: React.FC<{}> = () => {
         const parsedData = await data.json();
         //setState query result for rendering QueryResults.tsx
         setQueryResponse(parsedData);
+      } else {
+        // if the query is not valid, errorMessage will be returned
+        const errorMessage = conditionalSchemaParser(
+          queryString,
+          masterData
+        ).errorArr;
+        if (errorMessage.length > 0) {
+          console.log(errorMessage);
+          const ErrorMessage: any = errorMessage.map((err) => {
+            return (
+              <div className="error-message">
+                <tr className="error-rows" key={`${err}-row`}>
+                  <td className="error-table-cell" key={err}>
+                    {`⚠ ${err}`}
+                  </td>
+                </tr>
+              </div>
+            );
+          });
+          setErrorMessages(ErrorMessage);
+        }
       }
-
       //Update History State, for re-rendering History.tsx
       setHistory(() => {
         // console.log('history: ', history);
@@ -53,6 +75,7 @@ const QueryInput: React.FC<{}> = () => {
           onChange={(e) => setQueryString(e.target.value)}
           value={queryString}
         ></textarea>
+        <div className="error-message-container">{errorMessages}</div>
         <button
           type="submit"
           className="submit-query-button"
