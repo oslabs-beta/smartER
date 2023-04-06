@@ -1,4 +1,3 @@
-import { on } from 'events';
 import { Statement, parseFirst } from 'pgsql-ast-parser';
 
 interface columnObj {
