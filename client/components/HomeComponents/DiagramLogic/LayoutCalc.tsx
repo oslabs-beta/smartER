@@ -48,7 +48,7 @@ export async function getElkData(nodes: any, edges: any) {
   });
 
   // update nodes with elk positions, switching back grom group edges to individual column edges
-  return nodes.map((node: any) => {
+  const positions = nodes.map((node: any) => {
     const elkNode = elkCalculate.children.find(
       (elkNode: any) => elkNode.id === node.id
     );
@@ -62,4 +62,6 @@ export async function getElkData(nodes: any, edges: any) {
       };
     } else return node;
   });
+  console.log('positions', positions);
+  return positions;
 }

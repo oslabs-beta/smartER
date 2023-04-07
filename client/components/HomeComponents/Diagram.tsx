@@ -37,6 +37,8 @@ const Diagram: FC<{}> = () => {
     setMasterData,
     renderedData,
     setRenderedData,
+    renderedDataPositions,
+    setRenderedDataPositions,
   } = useContext(HomepageContext)!;
 
   // HOOKS
@@ -74,13 +76,16 @@ const Diagram: FC<{}> = () => {
 
         const defaultNodes = parseNodes(queryParse);
         const defaultEdges = parseEdges(queryParse);
-        const testElk = await getElkData(defaultNodes, defaultEdges);
 
-        if (JSON.stringify(renderedData) === JSON.stringify({})) {
-          setNodes(testElk);
-        } else {
-          setNodes(defaultNodes);
-        }
+        console.log(defaultNodes);
+
+        // if (JSON.stringify(renderedData) === JSON.stringify({})) {
+        //   console.log('run elk');
+        const testElk = await getElkData(defaultNodes, defaultEdges);
+        setNodes(testElk);
+        // } else {
+        // }
+        // setNodes(defaultNodes);
         setEdges(defaultEdges);
         setRenderedData(queryParse);
       }

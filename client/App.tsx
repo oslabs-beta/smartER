@@ -23,6 +23,7 @@ const App = () => {
   const [queryResponse, setQueryResponse] = useState([]);
   const [masterData, setMasterData] = useState({});
   const [renderedData, setRenderedData] = useState({});
+  const [renderedDataPositions, setRenderedDataPositions] = useState({});
 
   // const navigate = useNavigate();
 
@@ -65,6 +66,8 @@ const App = () => {
           setMasterData,
           renderedData,
           setRenderedData,
+          renderedDataPositions,
+          setRenderedDataPositions,
         }}
       >
         <Routes>
