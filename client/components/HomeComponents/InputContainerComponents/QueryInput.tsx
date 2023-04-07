@@ -52,10 +52,18 @@ const QueryInput: React.FC<{}> = () => {
           setErrorMessages(ErrorMessage);
         }
       }
-      //Update History State, for re-rendering History.tsx
+      // Update History State, for re-rendering History.tsx
+      const numberTime = Number(created_at);
+      function getZDateString(timestamp: number) {
+        const date = new Date(timestamp);
+        const zDateString = date.toISOString();
+        return zDateString;
+      }
+      const zDateString = getZDateString(numberTime);
+
       setHistory((prev: any) => {
         console.log('IN QUERY SUBMIT history: ', history);
-        prev.push({ created_at, query: queryString });
+        prev.push({ created_at: zDateString, query: queryString });
         return prev;
       });
     } catch (error) {

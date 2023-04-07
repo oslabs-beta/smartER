@@ -51,7 +51,7 @@ const History: React.FC<{}> = () => {
 
   useEffect(() => {
     makeHistoryElements();
-  }, [submit]);
+  }, [history]);
 
   const setHistoricalQuery = (e: any) => {
     setQueryString(e.target.innerText);
