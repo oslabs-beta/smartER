@@ -25,7 +25,8 @@ const History: React.FC<{}> = () => {
   };
 
   const makeHistoryElements = () => {
-    const elements: any = history.map((object, index) => {
+    const sortedHistory = history.sort();
+    const elements: any = sortedHistory.map((object, index) => {
       const localTime = convertToPST(object.created_at);
       return (
         <tr
@@ -53,11 +54,11 @@ const History: React.FC<{}> = () => {
 
   useEffect(() => {
     getHistory();
-  }, []);
+  }, [submit]);
 
   useEffect(() => {
     makeHistoryElements();
-  }, [history]);
+  }, [setHistory]);
 
   const setHistoricalQuery = (e: any) => {
     setQueryString(e.target.innerText);

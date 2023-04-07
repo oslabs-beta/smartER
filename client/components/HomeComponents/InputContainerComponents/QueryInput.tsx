@@ -7,12 +7,20 @@ import conditionalSchemaParser from '../DiagramLogic/ConditionalSchemaParser';
 import { debounce } from 'lodash';
 
 const QueryInput: React.FC<{}> = () => {
-  const { queryString, setQueryString, masterData, setMasterData } =
-    useContext(HomepageContext)!;
-  const { history, setHistory, errorMessages, setErrorMessages } =
-    useContext(HomepageContext)!;
-  const { submit, setSubmit } = useContext(HomepageContext)!;
-  const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
+  const {
+    queryString,
+    setQueryString,
+    masterData,
+    setMasterData,
+    history,
+    setHistory,
+    errorMessages,
+    setErrorMessages,
+    submit,
+    setSubmit,
+    queryResponse,
+    setQueryResponse,
+  } = useContext(HomepageContext)!;
 
   const errorList = () => {
     // if the query is not valid, errorMessage will be returned
@@ -63,8 +71,7 @@ const QueryInput: React.FC<{}> = () => {
       const zDateString = getZDateString(numberTime);
 
       setHistory((prev: any) => {
-        console.log('IN QUERY SUBMIT history: ', history);
-        prev.unshift({ created_at: zDateString, query: queryString });
+        prev.push({ created_at: zDateString, query: queryString });
         return prev;
       });
     } catch (error) {
@@ -72,6 +79,28 @@ const QueryInput: React.FC<{}> = () => {
       return `Error in QueryInput.tsx ${error}`;
     }
   };
+
+  // TODO: HANDLE LIVE QUERY without saving to history?
+  // const liveQuery = async () => {
+  //   try {
+  //     const created_at = String(Date.now());
+  //     const data = await fetch('/api/getLiveQueryResults', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ created_at, queryString }),
+  //     });
+  //     if (data.status === 200) {
+  //       const parsedData = await data.json();
+  //       //setState query result for rendering QueryResults.tsx
+  //       setQueryResponse(parsedData);
+  //     } else {
+  //       // errorList();
+  //     }
+  //   } catch (error) {
+  //     console.log(`Error in QueryInput.tsx ${error}`);
+  //     return `Error in QueryInput.tsx ${error}`;
+  //   }
+  // };
 
   const handleTyping = (e: any) => {
     setQueryString(e.target.value);
@@ -83,6 +112,7 @@ const QueryInput: React.FC<{}> = () => {
       lowerCaseQuery.includes('select') &&
       lowerCaseQuery.includes('from')
     ) {
+      // liveQuery();
       setSubmit(!submit);
       errorList();
     }
@@ -91,6 +121,7 @@ const QueryInput: React.FC<{}> = () => {
   const handlePause = debounce(() => {
     const lowerCaseQuery = queryString.toLowerCase();
     if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
+      // liveQuery();
       setSubmit(!submit);
     }
   }, 1000);

@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, { FC, useState } from 'react';
 import QueryInput from './InputContainerComponents/QueryInput';
 import History from './InputContainerComponents/History';
 import Settings from './InputContainerComponents/Settings';

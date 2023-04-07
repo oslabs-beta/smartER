@@ -16,6 +16,15 @@ router.post(
   }
 );
 
+router.post(
+  '/getLiveQueryResults',
+  schemaController.connectDb,
+  schemaController.getQueryResults,
+  (req, res) => {
+    res.status(200).json(res.locals.queryResults);
+  }
+);
+
 router.get(
   '/getSchema',
   schemaController.connectDb,

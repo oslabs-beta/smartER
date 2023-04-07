@@ -97,7 +97,6 @@ const Diagram: FC<{}> = () => {
       async function updateNodes() {
         setErrorMessages(['']);
         const queryParse = conditionalSchemaParser(queryString, masterData);
-        console.log('queryParse: ', queryParse);
         const errorArr = queryParse.errorArr;
         setErrorMessages(errorArr);
         if (!errorArr[0]) getQueryResults();
