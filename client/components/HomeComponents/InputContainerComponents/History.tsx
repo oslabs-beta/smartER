@@ -33,10 +33,16 @@ const History: React.FC<{}> = () => {
           key={`${index}-row`}
           onClick={setHistoricalQuery}
         >
-          <td className="query-table-cell history-query" key={index}>
+          <td
+            className="query-table-cell history-query"
+            key={`${index}-historyQuery`}
+          >
             {object.query}
           </td>
-          <td className="query-table-cell history-time" key={`${index}-time`}>
+          <td
+            className="query-table-cell history-time"
+            key={`${index}-historyTime`}
+          >
             {localTime}
           </td>
         </tr>
