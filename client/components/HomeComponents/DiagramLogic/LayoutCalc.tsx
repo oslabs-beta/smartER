@@ -1,4 +1,6 @@
+import { match } from 'assert';
 import Elk from 'elkjs';
+import { start } from 'repl';
 
 // elk settings
 const elk: any = new Elk({
@@ -18,7 +20,7 @@ const elk: any = new Elk({
 });
 
 // grab information for nodes and edges needed for elk
-export async function getElkData(nodes: any, edges: any) {
+export async function getElkData(nodes: any, edges: any, startPositions: any) {
   const elkNodes: any[] = [];
   const elkEdges: any[] = [];
 
@@ -47,17 +49,41 @@ export async function getElkData(nodes: any, edges: any) {
     edges: elkEdges,
   });
 
-  // update nodes with elk positions, switching back grom group edges to individual column edges
+  // update nodes with elk positions, switching back from group edges to individual column edges
   const positions = nodes.map((node: any) => {
     const elkNode = elkCalculate.children.find(
       (elkNode: any) => elkNode.id === node.id
     );
     if (node.id.includes('group')) {
+      let x = elkNode.x;
+      let y = elkNode.y;
+
+      console.log('node', node);
+
+      // find starting position of current node
+      let matchingNode;
+      if (Array.isArray(startPositions)) {
+        for (let startNode of startPositions) {
+          // console.log('startNode', startNode);
+          if (JSON.stringify(startNode.id) === JSON.stringify(node.id)) {
+            console.log('here');
+            matchingNode = startNode;
+          }
+        }
+      }
+
+      if (matchingNode) {
+        console.log('xy', x, y);
+        x = matchingNode.position.x;
+        y = matchingNode.position.y;
+        console.log('new xy', x, y);
+      }
+
       return {
         ...node,
         position: {
-          x: elkNode.x,
-          y: elkNode.y,
+          x: x,
+          y: y,
         },
       };
     } else return node;

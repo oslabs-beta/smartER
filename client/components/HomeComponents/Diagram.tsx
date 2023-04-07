@@ -47,6 +47,11 @@ const Diagram: FC<{}> = () => {
     [setEdges]
   );
 
+  const onNodeDragStop = (e, node: any) => {
+    console.log(e, node);
+    setRenderedDataPositions([...renderedDataPositions, node]);
+  };
+
   const getERDiagram = async () => {
     try {
       const data = await fetch('/api/getSchema', {
@@ -81,8 +86,13 @@ const Diagram: FC<{}> = () => {
 
         // if (JSON.stringify(renderedData) === JSON.stringify({})) {
         //   console.log('run elk');
-        const testElk = await getElkData(defaultNodes, defaultEdges);
+        const testElk = await getElkData(
+          defaultNodes,
+          defaultEdges,
+          renderedDataPositions
+        );
         setNodes(testElk);
+        setRenderedDataPositions(testElk);
         // } else {
         // }
         // setNodes(defaultNodes);
@@ -101,6 +111,7 @@ const Diagram: FC<{}> = () => {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeDragStop={onNodeDragStop}
           onConnect={onConnect}
           fitView={true}
           proOptions={proOptions}

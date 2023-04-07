@@ -65,8 +65,8 @@ const defaultHomeState = {
   setMasterData: () => {},
   renderedData: {},
   setRenderedData: () => {},
-  renderedDataPositions: {},
-  setRenderedDataPositions: () => {},
+  renderedDataPositions: [],
+  setRenderedDataPositions: () => [],
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(
