@@ -29,8 +29,14 @@ const Diagram: FC<{}> = () => {
   // STATE
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { queryString, submit, masterData, setMasterData } =
-    useContext(HomepageContext)!;
+  const {
+    queryString,
+    submit,
+    masterData,
+    setMasterData,
+    errorMessages,
+    setErrorMessages,
+  } = useContext(HomepageContext)!;
 
   // HOOKS
   const onConnect = useCallback(
@@ -59,12 +65,13 @@ const Diagram: FC<{}> = () => {
   useEffect(() => {
     if (queryString) {
       async function updateNodes() {
-        const queryParse = conditionalSchemaParser(
-          queryString,
-          masterData
-        ).mainObj;
-        const defaultNodes = parseNodes(queryParse);
-        const defaultEdges = parseEdges(queryParse);
+        setErrorMessages(['']);
+        const queryParse = conditionalSchemaParser(queryString, masterData);
+        console.log('queryParse: ', queryParse);
+        const errorArr = queryParse.errorArr;
+        setErrorMessages(errorArr);
+        const defaultNodes = parseNodes(queryParse.mainObj);
+        const defaultEdges = parseEdges(queryParse.mainObj);
         const testElk = await getElkData(defaultNodes, defaultEdges);
         setNodes(testElk);
         setEdges(defaultEdges);
