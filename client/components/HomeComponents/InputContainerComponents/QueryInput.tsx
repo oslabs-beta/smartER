@@ -9,12 +9,32 @@ import { debounce } from 'lodash';
 const QueryInput: React.FC<{}> = () => {
   const { queryString, setQueryString, masterData, setMasterData } =
     useContext(HomepageContext)!;
-  const { history, setHistory } = useContext(HomepageContext)!;
+  const { history, setHistory, errorMessages, setErrorMessages } =
+    useContext(HomepageContext)!;
   const { submit, setSubmit } = useContext(HomepageContext)!;
   const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+  const errorList = () => {
+    // if the query is not valid, errorMessage will be returned
+    if (errorMessages.length > 0) {
+      const ErrorMessage: any = errorMessages.map((err, i) => {
+        return (
+          <div
+            className="error-table-cell error-message"
+            key={`${i}-errorCell`}
+          >
+            {`⚠ ${err}`}
+          </div>
+        );
+      });
+      return ErrorMessage;
+    }
+  };
+
+  const err = errorList();
   // Handle submit of queryString
   const handleSubmit = async (e: any) => {
+    // setErrorMessages([]);
     e.preventDefault();
     //setSubmit to trigger useEffect for re-rendering Diagram.tsx
     setSubmit(!submit);
@@ -31,33 +51,14 @@ const QueryInput: React.FC<{}> = () => {
         //setState query result for rendering QueryResults.tsx
         setQueryResponse(parsedData);
       } else {
-        // if the query is not valid, errorMessage will be returned
-        const errorMessage = conditionalSchemaParser(
-          queryString,
-          masterData
-        ).errorArr;
-        if (errorMessage.length > 0) {
-          console.log(errorMessage);
-          const ErrorMessage: any = errorMessage.map((err) => {
-            return (
-              <div className="error-message">
-                <tr className="error-rows" key={`${err}-row`}>
-                  <td className="error-table-cell" key={err}>
-                    {`⚠ ${err}`}
-                  </td>
-                </tr>
-              </div>
-            );
-          });
-          setErrorMessages(ErrorMessage);
-        }
+        // errorList();
       }
       //Update History State, for re-rendering History.tsx
-      setHistory((prev: any) => {
-        console.log('IN QUERY SUBMIT history: ', history);
-        prev.push({ created_at, query: queryString });
-        return prev;
-      });
+      // setHistory((prev: any) => {
+      //   console.log('IN QUERY SUBMIT history: ', history);
+      //   prev.push({ created_at, query: queryString });
+      //   return prev;
+      // });
     } catch (error) {
       console.log(`Error in QueryInput.tsx ${error}`);
       return `Error in QueryInput.tsx ${error}`;
@@ -75,6 +76,7 @@ const QueryInput: React.FC<{}> = () => {
       lowerCaseQuery.includes('from')
     ) {
       setSubmit(!submit);
+      errorList();
     }
   };
 
@@ -96,7 +98,9 @@ const QueryInput: React.FC<{}> = () => {
           value={queryString}
           onKeyUp={handlePause}
         ></textarea>
-        <div className="error-message-container">{errorMessages}</div>
+        {errorMessages[0] && (
+          <div className="error-message-container">{err}</div>
+        )}
         <button
           type="submit"
           className="submit-query-button"
