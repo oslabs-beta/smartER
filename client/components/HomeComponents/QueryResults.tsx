@@ -7,6 +7,7 @@ const QueryResults: React.FC<{}> = () => {
   const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
 
+  // if data response from backend is 200 then set queryResponse to the data
   /* columnNames: [['id','name',...] */
   let columnNames: string[] = [];
 
