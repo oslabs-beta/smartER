@@ -38,7 +38,6 @@ $color4: #6bfbce;
 
   .column-data {
     max-width: 155px;
-    background-color: red;
     display: flex;
     width: 100%;
     height: 100%;
@@ -58,11 +57,21 @@ $color4: #6bfbce;
       // white-space: wrap;
     }
 
+    .column-name:hover {
+      overflow: visible;
+    }
+
     .column-type {
       text-align: right;
       font-size: 60%;
       white-space: nowrap;
-      text-overflow: clip;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 30%;
+    }
+
+    .column-type:hover {
+      overflow: visible;
     }
   }
 }
