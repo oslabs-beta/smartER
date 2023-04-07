@@ -14,6 +14,7 @@ import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
 import conditionalSchemaParser from './DiagramLogic/ConditionalSchemaParser';
 import { getElkData } from './DiagramLogic/LayoutCalc';
+import { render } from '@testing-library/react';
 
 const proOptions = { hideAttribution: true };
 const nodeTypes = {
@@ -29,8 +30,14 @@ const Diagram: FC<{}> = () => {
   // STATE
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { queryString, submit, masterData, setMasterData } =
-    useContext(HomepageContext)!;
+  const {
+    queryString,
+    submit,
+    masterData,
+    setMasterData,
+    renderedData,
+    setRenderedData,
+  } = useContext(HomepageContext)!;
 
   // HOOKS
   const onConnect = useCallback(
@@ -63,11 +70,19 @@ const Diagram: FC<{}> = () => {
           queryString,
           masterData
         ).mainObj;
+        console.log('new', queryParse, 'old', renderedData);
+
         const defaultNodes = parseNodes(queryParse);
         const defaultEdges = parseEdges(queryParse);
         const testElk = await getElkData(defaultNodes, defaultEdges);
-        setNodes(testElk);
+
+        if (JSON.stringify(renderedData) === JSON.stringify({})) {
+          setNodes(testElk);
+        } else {
+          setNodes(defaultNodes);
+        }
         setEdges(defaultEdges);
+        setRenderedData(queryParse);
       }
       updateNodes();
     }

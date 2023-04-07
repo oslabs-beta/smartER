@@ -52,6 +52,7 @@ const dbController: dbControllers = {
           FROM history h
           JOIN databases d on d._id = h.database_id
           WHERE d._id = ${dbId}
+          ORDER BY created_at desc
           ;`);
         // console.log('history', history);
         res.locals.queryHistory = history.rows;

@@ -36,6 +36,8 @@ export type HomepageContextType = {
   setQueryResponse: Dispatch<SetStateAction<any>>;
   masterData: any;
   setMasterData: Dispatch<SetStateAction<any>>;
+  renderedData: any;
+  setRenderedData: Dispatch<SetStateAction<any>>;
 };
 
 const defaultHomeState = {
@@ -59,6 +61,8 @@ const defaultHomeState = {
   setQueryResponse: () => {},
   masterData: {},
   setMasterData: () => {},
+  renderedData: {},
+  setRenderedData: () => {},
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(
