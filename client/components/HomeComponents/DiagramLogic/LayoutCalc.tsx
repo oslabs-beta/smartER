@@ -58,8 +58,6 @@ export async function getElkData(nodes: any, edges: any, startPositions: any) {
       let x = elkNode.x;
       let y = elkNode.y;
 
-      console.log('node', node);
-
       // find starting position of current node
       let matchingNode;
       if (Array.isArray(startPositions)) {
@@ -85,6 +83,5 @@ export async function getElkData(nodes: any, edges: any, startPositions: any) {
       };
     } else return node;
   });
-  console.log('positions', positions);
   return positions;
 }

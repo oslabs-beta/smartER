@@ -38,22 +38,25 @@ const QueryInput: React.FC<{}> = () => {
   const err = errorList();
   // Handle submit of queryString
   const handleSubmit = async (e: any) => {
+    console.log('event', e);
     // setErrorMessages([]);
     e.preventDefault();
-    //setSubmit to trigger useEffect for re-rendering Diagram.tsx
+    //setSubmit to trigger useEffect for re-rendering Diagram.tsx and getting query results
     setSubmit(!submit);
     // POST request to database with queryString
     try {
       const created_at = String(Date.now());
-      const data = await fetch('/api/getQueryResults', {
+      const data = await fetch('/api/postHistory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ created_at, queryString }),
+        body: JSON.stringify({ queryString }),
       });
       if (data.status === 200) {
         const parsedData = await data.json();
-        //setState query result for rendering QueryResults.tsx
-        setQueryResponse(parsedData);
+        setHistory([
+          ...history,
+          { created_at: parsedData, query: queryString },
+        ]);
       } else {
         // errorList();
       }
