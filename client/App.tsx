@@ -24,6 +24,7 @@ const App = () => {
   const [masterData, setMasterData] = useState({});
   const [renderedData, setRenderedData] = useState({});
   const [renderedDataPositions, setRenderedDataPositions] = useState({});
+  const [errorMessages, setErrorMessages] = useState(['']);
 
   // const navigate = useNavigate();
 
@@ -68,6 +69,8 @@ const App = () => {
           setRenderedData,
           renderedDataPositions,
           setRenderedDataPositions,
+          errorMessages,
+          setErrorMessages,
         }}
       >
         <Routes>

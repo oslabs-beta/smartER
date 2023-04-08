@@ -6,7 +6,9 @@ import { HomepageContext } from '../../Context';
 const QueryResults: React.FC<{}> = () => {
   const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
   const { history, setHistory } = useContext(HomepageContext)!;
+  const { errorMessages, setErrorMessages } = useContext(HomepageContext)!;
 
+  // if data response from backend is 200 then set queryResponse to the data
   /* columnNames: [['id','name',...] */
   let columnNames: string[] = [];
 
@@ -28,48 +30,62 @@ const QueryResults: React.FC<{}> = () => {
     columnsValuesInner = [];
   }
 
-  return (
-    <>
-      <div className="query-table-outer-container">
-        <h2>Query Results</h2>
-        <div className="query-table-container">
-          <table className="query-table">
-            <thead>
-              <tr className="query-header">
-                {columnNames.map((column) => {
+  if (!errorMessages[0])
+    return (
+      <>
+        <div className="query-table-outer-container">
+          <h2>Query Results</h2>
+          <div className="query-table-container">
+            <table className="query-table">
+              <thead>
+                <tr className="query-header">
+                  {columnNames.map((column) => {
+                    return (
+                      <th className="query-table-cell" key={column}>
+                        {column}
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {columnsValue.map((column, index) => {
+                  const columnsArray: JSX.Element[] = [];
+                  column.map((data, i) => {
+                    return columnsArray.push(
+                      <td className="query-table-cell" key={i}>
+                        {data}
+                      </td>
+                    );
+                  });
                   return (
-                    <th className="query-table-cell" key={column}>
-                      {column}
-                    </th>
+                    <tr key={`tr${index}`} className="query-rows">
+                      {columnsArray}
+                    </tr>
                   );
                 })}
-              </tr>
-            </thead>
-            <tbody>
-              {columnsValue.map((column, index) => {
-                // console.log(column);
-                let i = 0;
-                const columnsArray: JSX.Element[] = [];
-                column.map((data) => {
-                  i++;
-                  return columnsArray.push(
-                    <td className="query-table-cell" key={i}>
-                      {data}
-                    </td>
-                  );
-                });
-                return (
-                  <tr key={`tr${index}`} className="query-rows">
-                    {columnsArray}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  else
+    return (
+      <>
+        <div className="query-table-outer-container">
+          <h2>Query Results</h2>
+          <div className="query-table-container">
+            <table className="query-table">
+              <thead>
+                <tr className="query-header"></tr>
+              </thead>
+              <tbody>See query error above</tbody>
+            </table>
+          </div>
+        </div>
+      </>
+    );
 };
 
 export default QueryResults;

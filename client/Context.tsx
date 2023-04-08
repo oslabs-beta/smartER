@@ -40,6 +40,8 @@ export type HomepageContextType = {
   setRenderedData: Dispatch<SetStateAction<any>>;
   renderedDataPositions: any;
   setRenderedDataPositions: Dispatch<SetStateAction<any>>;
+  errorMessages: string[];
+  setErrorMessages: Dispatch<SetStateAction<string[]>>;
 };
 
 const defaultHomeState = {
@@ -67,6 +69,8 @@ const defaultHomeState = {
   setRenderedData: () => {},
   renderedDataPositions: [],
   setRenderedDataPositions: () => [],
+  errorMessages: [],
+  setErrorMessages: () => [],
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(

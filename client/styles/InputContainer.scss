@@ -288,6 +288,28 @@ textarea {
   border-top: 1px solid $color2;
 }
 
+// error message
+
+.error-message {
+  background-color: lighten(red, 20%);
+  border-radius: 5px;
+  color: white;
+  font-size: 10px;
+  font-family: 'Lato', sans-serif;
+  padding: 5px 5px 5px 5px;
+  margin-bottom: 3px;
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
 .query-table-cell {
   padding: 5px;
   background-color: rgba(255, 255, 255, 0.284);
