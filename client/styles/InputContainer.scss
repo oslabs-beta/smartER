@@ -282,52 +282,59 @@ textarea {
 }
 
 // HISTORY
-.history-table {
-  margin: 10% 0;
-  overflow-y: hidden;
-  border-radius: 5px;
+.history-table-container {
+  display: flex;
+  justify-content: center;
 
-  .query-table {
-    font-size: 10pt;
-    padding: 3px 10px;
-    background-color: rgba(255, 255, 255, 0.284);
-    color: black;
-    width: auto;
-    // max-width: 100%;
-    height: 100%;
-    table-layout: auto;
-    border-collapse: collapse;
+  .history-table {
+    margin: 40px 0;
+    width: 80%;
+    overflow-y: hidden;
+    border-radius: 5px;
 
-    th {
-      // background-color: $color2;
-      padding: 5px 5px 2px 5px;
-      border-bottom: 2px solid $color2;
-      vertical-align: bottom;
-    }
+    .query-table {
+      font-size: 10pt;
+      padding: 3px 10px;
+      background-color: rgba(255, 255, 255, 0.284);
+      color: black;
+      width: auto;
+      // max-width: 100%;
+      height: 100%;
+      table-layout: auto;
+      border-collapse: collapse;
 
-    td {
-      border-bottom: 1px solid $color2;
-      vertical-align: top;
-    }
+      th {
+        // background-color: $color2;
+        padding: 5px 5px 2px 5px;
+        border-bottom: 2px solid $color2;
+        vertical-align: bottom;
+      }
 
-    .history-query {
-      text-align: left;
-      border-top: 1px solid $color2;
-    }
+      td {
+        border-bottom: 1px solid $color2;
+        vertical-align: top;
+        padding: 0 5px;
+      }
 
-    .history-time {
-      width: 120px;
-      text-align: right;
-      border-top: 1px solid $color2;
+      .history-query {
+        text-align: left;
+        border-top: 1px solid $color2;
+      }
+
+      .history-time {
+        width: 120px;
+        text-align: right;
+        border-top: 1px solid $color2;
+      }
     }
   }
-}
 
-.history-table:hover {
-  overflow-y: auto;
-}
+  .history-table:hover {
+    overflow-y: auto;
+  }
 
-.history-rows:hover {
-  cursor: pointer;
-  color: #6bfbce;
+  .history-rows:hover {
+    cursor: pointer;
+    color: #6bfbce;
+  }
 }

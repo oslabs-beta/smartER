@@ -54,7 +54,7 @@ const dbController: dbControllers = {
           WHERE d._id = ${dbId}
           ORDER BY created_at desc
           ;`);
-        // console.log('history', history);
+        console.log('history', history);
         res.locals.queryHistory = history.rows;
         return next();
       } else throw new Error('db not found');
