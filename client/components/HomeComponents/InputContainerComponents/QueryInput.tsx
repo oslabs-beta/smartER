@@ -88,7 +88,7 @@ const QueryInput: React.FC<{}> = () => {
   }, 1000);
 
   return (
-    <div className="query-main">
+    <div className="query-main" style={{ height: 100 % -5 }}>
       <div className="query-main-inner">
         <textarea
           className="query-input"
