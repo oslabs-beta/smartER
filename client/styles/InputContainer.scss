@@ -168,8 +168,19 @@ button {
   font-size: 20px;
   text-align: right;
 }
-
-.submit-query-button:hover {
+.clear-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: $color6;
+  border-radius: 0 0 0 5px;
+  width: 20%;
+  height: 30px;
+  font-size: 14px;
+  text-align: left;
+}
+.submit-query-button:hover,
+.clear-button:hover {
   cursor: pointer;
   color: lighten(black, 52%);
 }

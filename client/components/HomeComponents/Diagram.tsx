@@ -14,7 +14,6 @@ import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
 import conditionalSchemaParser from './DiagramLogic/ConditionalSchemaParser';
 import { getElkData } from './DiagramLogic/LayoutCalc';
-import { render } from '@testing-library/react';
 
 const proOptions = { hideAttribution: true };
 const nodeTypes = {
@@ -28,8 +27,10 @@ const fitViewOptions = {
 
 const Diagram: FC<{}> = () => {
   // STATE
+
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
   const {
     queryString,
     submit,
@@ -43,6 +44,8 @@ const Diagram: FC<{}> = () => {
     setErrorMessages,
     queryResponse,
     setQueryResponse,
+    reset,
+    setReset,
   } = useContext(HomepageContext)!;
 
   async function getQueryResults() {
@@ -101,6 +104,11 @@ const Diagram: FC<{}> = () => {
   useEffect(() => {
     getERDiagram();
   }, []);
+
+  useEffect(() => {
+    setNodes([]);
+    setEdges([]);
+  }, [reset]);
 
   useEffect(() => {
     if (queryString) {

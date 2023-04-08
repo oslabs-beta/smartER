@@ -1,6 +1,4 @@
-import { match } from 'assert';
 import Elk from 'elkjs';
-import { start } from 'repl';
 
 // elk settings
 const elk: any = new Elk({

@@ -1,5 +1,4 @@
 import { createContext, useContext, Dispatch, SetStateAction } from 'react';
-import { StringLiteral } from 'typescript';
 
 // Login context
 export type LoginContextType = {
@@ -42,6 +41,8 @@ export type HomepageContextType = {
   setRenderedDataPositions: Dispatch<SetStateAction<any>>;
   errorMessages: string[];
   setErrorMessages: Dispatch<SetStateAction<string[]>>;
+  reset: boolean;
+  setReset: Dispatch<SetStateAction<boolean>>;
 };
 
 const defaultHomeState = {
@@ -71,6 +72,8 @@ const defaultHomeState = {
   setRenderedDataPositions: () => [],
   errorMessages: [],
   setErrorMessages: () => [],
+  reset: false,
+  setReset: () => {},
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(
