@@ -1,7 +1,12 @@
 import CustomColumnNode from './CustomColumnNode';
+import React from 'react';
+import IonIcon from '@reacticons/ionicons';
 
 export function parseNodes(rawData: any): any {
-  const standardHeight = 40;
+  const standardHeight = 25;
+  // const pkey = <FontAwesomeIcon icon={p_key} />;
+  const pkey = <IonIcon id="pkey" name="key" />;
+  const fkey = <IonIcon id="fkey" name="key-outline" />;
 
   const nodes: any = [];
   let j = 0;
@@ -10,10 +15,13 @@ export function parseNodes(rawData: any): any {
     const newContainer = {
       id: `${table}.group`,
       type: 'group',
-      position: { x: 200 * j, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
+      // position: { x: 200 * j, y: Math.random() * 100 }, //Control spacing of tables here, Probably needs an algo
       data: { label: table },
       style: {
-        height: Object.keys(rawData[table]).length * 40 + 40 + 0,
+        height:
+          Object.keys(rawData[table]).length * standardHeight +
+          standardHeight +
+          0,
         width: 180, //was 152
         display: 'flex',
         opacity: 0.25,
@@ -56,9 +64,13 @@ export function parseNodes(rawData: any): any {
         type: 'CustomColumnNode', //swap for default or CustomColumnNode
         parentNode: `${table}.group`,
         extent: 'parent',
-        position: { x: 0, y: i === 0 ? 40 : i * 40 + 40 }, //Control spacing of tables here, Probably needs an algo
+        position: {
+          x: 0,
+          y: i === 0 ? standardHeight : i * standardHeight + standardHeight,
+        }, //Control spacing of tables here, Probably needs an algo
         data: {
           label: `${columnObj} | ${column.data_type}`,
+          icon: <div>&emsp;</div>,
           columnName: columnObj,
           dataType: column.data_type,
         },
@@ -76,11 +88,13 @@ export function parseNodes(rawData: any): any {
       };
 
       if (column.primary_key) {
-        newColumnNode.data.columnName = `🔑  ${columnObj}`;
+        newColumnNode.data.icon = pkey;
+        newColumnNode.data.columnName = `${columnObj}`;
         newColumnNode.data.dataType = `${column.data_type}`;
       }
       if (column.foreign_key) {
-        newColumnNode.data.columnName = `🌐  ${columnObj}`;
+        newColumnNode.data.icon = fkey;
+        newColumnNode.data.columnName = `${columnObj}`;
         newColumnNode.data.dataType = `${column.data_type}`;
       }
       //check if active column

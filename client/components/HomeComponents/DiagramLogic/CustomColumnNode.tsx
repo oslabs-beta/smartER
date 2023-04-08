@@ -12,7 +12,7 @@ const handleStyleRight = {
 
 function CustomColumnNode({ data, isConnectable }: any) {
   const onChange = useCallback((evt: any) => {
-    console.log(evt.target.value);
+    // console.log(evt.target.value);
   }, []);
 
   return (
@@ -23,9 +23,12 @@ function CustomColumnNode({ data, isConnectable }: any) {
         isConnectable={isConnectable}
         style={handleStyleLeft}
       />
-      <div className="column-data">
-        <div className="column-name">{data.columnName}</div>
-        <div className="column-type">{data.dataType}</div>
+      <div className="column-container">
+        <div className="column-icon">{data.icon}</div>
+        <div className="column-data">
+          <div className="column-name">{data.columnName}</div>
+          <div className="column-type">{data.dataType}</div>
+        </div>
       </div>
       <Handle
         type="source"

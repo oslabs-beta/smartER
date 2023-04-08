@@ -36,6 +36,10 @@ export type HomepageContextType = {
   setQueryResponse: Dispatch<SetStateAction<any>>;
   masterData: any;
   setMasterData: Dispatch<SetStateAction<any>>;
+  renderedData: any;
+  setRenderedData: Dispatch<SetStateAction<any>>;
+  renderedDataPositions: any;
+  setRenderedDataPositions: Dispatch<SetStateAction<any>>;
   errorMessages: string[];
   setErrorMessages: Dispatch<SetStateAction<string[]>>;
 };
@@ -61,6 +65,10 @@ const defaultHomeState = {
   setQueryResponse: () => {},
   masterData: {},
   setMasterData: () => {},
+  renderedData: {},
+  setRenderedData: () => {},
+  renderedDataPositions: [],
+  setRenderedDataPositions: () => [],
   errorMessages: [],
   setErrorMessages: () => [],
 };

@@ -1,4 +1,10 @@
-import React, { FC, useState, useContext, useEffect } from 'react';
+import React, {
+  FC,
+  useState,
+  useContext,
+  useEffect,
+  CSSProperties,
+} from 'react';
 import { HomepageContext } from '../../../Context';
 import { historyType } from '../../../Context';
 import { parse, Statement, astVisitor } from 'pgsql-ast-parser';
@@ -98,9 +104,6 @@ const QueryInput: React.FC<{}> = () => {
           value={queryString}
           onKeyUp={handlePause}
         ></textarea>
-        {errorMessages[0] && (
-          <div className="error-message-container">{err}</div>
-        )}
         <button
           type="submit"
           className="submit-query-button"
@@ -109,6 +112,7 @@ const QueryInput: React.FC<{}> = () => {
           →
         </button>
       </div>
+      {errorMessages[0] && <div className="error-message-container">{err}</div>}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import db from '../models/userModel';
 import { table } from 'console';
+import Cryptr from 'cryptr';
 dotenv.config();
 
 interface schemaControllers {
@@ -25,7 +26,14 @@ const schemaController: schemaControllers = {
         SELECT uri FROM databases
         WHERE _id = ${dbId}
       ;`);
-      const pg_uri = decodeURIComponent(dbResult.rows[0].uri);
+
+      const cryptr = new Cryptr(process.env.URI_SECRET_KEY || 'test', {
+        pbkdf2Iterations: 10000,
+        saltLength: 10,
+      });
+
+      const decryptedUri = cryptr.decrypt(dbResult.rows[0].uri);
+      const pg_uri = decodeURIComponent(decryptedUri);
 
       // const pg_uri = process.env.PG_URL_STARWARS;
       var envCredentials: any = { connectionString: pg_uri };

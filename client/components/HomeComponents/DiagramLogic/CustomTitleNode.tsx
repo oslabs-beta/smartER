@@ -12,7 +12,7 @@ const handleStyleRight = {
 
 function CustomTitleNode({ data, isConnectable }: any) {
   const onChange = useCallback((evt: any) => {
-    console.log(evt.target.value);
+    // console.log(evt.target.value);
   }, []);
 
   return (

@@ -30,7 +30,6 @@ const Settings: React.FC<{}> = () => {
         //TODO: add a success indicator
         setUri('');
         const parsedData = await data.json();
-        console.log(parsedData);
         setMasterData(parsedData);
         return;
       }

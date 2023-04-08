@@ -58,6 +58,8 @@ body {
   text-align: center;
   width: 100%;
   height: 5vh;
+  max-height: 40px;
+  min-height: 15px;
   background: rgb(171, 165, 165);
   color: white;
   border: 1px solid lighten($color2, 10%);
@@ -103,13 +105,15 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 90%;
+  padding-bottom: 40px;
+  height: calc(100% - 40px);
 
   .query-main-inner {
+    flex-grow: 3;
     position: relative;
-    margin: 10% 0;
+    margin: 40px 0 5px;
     width: 80%;
-    height: 90%;
+    // height: 90%;
 
     .query-input {
       resize: none;
@@ -128,23 +132,46 @@ button {
       outline: solid 1px lighten($color1, 15%);
     }
   }
+  .error-message-container {
+    width: 80%;
 
-  .submit-query-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: $color6;
-    border-radius: 0 0 5px 0;
-    width: 20%;
-    height: 30px;
-    font-size: 20px;
-    text-align: right;
+    .error-message {
+      background-color: lighten(red, 20%);
+      border-radius: 5px;
+      color: white;
+      font-size: 10px;
+      font-family: 'Lato', sans-serif;
+      padding: 5px 5px 5px 5px;
+      margin-bottom: 3px;
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
   }
+}
 
-  .submit-query-button:hover {
-    cursor: pointer;
-    color: lighten(black, 52%);
-  }
+.submit-query-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: $color6;
+  border-radius: 0 0 5px 0;
+  width: 20%;
+  height: 30px;
+  font-size: 20px;
+  text-align: right;
+}
+
+.submit-query-button:hover {
+  cursor: pointer;
+  color: lighten(black, 52%);
 }
 
 textarea {
@@ -254,44 +281,63 @@ textarea {
   }
 }
 
-.history-query {
-  text-align: left;
-  border-top: 1px solid $color2;
-}
+// HISTORY
+.history-table-container {
+  display: flex;
+  justify-content: center;
 
-.history-time {
-  width: 120px;
-  text-align: right;
-  border-top: 1px solid $color2;
-}
+  .history-table {
+    margin: 40px 0;
+    width: 80%;
+    overflow-y: hidden;
+    border-radius: 5px;
 
-// error message
+    .query-table {
+      font-size: 10pt;
+      padding: 3px 10px;
+      background-color: rgba(255, 255, 255, 0.284);
+      color: black;
+      width: 100%;
+      // max-width: 100%;
+      height: 100%;
+      table-layout: auto;
+      border-collapse: collapse;
 
-.error-message {
-  background-color: lighten(red, 20%);
-  border-radius: 5px;
-  color: white;
-  font-size: 10px;
-  font-family: 'Lato', sans-serif;
-  padding: 5px 5px 5px 5px;
-  margin-bottom: 3px;
-  @keyframes fadeInDown {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
+      th {
+        // background-color: $color2;
+        padding: 5px 5px 2px 5px;
+        border-bottom: 2px solid $color2;
+        vertical-align: bottom;
+      }
+
+      td {
+        border-bottom: 1px solid $color2;
+        vertical-align: top;
+        padding: 0 5px;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
+      }
+
+      .history-query {
+        text-align: left;
+        border-top: 1px solid $color2;
+      }
+
+      .history-time {
+        width: 120px;
+        text-align: right;
+        border-top: 1px solid $color2;
+      }
     }
   }
-}
 
-.query-table-cell {
-  padding: 5px;
-  background-color: rgba(255, 255, 255, 0.284);
-}
-.history-rows:hover {
-  cursor: pointer;
-  color: #6bfbce;
+  .history-table:hover {
+    overflow-y: auto;
+  }
+
+  .history-rows:hover {
+    cursor: pointer;
+    color: #6bfbce;
+  }
 }

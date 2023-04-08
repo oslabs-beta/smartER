@@ -24,6 +24,16 @@ const History: React.FC<{}> = () => {
     }
   };
 
+  // const convertTime = (dateString: string) => {
+  //   console.log(dateString);
+  //   const utc = new Date(`${dateString.replace('z', '+00:00')}`);
+  //   console.log('utc', utc);
+  //   console.log(utc.toLocaleString());
+  //   const timezoneOffset = new Date().getTimezoneOffset();
+  //   const localDate = new Date(utc.setHours(utc.getHours() + timezoneOffset));
+  //   console.log(localDate);
+  // };
+
   const makeHistoryElements = () => {
     const elements: any = history.map((object, index) => {
       const localTime = convertToPST(object.created_at);
@@ -57,7 +67,7 @@ const History: React.FC<{}> = () => {
 
   useEffect(() => {
     makeHistoryElements();
-  }, [submit]);
+  }, [setHistory]);
 
   const setHistoricalQuery = (e: any) => {
     setQueryString(e.target.innerText);
@@ -77,16 +87,18 @@ const History: React.FC<{}> = () => {
   }
 
   return (
-    <div className="history-table">
-      <table className="query-table">
-        <thead>
-          <tr>
-            <th className="query-table-cell">Query</th>
-            <th className="query-table-cell">Created At</th>
-          </tr>
-        </thead>
-        <tbody>{historyElements}</tbody>
-      </table>
+    <div className="history-table-container">
+      <div className="history-table">
+        <table className="query-table">
+          <thead>
+            <tr>
+              <th className="query-table-cell">Query</th>
+              <th className="query-table-cell">Created At</th>
+            </tr>
+          </thead>
+          <tbody>{historyElements}</tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -18,29 +18,62 @@ $color4: #6bfbce;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 25px;
   width: 180px;
   animation: fade 0.9s ease-in;
 }
 
-.column-data {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: space-between;
-  margin-left: 5px;
-  margin-right: 5px;
-  // text-overflow: wrap;
-}
+.column-container {
+  width: 180px;
+  display: grid;
+  grid-template-columns: 12px auto;
 
-.column-name {
-  color: white;
-  text-align: left;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  // white-space: wrap;
+  .column-icon {
+    padding-left: 3px;
+  }
+
+  #fkey {
+    font-size: 12px;
+  }
+
+  .column-data {
+    max-width: 155px;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 5px;
+    margin-right: 5px;
+    // text-overflow: wrap;
+
+    .column-name {
+      color: white;
+      text-align: left;
+      // width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 0 3px 2px;
+      // white-space: wrap;
+    }
+
+    .column-name:hover {
+      overflow: visible;
+    }
+
+    .column-type {
+      text-align: right;
+      font-size: 60%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 30%;
+    }
+
+    .column-type:hover {
+      overflow: visible;
+    }
+  }
 }
 
 @keyframes fade {

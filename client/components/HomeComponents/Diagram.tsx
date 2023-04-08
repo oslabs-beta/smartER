@@ -14,6 +14,7 @@ import CustomColumnNode from './DiagramLogic/CustomColumnNode';
 import CustomTitleNode from './DiagramLogic/CustomTitleNode';
 import conditionalSchemaParser from './DiagramLogic/ConditionalSchemaParser';
 import { getElkData } from './DiagramLogic/LayoutCalc';
+import { render } from '@testing-library/react';
 
 const proOptions = { hideAttribution: true };
 const nodeTypes = {
@@ -34,6 +35,10 @@ const Diagram: FC<{}> = () => {
     submit,
     masterData,
     setMasterData,
+    renderedData,
+    setRenderedData,
+    renderedDataPositions,
+    setRenderedDataPositions,
     errorMessages,
     setErrorMessages,
     queryResponse,
@@ -74,6 +79,11 @@ const Diagram: FC<{}> = () => {
     [setEdges]
   );
 
+  const onNodeDragStop = (e, node: any) => {
+    // console.log(e, node);
+    setRenderedDataPositions([...renderedDataPositions, node]);
+  };
+
   const getERDiagram = async () => {
     try {
       const data = await fetch('/api/getSchema', {
@@ -97,15 +107,36 @@ const Diagram: FC<{}> = () => {
       async function updateNodes() {
         setErrorMessages(['']);
         const queryParse = conditionalSchemaParser(queryString, masterData);
-        console.log('queryParse: ', queryParse);
+        // console.log('new', queryParse.mainObj, 'old', renderedData);
         const errorArr = queryParse.errorArr;
         setErrorMessages(errorArr);
         if (!errorArr[0]) getQueryResults();
+
         const defaultNodes = parseNodes(queryParse.mainObj);
         const defaultEdges = parseEdges(queryParse.mainObj);
-        const testElk = await getElkData(defaultNodes, defaultEdges);
+
+        // console.log(defaultNodes);
+
+        // if no new tables are being added, retain positions; else recalculate
+        let positions = [];
+        const currentTables = Object.keys(renderedData);
+        const newTables = Object.keys(queryParse.mainObj);
+        const combinedLength = new Set(currentTables.concat(newTables)).size;
+        if (
+          currentTables.length === newTables.length &&
+          currentTables.length === combinedLength
+        ) {
+          positions = renderedDataPositions;
+        }
+        const testElk = await getElkData(defaultNodes, defaultEdges, positions);
+
         setNodes(testElk);
+        setRenderedDataPositions(testElk);
+        // } else {
+        // }
+        // setNodes(defaultNodes);
         setEdges(defaultEdges);
+        setRenderedData(queryParse.mainObj);
       }
       updateNodes();
     }
@@ -119,6 +150,7 @@ const Diagram: FC<{}> = () => {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeDragStop={onNodeDragStop}
           onConnect={onConnect}
           fitView={true}
           proOptions={proOptions}

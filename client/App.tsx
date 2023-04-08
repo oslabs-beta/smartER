@@ -22,6 +22,8 @@ const App = () => {
   });
   const [queryResponse, setQueryResponse] = useState([]);
   const [masterData, setMasterData] = useState({});
+  const [renderedData, setRenderedData] = useState({});
+  const [renderedDataPositions, setRenderedDataPositions] = useState({});
   const [errorMessages, setErrorMessages] = useState(['']);
 
   // const navigate = useNavigate();
@@ -63,6 +65,10 @@ const App = () => {
           setQueryResponse,
           masterData,
           setMasterData,
+          renderedData,
+          setRenderedData,
+          renderedDataPositions,
+          setRenderedDataPositions,
           errorMessages,
           setErrorMessages,
         }}
