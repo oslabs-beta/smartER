@@ -16,12 +16,12 @@ const Signup: React.FC<{}> = () => {
   useEffect(() => {
     (async () => {
       try {
-        console.log('EMAIL', email);
+        // console.log('EMAIL', email);
         const validEmail = new RegExp(/^\S+@\S+\.\S\S+$/);
         //if email has a '@' and '.'
 
         if (email.match(validEmail)) {
-          console.log('VALID EMAIL');
+          // console.log('VALID EMAIL');
           //Make API req to backend since match has been found to be valid email
           const data = await fetch('/user/emailCheck', {
             method: 'POST',
@@ -32,7 +32,7 @@ const Signup: React.FC<{}> = () => {
           if (parsedData === 'user exists') {
             //TODO: render a message 'Email is already in use. '
             // setEmailExistsError(true);
-            console.log('email in use');
+            // console.log('email in use');
           }
         }
       } catch (error) {

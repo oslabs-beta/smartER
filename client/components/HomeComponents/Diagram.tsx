@@ -80,7 +80,7 @@ const Diagram: FC<{}> = () => {
   );
 
   const onNodeDragStop = (e, node: any) => {
-    console.log(e, node);
+    // console.log(e, node);
     setRenderedDataPositions([...renderedDataPositions, node]);
   };
 
@@ -106,27 +106,29 @@ const Diagram: FC<{}> = () => {
     if (queryString) {
       async function updateNodes() {
         setErrorMessages(['']);
-        const queryParse = conditionalSchemaParser(
-          queryString,
-          masterData
-        ).mainObj;
-        console.log('new', queryParse, 'old', renderedData);
+        const queryParse = conditionalSchemaParser(queryString, masterData);
+        // console.log('new', queryParse.mainObj, 'old', renderedData);
         const errorArr = queryParse.errorArr;
         setErrorMessages(errorArr);
         if (!errorArr[0]) getQueryResults();
 
-        const defaultNodes = parseNodes(queryParse);
-        const defaultEdges = parseEdges(queryParse);
+        const defaultNodes = parseNodes(queryParse.mainObj);
+        const defaultEdges = parseEdges(queryParse.mainObj);
 
-        console.log(defaultNodes);
+        // console.log(defaultNodes);
 
-        // if (JSON.stringify(renderedData) === JSON.stringify({})) {
-        //   console.log('run elk');
-        const testElk = await getElkData(
-          defaultNodes,
-          defaultEdges,
-          renderedDataPositions
-        );
+        // if no new tables are being added, retain positions; else recalculate
+        let positions = [];
+        const currentTables = Object.keys(renderedData);
+        const newTables = Object.keys(queryParse.mainObj);
+        const combinedLength = new Set(currentTables.concat(newTables)).size;
+        if (
+          currentTables.length === newTables.length &&
+          currentTables.length === combinedLength
+        ) {
+          positions = renderedDataPositions;
+        }
+        const testElk = await getElkData(defaultNodes, defaultEdges, positions);
 
         setNodes(testElk);
         setRenderedDataPositions(testElk);
@@ -134,7 +136,7 @@ const Diagram: FC<{}> = () => {
         // }
         // setNodes(defaultNodes);
         setEdges(defaultEdges);
-        setRenderedData(queryParse);
+        setRenderedData(queryParse.mainObj);
       }
       updateNodes();
     }

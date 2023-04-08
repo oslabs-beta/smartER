@@ -28,7 +28,7 @@ const Login: React.FC<{}> = () => {
       }
       // 401 incorrect pw , 400 middleware error
       else if (data.status === 401) {
-        console.log('wrong pw');
+        // console.log('wrong pw');
         setPassword('');
         setValidCredentials(false);
       } else if (data.status === 400) {
