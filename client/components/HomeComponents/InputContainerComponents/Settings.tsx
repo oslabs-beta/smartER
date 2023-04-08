@@ -1,10 +1,5 @@
-import React, { FC, useState, useContext, useEffect } from 'react';
-import {
-  HomepageContext,
-  HomepageContextType,
-  dbCredentialsType,
-} from '../../../Context';
-import { parse } from 'path';
+import React, { useContext } from 'react';
+import { HomepageContext, dbCredentialsType } from '../../../Context';
 
 const Settings: React.FC<{}> = () => {
   const {

@@ -1,24 +1,22 @@
-import React, {
-  FC,
-  useState,
-  useContext,
-  useEffect,
-  CSSProperties,
-} from 'react';
+import React, { useContext } from 'react';
 import { HomepageContext } from '../../../Context';
-import { historyType } from '../../../Context';
-import { parse, Statement, astVisitor } from 'pgsql-ast-parser';
-import { create } from 'domain';
-import conditionalSchemaParser from '../DiagramLogic/ConditionalSchemaParser';
 import { debounce } from 'lodash';
 
 const QueryInput: React.FC<{}> = () => {
-  const { queryString, setQueryString, masterData, setMasterData } =
-    useContext(HomepageContext)!;
-  const { history, setHistory, errorMessages, setErrorMessages } =
-    useContext(HomepageContext)!;
-  const { submit, setSubmit } = useContext(HomepageContext)!;
-  const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
+  const {
+    queryString,
+    setQueryString,
+    history,
+    setHistory,
+    errorMessages,
+    setErrorMessages,
+    submit,
+    setSubmit,
+    queryResponse,
+    setQueryResponse,
+    reset,
+    setReset,
+  } = useContext(HomepageContext)!;
 
   const errorList = () => {
     // if the query is not valid, errorMessage will be returned
@@ -107,6 +105,16 @@ const QueryInput: React.FC<{}> = () => {
           value={queryString}
           onKeyUp={handlePause}
         ></textarea>
+        <button
+          className="clear-button"
+          onClick={() => {
+            setQueryResponse([]);
+            setQueryString('');
+            setReset(!reset);
+          }}
+        >
+          X
+        </button>
         <button
           type="submit"
           className="submit-query-button"

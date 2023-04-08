@@ -25,21 +25,8 @@ const App = () => {
   const [renderedData, setRenderedData] = useState({});
   const [renderedDataPositions, setRenderedDataPositions] = useState({});
   const [errorMessages, setErrorMessages] = useState(['']);
+  const [reset, setReset] = useState(false);
 
-  // const navigate = useNavigate();
-
-  // (async () => {
-  //   try {
-  //     const authenticate = await fetch('/user/authenticate', {
-  //       method: 'GET',
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
-  //     if (authenticate.status !== 200) navigate('/');
-  //   } catch (error) {
-  //     console.log(`Error in useEffect Homepage ${error}`);
-  //     return `Error in useEffect Homepage ${error}`;
-  //   }
-  // })();
   return (
     <LoginContext.Provider
       value={{
@@ -71,6 +58,8 @@ const App = () => {
           setRenderedDataPositions,
           errorMessages,
           setErrorMessages,
+          reset,
+          setReset,
         }}
       >
         <Routes>

@@ -1,7 +1,6 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoginContext, LoginContextType } from '../Context';
-import { parse } from 'path';
+import { LoginContext } from '../Context';
 
 const Login: React.FC<{}> = () => {
   const { email, setEmail, password, setPassword } = useContext(LoginContext)!;

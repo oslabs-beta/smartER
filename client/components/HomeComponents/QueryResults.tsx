@@ -1,11 +1,8 @@
-import React, { FC, useState, useEffect, useContext } from 'react';
-import ReactDOM from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
 import { HomepageContext } from '../../Context';
 
 const QueryResults: React.FC<{}> = () => {
   const { queryResponse, setQueryResponse } = useContext(HomepageContext)!;
-  const { history, setHistory } = useContext(HomepageContext)!;
   const { errorMessages, setErrorMessages } = useContext(HomepageContext)!;
 
   // if data response from backend is 200 then set queryResponse to the data

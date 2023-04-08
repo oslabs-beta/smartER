@@ -1,11 +1,14 @@
-import React, { FC, useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { HomepageContext } from '../../../Context';
 
-const History: React.FC<{}> = () => {
+interface setTab {
+  setTab: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const History: React.FC<setTab> = ({ setTab }) => {
   const { history, setHistory, setQueryString, submit, setSubmit } =
     useContext(HomepageContext)!;
   const [historyElements, setHistoryElements] = useState([]);
-
   const getHistory = async () => {
     try {
       const data = await fetch('api/getHistory', {
@@ -70,6 +73,7 @@ const History: React.FC<{}> = () => {
   }, [history]);
 
   const setHistoricalQuery = (e: any) => {
+    setTab('Query');
     setQueryString(e.target.innerText);
     setSubmit(!submit);
   };
