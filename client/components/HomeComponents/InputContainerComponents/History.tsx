@@ -35,6 +35,7 @@ const History: React.FC<{}> = () => {
   // };
 
   const makeHistoryElements = () => {
+    console.log('HISTORY', history);
     const elements: any = history.map((object, index) => {
       const localTime = convertToPST(object.created_at);
       return (
@@ -58,7 +59,7 @@ const History: React.FC<{}> = () => {
         </tr>
       );
     });
-    setHistoryElements(elements.reverse());
+    setHistoryElements(elements);
   };
 
   useEffect(() => {
@@ -67,7 +68,7 @@ const History: React.FC<{}> = () => {
 
   useEffect(() => {
     makeHistoryElements();
-  }, [setHistory]);
+  }, [history]);
 
   const setHistoricalQuery = (e: any) => {
     setQueryString(e.target.innerText);

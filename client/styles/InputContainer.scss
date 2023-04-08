@@ -98,6 +98,21 @@ button {
 .active-content {
   display: block;
   height: 100%;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #004f77;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 5px;
 }
 
 //QUERY STYLING
@@ -181,7 +196,8 @@ textarea {
 
 //SETTINGS STYLING
 .settings-main {
-  overflow-y: auto;
+  height: 100%;
+  overflow: auto;
   font-family: 'Lato', sans-serif;
   font-size: 11px;
 
@@ -285,17 +301,22 @@ textarea {
 .history-table-container {
   display: flex;
   justify-content: center;
+  height: auto;
+  max-height: 100%;
+  // overflow: hidden;
 
   .history-table {
     margin: 40px 0;
     width: 80%;
-    overflow-y: hidden;
+    height: calc(100% - 80px);
+    background-color: rgba(255, 255, 255, 0.284);
     border-radius: 5px;
+    overflow: auto;
 
     .query-table {
       font-size: 10pt;
       padding: 3px 10px;
-      background-color: rgba(255, 255, 255, 0.284);
+      // background-color: rgba(255, 255, 255, 0.284);
       color: black;
       width: 100%;
       // max-width: 100%;
@@ -330,10 +351,6 @@ textarea {
         border-top: 1px solid $color2;
       }
     }
-  }
-
-  .history-table:hover {
-    overflow-y: auto;
   }
 
   .history-rows:hover {

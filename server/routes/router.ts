@@ -5,16 +5,19 @@ import dbController from '../controllers/dbController';
 import cookieController from '../controllers/cookieController';
 const router = express.Router();
 
-// Possibly add route for storing users previous login credentials or URLs?
+// Possibly add route for storing users previous login credentials or URIs?
 router.post(
   '/getQueryResults',
   schemaController.connectDb,
   schemaController.getQueryResults,
-  dbController.postHistory,
   (req, res) => {
     res.status(200).json(res.locals.queryResults);
   }
 );
+
+router.post('/postHistory', dbController.postHistory, (req, res) => {
+  res.status(200).json(res.locals.timestamp);
+});
 
 router.get(
   '/getSchema',

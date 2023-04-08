@@ -102,20 +102,19 @@ const Diagram: FC<{}> = () => {
     getERDiagram();
   }, []);
 
+  // when submit value changes, parse query to conditionally render ER diagram and if no errors are found in the logic,
+  // invoke getQueryResults function to render query results
   useEffect(() => {
     if (queryString) {
       async function updateNodes() {
         setErrorMessages(['']);
         const queryParse = conditionalSchemaParser(queryString, masterData);
-        // console.log('new', queryParse.mainObj, 'old', renderedData);
         const errorArr = queryParse.errorArr;
         setErrorMessages(errorArr);
         if (!errorArr[0]) getQueryResults();
 
         const defaultNodes = parseNodes(queryParse.mainObj);
         const defaultEdges = parseEdges(queryParse.mainObj);
-
-        // console.log(defaultNodes);
 
         // if no new tables are being added, retain positions; else recalculate
         let positions = [];
@@ -132,9 +131,6 @@ const Diagram: FC<{}> = () => {
 
         setNodes(testElk);
         setRenderedDataPositions(testElk);
-        // } else {
-        // }
-        // setNodes(defaultNodes);
         setEdges(defaultEdges);
         setRenderedData(queryParse.mainObj);
       }

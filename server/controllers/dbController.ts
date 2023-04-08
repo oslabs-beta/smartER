@@ -52,7 +52,6 @@ const dbController: dbControllers = {
           FROM history h
           JOIN databases d on d._id = h.database_id
           WHERE d._id = ${dbId}
-          ORDER BY created_at desc
           ;`);
         console.log('history', history);
         res.locals.queryHistory = history.rows;
@@ -75,9 +74,12 @@ const dbController: dbControllers = {
         const dateInt = Math.floor(parseInt(created_at) / 1000);
         const saveHistory = await db.query(
           `INSERT INTO history (database_id, created_at, query)
-          VALUES (${dbId}, to_timestamp(${dateInt}), $1);`,
+          VALUES (${dbId}, current_timestamp, $1)
+          RETURNING created_at
+          ;`,
           [queryString]
         );
+        res.locals.timestamp = saveHistory.rows[0].created_at;
         return next();
       } else throw new Error('db not found');
     } catch (error) {
