@@ -105,13 +105,15 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
+  padding-bottom: 40px;
+  height: calc(100% - 40px);
 
   .query-main-inner {
+    flex-grow: 3;
     position: relative;
-    margin: 40px 0;
+    margin: 40px 0 5px;
     width: 80%;
-    height: 90%;
+    // height: 90%;
 
     .query-input {
       resize: none;
@@ -129,25 +131,26 @@ button {
     .query-input:focus {
       outline: solid 1px lighten($color1, 15%);
     }
+  }
+  .error-message-container {
+    width: 80%;
 
-    .error-message-container {
-      .error-message {
-        background-color: lighten(red, 20%);
-        border-radius: 5px;
-        color: white;
-        font-size: 10px;
-        font-family: 'Lato', sans-serif;
-        padding: 5px 5px 5px 5px;
-        margin-bottom: 3px;
-        @keyframes fadeInDown {
-          0% {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
+    .error-message {
+      background-color: lighten(red, 20%);
+      border-radius: 5px;
+      color: white;
+      font-size: 10px;
+      font-family: 'Lato', sans-serif;
+      padding: 5px 5px 5px 5px;
+      margin-bottom: 3px;
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
     }
