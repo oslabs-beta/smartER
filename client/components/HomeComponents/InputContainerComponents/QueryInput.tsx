@@ -59,8 +59,6 @@ const QueryInput: React.FC<{}> = () => {
           ...history,
           { created_at: parsedData, query: queryString },
         ]);
-        //setState query result for rendering QueryResults.tsx
-        // setQueryResponse(parsedData);
       } else {
         // errorList();
       }

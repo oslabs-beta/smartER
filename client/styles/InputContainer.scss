@@ -299,40 +299,57 @@ textarea {
 
 // HISTORY
 .history-table-container {
-  display: flex;
-  justify-content: center;
-  height: auto;
-  max-height: 100%;
+  // display: flex;
+  // justify-content: center;
+  height: 100%;
   // overflow: hidden;
 
   .history-table {
-    margin: 40px 0;
+    margin: 40px 10%;
     width: 80%;
-    height: calc(100% - 80px);
     background-color: rgba(255, 255, 255, 0.284);
     border-radius: 5px;
-    overflow: auto;
+    height: calc(100% - 80px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    position: relative;
 
     .query-table {
+      list-style: none;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-end;
+      position: absolute;
       font-size: 10pt;
       padding: 3px 10px;
       // background-color: rgba(255, 255, 255, 0.284);
       color: black;
       width: 100%;
-      // max-width: 100%;
-      height: 100%;
-      table-layout: auto;
-      border-collapse: collapse;
+      height: calc(100% - 20px);
+      margin: 0 20px;
 
-      th {
+      li {
+        .header-row,
+        .history-rows {
+          list-style: none;
+          display: flex;
+          justify-content: space-between;
+          margin: 0;
+          padding: 5px;
+        }
+      }
+
+      .header-row {
         // background-color: $color2;
         padding: 5px 5px 2px 5px;
-        border-bottom: 2px solid $color2;
+        border-bottom: 2px solid $color3;
         vertical-align: bottom;
       }
 
-      td {
-        border-bottom: 1px solid $color2;
+      .history-rows {
+        border-bottom: 1px solid $color3;
         vertical-align: top;
         padding: 0 5px;
         // overflow: hidden;
@@ -342,13 +359,12 @@ textarea {
 
       .history-query {
         text-align: left;
-        border-top: 1px solid $color2;
+        flex-grow: 2;
       }
 
       .history-time {
-        width: 120px;
+        // width: 120px;
         text-align: right;
-        border-top: 1px solid $color2;
       }
     }
   }

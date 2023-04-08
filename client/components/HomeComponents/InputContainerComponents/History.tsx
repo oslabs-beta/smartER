@@ -24,39 +24,38 @@ const History: React.FC<{}> = () => {
     }
   };
 
-  // const convertTime = (dateString: string) => {
-  //   console.log(dateString);
-  //   const utc = new Date(`${dateString.replace('z', '+00:00')}`);
-  //   console.log('utc', utc);
-  //   console.log(utc.toLocaleString());
-  //   const timezoneOffset = new Date().getTimezoneOffset();
-  //   const localDate = new Date(utc.setHours(utc.getHours() + timezoneOffset));
-  //   console.log(localDate);
-  // };
+  const convertTime = (dateString: string) => {
+    const utc = new Date(`${dateString.replace('z', '+00:00')}`);
+    const timezoneOffset = new Date().getTimezoneOffset();
+    const localDate = new Date(utc.setHours(utc.getHours() + timezoneOffset));
+    return localDate.toLocaleString();
+  };
 
   const makeHistoryElements = () => {
     console.log('HISTORY', history);
     const elements: any = history.map((object, index) => {
-      const localTime = convertToPST(object.created_at);
+      const localTime = convertTime(object.created_at);
       return (
-        <tr
-          className="history-rows"
-          key={`${index}-row`}
-          onClick={setHistoricalQuery}
-        >
-          <td
-            className="query-table-cell history-query"
-            key={`${index}-historyQuery`}
+        <li>
+          <ul
+            className="history-rows"
+            key={`${index}-row`}
+            onClick={setHistoricalQuery}
           >
-            {object.query}
-          </td>
-          <td
-            className="query-table-cell history-time"
-            key={`${index}-HistoryTime`}
-          >
-            {localTime}
-          </td>
-        </tr>
+            <li
+              className="query-table-cell history-query"
+              key={`${index}-historyQuery`}
+            >
+              {object.query}
+            </li>
+            <li
+              className="query-table-cell history-time"
+              key={`${index}-HistoryTime`}
+            >
+              {localTime}
+            </li>
+          </ul>
+        </li>
       );
     });
     setHistoryElements(elements);
@@ -75,30 +74,18 @@ const History: React.FC<{}> = () => {
     setSubmit(!submit);
   };
 
-  function convertToPST(dateString: string): string {
-    const date = new Date(dateString);
-    const utcOffset = date.getTimezoneOffset();
-    const utcOffsetMs = utcOffset * 60 * 1000;
-    const pstDate = new Date(date.getTime() - utcOffsetMs - 7 * 60 * 60 * 1000);
-    const pstDateString = pstDate
-      .toISOString()
-      .replace('T', ' ')
-      .replace('.000Z', '');
-    return pstDateString.substring(0, 10);
-  }
-
   return (
     <div className="history-table-container">
       <div className="history-table">
-        <table className="query-table">
-          <thead>
-            <tr>
-              <th className="query-table-cell">Query</th>
-              <th className="query-table-cell">Created At</th>
-            </tr>
-          </thead>
-          <tbody>{historyElements}</tbody>
-        </table>
+        <ul className="query-table">
+          {historyElements}
+          <li>
+            <ul className="header-row">
+              <li className="query-table-cell">Query</li>
+              <li className="query-table-cell">Created At</li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
   );
