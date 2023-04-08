@@ -24,28 +24,19 @@ const History: React.FC<{}> = () => {
     }
   };
 
-  const convertTime = (dateString: string) => {
-    console.log(dateString);
-    const utc = new Date(`${dateString.replace('z', '+00:00')}`);
-    console.log('utc', utc);
-    console.log(utc.toLocaleString());
-    const timezoneOffset = new Date().getTimezoneOffset();
-    const localDate = new Date(utc.setHours(utc.getHours() + timezoneOffset));
-    console.log(localDate);
-  };
-
-  // function localizeDateStr(date_to_convert_str) {
-  //   var date_to_convert = new Date(date_to_convert_str);
-  //   var local_date = new Date();
-  //   date_to_convert.setHours(
-  //     date_to_convert.getHours() + local_date.getTimezoneOffset()
-  //   );
-  //   return date_to_convert.toString();
-  // }
+  // const convertTime = (dateString: string) => {
+  //   console.log(dateString);
+  //   const utc = new Date(`${dateString.replace('z', '+00:00')}`);
+  //   console.log('utc', utc);
+  //   console.log(utc.toLocaleString());
+  //   const timezoneOffset = new Date().getTimezoneOffset();
+  //   const localDate = new Date(utc.setHours(utc.getHours() + timezoneOffset));
+  //   console.log(localDate);
+  // };
 
   const makeHistoryElements = () => {
     const elements: any = history.map((object, index) => {
-      const localTime = convertTime(object.created_at);
+      const localTime = convertToPST(object.created_at);
       return (
         <tr
           className="history-rows"
@@ -76,24 +67,24 @@ const History: React.FC<{}> = () => {
 
   useEffect(() => {
     makeHistoryElements();
-  }, [submit]);
+  }, [setHistory]);
 
   const setHistoricalQuery = (e: any) => {
     setQueryString(e.target.innerText);
     setSubmit(!submit);
   };
 
-  // function convertToPST(dateString: string): string {
-  //   const date = new Date(dateString);
-  //   const utcOffset = date.getTimezoneOffset();
-  //   const utcOffsetMs = utcOffset * 60 * 1000;
-  //   const pstDate = new Date(date.getTime() - utcOffsetMs - 7 * 60 * 60 * 1000);
-  //   const pstDateString = pstDate
-  //     .toISOString()
-  //     .replace('T', ' ')
-  //     .replace('.000Z', '');
-  //   return pstDateString.substring(0, 10);
-  // }
+  function convertToPST(dateString: string): string {
+    const date = new Date(dateString);
+    const utcOffset = date.getTimezoneOffset();
+    const utcOffsetMs = utcOffset * 60 * 1000;
+    const pstDate = new Date(date.getTime() - utcOffsetMs - 7 * 60 * 60 * 1000);
+    const pstDateString = pstDate
+      .toISOString()
+      .replace('T', ' ')
+      .replace('.000Z', '');
+    return pstDateString.substring(0, 10);
+  }
 
   return (
     <div className="history-table-container">

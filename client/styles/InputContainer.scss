@@ -297,7 +297,7 @@ textarea {
       padding: 3px 10px;
       background-color: rgba(255, 255, 255, 0.284);
       color: black;
-      width: auto;
+      width: 100%;
       // max-width: 100%;
       height: 100%;
       table-layout: auto;
@@ -314,6 +314,9 @@ textarea {
         border-bottom: 1px solid $color2;
         vertical-align: top;
         padding: 0 5px;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
       }
 
       .history-query {
