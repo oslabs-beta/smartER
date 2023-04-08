@@ -25,15 +25,15 @@ $color4: #6bfbce;
 
   .query-table-container {
     margin: 0.8%;
-    background: rgba(255, 255, 255, 0.284);
+    background: rgba(255, 255, 255, 0.375);
     border-radius: 5px;
     // width: 98%;
-    overflow: hidden;
-  }
-
-  .query-table-container:hover {
     overflow: auto;
   }
+
+  // .query-table-container:hover {
+  //   overflow: auto;
+  // }
 
   .query-table {
     font-size: 10pt;
