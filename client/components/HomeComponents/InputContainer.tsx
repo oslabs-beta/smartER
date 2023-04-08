@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, { useState } from 'react';
 import QueryInput from './InputContainerComponents/QueryInput';
 import History from './InputContainerComponents/History';
 import Settings from './InputContainerComponents/Settings';
@@ -36,7 +36,7 @@ const InputContainer: React.FC<{}> = () => {
         <div
           className={tab === 'History' ? 'content active-content' : 'content'}
         >
-          <History />
+          <History setTab={setTab} />
         </div>
         <div
           className={tab === 'Settings' ? 'content active-content' : 'content'}
