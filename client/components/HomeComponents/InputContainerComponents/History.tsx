@@ -6,9 +6,16 @@ interface setTab {
 }
 
 const History: React.FC<setTab> = ({ setTab }) => {
-  const { history, setHistory, setQueryString, submit, setSubmit } =
-    useContext(HomepageContext)!;
+  const {
+    history,
+    setHistory,
+    queryString,
+    setQueryString,
+    submit,
+    setSubmit,
+  } = useContext(HomepageContext)!;
   const [historyElements, setHistoryElements] = useState([]);
+
   const getHistory = async () => {
     try {
       const data = await fetch('api/getHistory', {
@@ -28,26 +35,19 @@ const History: React.FC<setTab> = ({ setTab }) => {
   };
 
   const convertTime = (dateString: string) => {
-    const utc = new Date(`${dateString.replace('z', '+00:00')}`);
-    const timezoneOffset = new Date().getTimezoneOffset();
-    const localDate = new Date(utc.setHours(utc.getHours() + timezoneOffset));
-    return localDate.toLocaleString();
+    return new Date(dateString).toLocaleString();
   };
 
   const makeHistoryElements = () => {
-    console.log('HISTORY', history);
     const elements: any = history.map((object, index) => {
       const localTime = convertTime(object.created_at);
       return (
-        <li>
-          <ul
-            className="history-rows"
-            key={`${index}-row`}
-            onClick={setHistoricalQuery}
-          >
+        <li key={`${index}-row`}>
+          <ul className="history-rows">
             <li
               className="query-table-cell history-query"
               key={`${index}-historyQuery`}
+              onClick={setHistoricalQuery}
             >
               {object.query}
             </li>
@@ -75,6 +75,7 @@ const History: React.FC<setTab> = ({ setTab }) => {
   const setHistoricalQuery = (e: any) => {
     setTab('Query');
     setQueryString(e.target.innerText);
+    // TODO: this set submit is not triggering the Diagram useEffect to update
     setSubmit(!submit);
   };
 
@@ -83,10 +84,14 @@ const History: React.FC<setTab> = ({ setTab }) => {
       <div className="history-table">
         <ul className="query-table">
           {historyElements}
-          <li>
+          <li key="header-list">
             <ul className="header-row">
-              <li className="query-table-cell">Query</li>
-              <li className="query-table-cell">Created At</li>
+              <li className="query-table-cell" key="header-query">
+                Query
+              </li>
+              <li className="query-table-cell" key="header-date">
+                Created At
+              </li>
             </ul>
           </li>
         </ul>

@@ -336,7 +336,6 @@ textarea {
       position: absolute;
       font-size: 10pt;
       padding: 3px 10px;
-      // background-color: rgba(255, 255, 255, 0.284);
       color: black;
       width: 100%;
       height: calc(100% - 20px);
@@ -381,7 +380,7 @@ textarea {
     }
   }
 
-  .history-rows:hover {
+  .history-query:hover {
     cursor: pointer;
     color: #6bfbce;
   }

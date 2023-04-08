@@ -105,14 +105,15 @@ const Diagram: FC<{}> = () => {
     getERDiagram();
   }, []);
 
-  // when submit value changes, parse query to conditionally render ER diagram and if no errors are found in the logic,
-  // invoke getQueryResults function to render query results
   useEffect(() => {
     setNodes([]);
     setEdges([]);
   }, [reset]);
 
+  // when submit value changes, parse query to conditionally render ER diagram and if no errors are found in the logic,
+  // invoke getQueryResults function to render query results
   useEffect(() => {
+    console.log('HERE');
     if (queryString) {
       async function updateNodes() {
         setErrorMessages(['']);
