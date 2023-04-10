@@ -6,7 +6,7 @@ $color4: #6bfbce;
 .query-table-outer-container {
   margin: 0.8%;
   padding: 10px;
-  background: rgb(0, 79, 119);
+  // background: rgb(0, 79, 119);
   background: linear-gradient(
     0deg,
     rgba(0, 79, 119, 1) 0%,
@@ -25,15 +25,16 @@ $color4: #6bfbce;
 
   .query-table-container {
     margin: 0.8%;
-    background: rgba(255, 255, 255, 0.284);
+    background: rgba(255, 255, 255, 0.375);
     border-radius: 5px;
     // width: 98%;
-    overflow: hidden;
+    overflow: auto;
+    height: 98%;
   }
 
-  .query-table-container:hover {
-    overflow: auto;
-  }
+  // .query-table-container:hover {
+  //   overflow: auto;
+  // }
 
   .query-table {
     font-size: 10pt;

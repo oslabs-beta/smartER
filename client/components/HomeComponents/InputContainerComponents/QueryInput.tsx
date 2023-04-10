@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { HomepageContext } from '../../../Context';
 import { debounce } from 'lodash';
+import { check } from 'express-validator';
 
 const QueryInput: React.FC<{}> = () => {
   const {
@@ -72,10 +73,11 @@ const QueryInput: React.FC<{}> = () => {
     }
   };
 
+  let checkPause: boolean;
   const handleTyping = (e: any) => {
     setQueryString(e.target.value);
     const lastChar = e.target.value[e.target.value.length - 1];
-    const keys = new Set([' ', ',', ';']);
+    const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
     const lowerCaseQuery = e.target.value.toLowerCase();
     if (
       keys.has(lastChar) &&
@@ -84,15 +86,40 @@ const QueryInput: React.FC<{}> = () => {
     ) {
       setSubmit(!submit);
       errorList();
+      // do not check for pause if the last character entered was in the list of keys
+      checkPause = false;
+    } else {
+      checkPause = true;
     }
   };
 
   const handlePause = debounce(() => {
-    const lowerCaseQuery = queryString.toLowerCase();
-    if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
-      setSubmit(!submit);
+    // only run if handleTyping functionality did not just run
+    if (checkPause) {
+      const lowerCaseQuery = queryString.toLowerCase();
+      if (
+        lowerCaseQuery.includes('select') &&
+        lowerCaseQuery.includes('from')
+      ) {
+        setSubmit(!submit);
+      }
     }
-  }, 1000);
+  }, 500);
+
+  // handling tab key
+  const handleKeys = (e: any) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+
+      e.target.value = `${e.target.value.substring(
+        0,
+        start
+      )}\t${e.target.value.substring(end)}`;
+      e.target.selectionStart = e.target.selectionEnd = start + 1;
+    }
+  };
 
   return (
     <div className="query-main">
@@ -104,6 +131,7 @@ const QueryInput: React.FC<{}> = () => {
           onChange={handleTyping}
           value={queryString}
           onKeyUp={handlePause}
+          onKeyDown={handleKeys}
         ></textarea>
         <button
           className="clear-button"
@@ -113,14 +141,14 @@ const QueryInput: React.FC<{}> = () => {
             setReset(!reset);
           }}
         >
-          X
+          clear
         </button>
         <button
           type="submit"
           className="submit-query-button"
           onClick={handleSubmit}
         >
-          →
+          save
         </button>
       </div>
       {errorMessages[0] && <div className="error-message-container">{err}</div>}

@@ -175,23 +175,24 @@ button {
 .submit-query-button {
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: 5px;
   background-color: $color6;
   border-radius: 0 0 5px 0;
   width: 20%;
   height: 30px;
-  font-size: 20px;
+  font-size: 12px;
   text-align: right;
 }
+
 .clear-button {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 5px;
   background-color: $color6;
   border-radius: 0 0 0 5px;
   width: 20%;
   height: 30px;
-  font-size: 14px;
+  font-size: 12px;
   text-align: left;
 }
 .submit-query-button:hover,
@@ -318,7 +319,7 @@ textarea {
   .history-table {
     margin: 40px 10%;
     width: 80%;
-    background-color: rgba(255, 255, 255, 0.284);
+    background-color: rgba(255, 255, 255, 0.45);
     border-radius: 5px;
     height: calc(100% - 80px);
     overflow-x: hidden;
@@ -335,7 +336,6 @@ textarea {
       position: absolute;
       font-size: 10pt;
       padding: 3px 10px;
-      // background-color: rgba(255, 255, 255, 0.284);
       color: black;
       width: 100%;
       height: calc(100% - 20px);
@@ -348,7 +348,7 @@ textarea {
           display: flex;
           justify-content: space-between;
           margin: 0;
-          padding: 5px;
+          padding: 10px;
         }
       }
 
@@ -380,7 +380,7 @@ textarea {
     }
   }
 
-  .history-rows:hover {
+  .history-query:hover {
     cursor: pointer;
     color: #6bfbce;
   }
