@@ -27,7 +27,7 @@ const Homepage: React.FC<{}> = () => {
         <Split
           className={'main-container-split'}
           direction="vertical"
-          sizes={[90, 10]}
+          sizes={[70, 30]}
           minSize={[200, 100]}
           gutterSize={5}
         >

@@ -1,34 +1,15 @@
 import { createContext, useContext, Dispatch, SetStateAction } from 'react';
 
-// Login context
-export type LoginContextType = {
-  email: string;
-  setEmail: Dispatch<SetStateAction<string>>;
-  password: string;
-  setPassword: Dispatch<SetStateAction<string>>;
-};
-
-const defaultState = {
-  email: '',
-  setEmail: () => {},
-  password: '',
-  setPassword: () => {},
-};
-
-export const LoginContext = createContext<LoginContextType | undefined>(
-  defaultState
-);
-
 //Homepage Context
 export type HomepageContextType = {
   submit: boolean;
   setSubmit: Dispatch<SetStateAction<boolean>>;
   queryString: string;
   setQueryString: Dispatch<SetStateAction<string>>;
-  history: historyType[];
-  setHistory: Dispatch<SetStateAction<any>>;
   uri: string;
   setUri: Dispatch<SetStateAction<string>>;
+  savedUri: string;
+  setSavedUri: Dispatch<SetStateAction<string>>;
   dbCredentials: dbCredentialsType;
   setDBCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
   queryResponse: any;
@@ -50,10 +31,10 @@ const defaultHomeState = {
   setSubmit: () => {},
   queryString: '',
   setQueryString: () => {},
-  history: [],
-  setHistory: () => {},
   uri: '',
   setUri: () => {},
+  savedUri: '',
+  setSavedUri: () => {},
   dbCredentials: {
     host: '',
     port: 0,
@@ -79,12 +60,6 @@ const defaultHomeState = {
 export const HomepageContext = createContext<HomepageContextType | undefined>(
   defaultHomeState
 );
-
-//TYPES
-export interface historyType {
-  created_at: string;
-  query: string;
-}
 
 export interface dbCredentialsType {
   host: string;

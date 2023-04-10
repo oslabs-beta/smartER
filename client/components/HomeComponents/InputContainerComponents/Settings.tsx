@@ -1,29 +1,38 @@
 import React, { useContext } from 'react';
 import { HomepageContext, dbCredentialsType } from '../../../Context';
 
-const Settings: React.FC<{}> = () => {
+interface setTab {
+  setTab: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Settings: React.FC<setTab> = ({ setTab }) => {
   const {
     uri,
     setUri,
+    savedUri,
+    setSavedUri,
     dbCredentials,
     setDBCredentials,
     masterData,
     setMasterData,
   } = useContext(HomepageContext)!;
   //Handle submission of new URI
+
   const handleUriSubmit = async (e: any) => {
     e.preventDefault();
     //TODO: Add fetch to add URI to DB, email will be parsed from JWT on backend
     try {
       const encodedURI: string = encodeURIComponent(uri);
-      const data = await fetch('/api/addURI', {
+      const data = await fetch('/api/getSchema', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ encodedURI }),
+        body: JSON.stringify({ uri: encodedURI }),
       });
       if (data.status === 200) {
         //TODO: add a success indicator
+        setSavedUri(encodedURI);
         setUri('');
+        setTab('Query');
         const parsedData = await data.json();
         setMasterData(parsedData);
         return;
@@ -35,28 +44,44 @@ const Settings: React.FC<{}> = () => {
   };
 
   //Handle submission of new Credentials
-  const handleCredentialSubmit = async (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    //TODO: Add fetch to add Credentials to DB
-    const { host, port, dbUsername, dbPassword, database } = dbCredentials;
-    const hostspec = port ? `${host}:${port}` : host;
-    const encodedURI: string = encodeURIComponent(
-      `postgres://${dbUsername}:${dbPassword}@${hostspec}/${database}`
-    );
+    let encodedURI: string;
+    if (uri) {
+      encodedURI = encodeURIComponent(uri);
+    } else {
+      const { host, port, dbUsername, dbPassword, database } = dbCredentials;
+      const hostspec = port ? `${host}:${port}` : host;
+      encodedURI = encodeURIComponent(
+        `postgres://${dbUsername}:${dbPassword}@${hostspec}/${database}`
+      );
+    }
     try {
-      const data = await fetch('/api/addURI', {
+      const data = await fetch('/api/getSchema', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ encodedURI }),
+        body: JSON.stringify({ uri: encodedURI }),
       });
-    } catch (error) {}
-    setDBCredentials({
-      host: '',
-      port: 0,
-      dbUsername: '',
-      dbPassword: '',
-      database: '',
-    });
+
+      if (data.status === 200) {
+        //TODO: add a success indicator
+        setSavedUri(encodedURI);
+        setUri('');
+        setDBCredentials({
+          host: '',
+          port: 0,
+          dbUsername: '',
+          dbPassword: '',
+          database: '',
+        });
+        setTab('Query');
+        const parsedData = await data.json();
+        setMasterData(parsedData);
+        return;
+      }
+    } catch (error) {
+      console.log('Error in Settings.tsx handleSubmit');
+    }
   };
 
   return (
@@ -67,26 +92,15 @@ const Settings: React.FC<{}> = () => {
           <label htmlFor="uri">
             <input
               id="uri"
-              className="db-settings-input"
+              className="settings-input"
               type="password"
               required
               onChange={(e) => setUri(e.target.value)}
               value={uri}
             />
-            <button
-              type="submit"
-              className="db-submit-settings"
-              onClick={handleUriSubmit}
-            >
-              connect
-            </button>
           </label>
-        </form>
-      </div>
 
-      <div className="credentials-main">
-        <h2 className="settings-title">Credentials</h2>
-        <form>
+          <h2 className="settings-title">Credentials</h2>
           <label htmlFor="host">Host</label>
           <input
             id="Host"
@@ -155,7 +169,7 @@ const Settings: React.FC<{}> = () => {
           <button
             type="submit"
             className="submit-settings"
-            onClick={handleCredentialSubmit}
+            onClick={handleSubmit}
           >
             connect
           </button>

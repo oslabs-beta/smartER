@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-import db from '../models/userModel';
 import { table } from 'console';
-import Cryptr from 'cryptr';
 dotenv.config();
 
 interface schemaControllers {
@@ -16,27 +14,10 @@ const schemaController: schemaControllers = {
   connectDb: async (req, res, next) => {
     try {
       console.log('running connectDb');
-      let dbId;
-      if (res.locals.dbId) dbId = res.locals.dbId;
-      if (!dbId) dbId = req.cookies.dbId;
-
-      if (!dbId) throw new Error('no db cookie');
-
-      const dbResult = await db.query(`
-        SELECT uri FROM databases
-        WHERE _id = ${dbId}
-      ;`);
-
-      const cryptr = new Cryptr(process.env.URI_SECRET_KEY || 'test', {
-        pbkdf2Iterations: 10000,
-        saltLength: 10,
-      });
-
-      const decryptedUri = cryptr.decrypt(dbResult.rows[0].uri);
-      const pg_uri = decodeURIComponent(decryptedUri);
-
-      // const pg_uri = process.env.PG_URL_STARWARS;
-      var envCredentials: any = { connectionString: pg_uri };
+      const { uri } = req.body;
+      const decodedUri = decodeURIComponent(uri);
+      console.log('decodedURI: ', decodedUri);
+      const envCredentials: any = { connectionString: decodedUri };
       res.locals.pg = new Pool(envCredentials);
       return next();
     } catch (error) {

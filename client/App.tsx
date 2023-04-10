@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { Router, Routes, Route } from 'react-router-dom';
-import { LoginContext, HomepageContext } from './Context';
-import Login from './components/Login';
+import { HomepageContext } from './Context';
 import Homepage from './components/Homepage';
-import Signup from './components/Signup';
+import Landing from './components/Landing';
 import { Navigate } from 'react-router-dom';
 
 const App = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [submit, setSubmit] = useState(false);
   const [queryString, setQueryString] = useState('');
-  const [history, setHistory] = useState([]);
   const [uri, setUri] = useState('');
+  const [savedUri, setSavedUri] = useState('');
   const [dbCredentials, setDBCredentials] = useState({
     host: '',
     port: 0,
@@ -28,56 +25,37 @@ const App = () => {
   const [reset, setReset] = useState(false);
 
   return (
-    <LoginContext.Provider
+    <HomepageContext.Provider
       value={{
-        email,
-        setEmail,
-        password,
-        setPassword,
+        submit,
+        setSubmit,
+        queryString,
+        setQueryString,
+        uri,
+        setUri,
+        savedUri,
+        setSavedUri,
+        dbCredentials,
+        setDBCredentials,
+        queryResponse,
+        setQueryResponse,
+        masterData,
+        setMasterData,
+        renderedData,
+        setRenderedData,
+        renderedDataPositions,
+        setRenderedDataPositions,
+        errorMessages,
+        setErrorMessages,
+        reset,
+        setReset,
       }}
     >
-      <HomepageContext.Provider
-        value={{
-          submit,
-          setSubmit,
-          queryString,
-          setQueryString,
-          history,
-          setHistory,
-          uri,
-          setUri,
-          dbCredentials,
-          setDBCredentials,
-          queryResponse,
-          setQueryResponse,
-          masterData,
-          setMasterData,
-          renderedData,
-          setRenderedData,
-          renderedDataPositions,
-          setRenderedDataPositions,
-          errorMessages,
-          setErrorMessages,
-          reset,
-          setReset,
-        }}
-      >
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/homepage"
-            element={
-              localStorage.userIn === 'true' ? (
-                <Homepage />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-        </Routes>
-      </HomepageContext.Provider>
-    </LoginContext.Provider>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/homepage" element={<Homepage />} />
+      </Routes>
+    </HomepageContext.Provider>
   );
 };
 

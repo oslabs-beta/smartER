@@ -1,14 +1,11 @@
 import React, { useContext } from 'react';
 import { HomepageContext } from '../../../Context';
 import { debounce } from 'lodash';
-import { check } from 'express-validator';
 
 const QueryInput: React.FC<{}> = () => {
   const {
     queryString,
     setQueryString,
-    history,
-    setHistory,
     errorMessages,
     setErrorMessages,
     submit,
@@ -38,39 +35,10 @@ const QueryInput: React.FC<{}> = () => {
 
   const err = errorList();
   // Handle submit of queryString
-  const handleSubmit = async (e: any) => {
-    console.log('event', e);
-    // setErrorMessages([]);
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     //setSubmit to trigger useEffect for re-rendering Diagram.tsx and getting query results
     setSubmit(!submit);
-    // POST request to database with queryString
-    try {
-      const created_at = String(Date.now());
-      const data = await fetch('/api/postHistory', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ queryString }),
-      });
-      if (data.status === 200) {
-        const parsedData = await data.json();
-        setHistory([
-          ...history,
-          { created_at: parsedData, query: queryString },
-        ]);
-      } else {
-        // errorList();
-      }
-      //Update History State, for re-rendering History.tsx
-      // setHistory((prev: any) => {
-      //   console.log('IN QUERY SUBMIT history: ', history);
-      //   prev.push({ created_at, query: queryString });
-      //   return prev;
-      // });
-    } catch (error) {
-      console.log(`Error in QueryInput.tsx ${error}`);
-      return `Error in QueryInput.tsx ${error}`;
-    }
   };
 
   let checkPause: boolean;
@@ -148,7 +116,7 @@ const QueryInput: React.FC<{}> = () => {
           className="submit-query-button"
           onClick={handleSubmit}
         >
-          save
+          run
         </button>
       </div>
       {errorMessages[0] && <div className="error-message-container">{err}</div>}
