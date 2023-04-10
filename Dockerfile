@@ -1,4 +1,4 @@
-FROM node:18.12.1
+FROM node:18.13.0
 WORKDIR /smarter-lite
 COPY . .
 RUN npm install
