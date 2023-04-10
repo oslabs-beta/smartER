@@ -1,0 +1,106 @@
+.landing-page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #4f74de;
+  background-image: linear-gradient(
+    0deg,
+    #4f74de 12%,
+    #6d61da 34%,
+    #ffb3b3 100%
+  );
+}
+
+h2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+}
+
+// github logo
+.landing-page-header {
+  display: flex;
+  justify-content: right;
+  font-size: 20px;
+  margin: 10px;
+}
+
+.landing-page-title {
+  display: flex;
+  justify-content: center;
+  font-size: 40px;
+  color: black;
+}
+
+.landing-page-small-btn {
+  display: flex;
+  margin: 5px;
+  border-radius: 3px;
+  border: none;
+}
+
+.landing-page-small-btn:hover {
+  cursor: pointer;
+}
+
+.landing-page-demo-btn {
+  display: flex;
+  margin: 5px;
+  border-radius: 3px;
+  border: none;
+  font-size: 20px;
+}
+
+.landing-page-demo-btn:hover {
+  cursor: pointer;
+}
+
+p {
+  display: flex;
+  justify-content: center;
+}
+
+.landing-page-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+
+  .landing-page-section-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    font-size: 20px;
+  }
+
+  .landing-page-section,
+  img {
+    border-radius: 5px;
+    box-shadow: 8px 7px 33px -11px rgba(0, 0, 0, 0.44);
+  }
+}
+
+// footer
+h3 {
+  display: flex;
+  justify-content: center;
+  font-size: 13px;
+}
+.name-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer {
+  background-color: grey;
+}
+.small-text {
+  font-size: 10px;
+  display: flex;
+  justify-content: left;
+  color: white;
+}
