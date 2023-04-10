@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Router, Routes, Route } from 'react-router-dom';
 import { HomepageContext } from './Context';
 import Homepage from './components/Homepage';
-import Landing from './components/Landingpage';
+import Landingpage from './components/Landingpage';
 import { Navigate } from 'react-router-dom';
 
 const App = () => {
@@ -52,7 +52,7 @@ const App = () => {
       }}
     >
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Landingpage />} />
         <Route path="/homepage" element={<Homepage />} />
       </Routes>
     </HomepageContext.Provider>
