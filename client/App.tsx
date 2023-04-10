@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Router, Routes, Route } from 'react-router-dom';
-import { LoginContext, HomepageContext } from './Context';
+import { HomepageContext } from './Context';
 import Homepage from './components/Homepage';
 import Landing from './components/Landing';
 import { Navigate } from 'react-router-dom';
@@ -8,8 +8,8 @@ import { Navigate } from 'react-router-dom';
 const App = () => {
   const [submit, setSubmit] = useState(false);
   const [queryString, setQueryString] = useState('');
-  const [history, setHistory] = useState([]);
   const [uri, setUri] = useState('');
+  const [savedUri, setSavedUri] = useState('');
   const [dbCredentials, setDBCredentials] = useState({
     host: '',
     port: 0,
@@ -31,10 +31,10 @@ const App = () => {
         setSubmit,
         queryString,
         setQueryString,
-        history,
-        setHistory,
         uri,
         setUri,
+        savedUri,
+        setSavedUri,
         dbCredentials,
         setDBCredentials,
         queryResponse,

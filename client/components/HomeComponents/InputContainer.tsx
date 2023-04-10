@@ -3,22 +3,22 @@ import QueryInput from './InputContainerComponents/QueryInput';
 import Settings from './InputContainerComponents/Settings';
 
 const InputContainer: React.FC<{}> = () => {
-  const [tab, setTab] = useState('Query');
+  const [tab, setTab] = useState('Settings');
 
   return (
     <div className="input-container">
       <div className="tab-container">
         <button
-          className={tab === 'Query' ? 'tabs active-tabs' : 'tabs'}
-          onClick={() => setTab('Query')}
-        >
-          Query
-        </button>
-        <button
           className={tab === 'Settings' ? 'tabs active-tabs' : 'tabs'}
           onClick={() => setTab('Settings')}
         >
           Settings
+        </button>
+        <button
+          className={tab === 'Query' ? 'tabs active-tabs' : 'tabs'}
+          onClick={() => setTab('Query')}
+        >
+          Query
         </button>
       </div>
 
@@ -29,7 +29,7 @@ const InputContainer: React.FC<{}> = () => {
         <div
           className={tab === 'Settings' ? 'content active-content' : 'content'}
         >
-          <Settings />
+          <Settings setTab={setTab} />
         </div>
       </div>
     </div>

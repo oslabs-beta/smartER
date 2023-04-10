@@ -12,7 +12,7 @@ router.post(
   }
 );
 
-router.get(
+router.post(
   '/getSchema',
   schemaController.connectDb,
   schemaController.getSchemaPostgreSQL,

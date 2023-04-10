@@ -8,6 +8,8 @@ export type HomepageContextType = {
   setQueryString: Dispatch<SetStateAction<string>>;
   uri: string;
   setUri: Dispatch<SetStateAction<string>>;
+  savedUri: string;
+  setSavedUri: Dispatch<SetStateAction<string>>;
   dbCredentials: dbCredentialsType;
   setDBCredentials: Dispatch<SetStateAction<dbCredentialsType>>;
   queryResponse: any;
@@ -31,6 +33,8 @@ const defaultHomeState = {
   setQueryString: () => {},
   uri: '',
   setUri: () => {},
+  savedUri: '',
+  setSavedUri: () => {},
   dbCredentials: {
     host: '',
     port: 0,
@@ -56,12 +60,6 @@ const defaultHomeState = {
 export const HomepageContext = createContext<HomepageContextType | undefined>(
   defaultHomeState
 );
-
-//TYPES
-export interface historyType {
-  created_at: string;
-  query: string;
-}
 
 export interface dbCredentialsType {
   host: string;

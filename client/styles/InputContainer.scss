@@ -228,39 +228,26 @@ textarea {
         flex-wrap: nowrap;
         width: 100%;
 
-        .db-settings-input {
-          height: 20px;
-          border: 1px $color1;
-          background-color: $color6;
-          border-radius: 5px 0 0 5px;
-          color: black;
-          padding: 8px;
-          width: 80%;
-        }
+        // .db-submit-settings {
+        //   background-color: $color6;
+        //   // width: 30%;
+        //   height: 36px;
+        //   border-radius: 0 5px 5px 0;
+        //   width: 20%;
+        //   min-width: 60px;
+        // }
 
-        .db-submit-settings {
-          background-color: $color6;
-          // width: 30%;
-          height: 36px;
-          border-radius: 0 5px 5px 0;
-          width: 20%;
-          min-width: 60px;
-        }
-
-        .db-submit-settings:hover {
-          cursor: pointer;
-          color: lighten(black, 52%);
-        }
+        // .db-submit-settings:hover {
+        //   cursor: pointer;
+        //   color: lighten(black, 52%);
+        // }
       }
     }
-  }
-
-  .credentials-main {
-    margin: 40px 20%;
 
     .settings-title {
       text-align: center;
       color: white;
+      margin-top: 40px;
     }
 
     form {

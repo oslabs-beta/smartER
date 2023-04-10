@@ -33,6 +33,7 @@ const Diagram: FC<{}> = () => {
 
   const {
     queryString,
+    savedUri,
     submit,
     masterData,
     setMasterData,
@@ -56,7 +57,7 @@ const Diagram: FC<{}> = () => {
       const data = await fetch('/api/getQueryResults', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ created_at, queryString }),
+        body: JSON.stringify({ queryString, uri: savedUri }),
       });
       if (data.status === 200) {
         const parsedData = await data.json();
@@ -82,28 +83,10 @@ const Diagram: FC<{}> = () => {
     [setEdges]
   );
 
-  const onNodeDragStop = (e, node: any) => {
+  const onNodeDragStop = (e: any, node: any) => {
     // console.log(e, node);
     setRenderedDataPositions([...renderedDataPositions, node]);
   };
-
-  const getERDiagram = async () => {
-    try {
-      const data = await fetch('/api/getSchema', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const parsedData = await data.json();
-      setMasterData(parsedData);
-      return;
-    } catch (error) {
-      console.log(`Error in getERDiagram: ${error}`);
-    }
-  };
-
-  useEffect(() => {
-    getERDiagram();
-  }, []);
 
   useEffect(() => {
     setNodes([]);
