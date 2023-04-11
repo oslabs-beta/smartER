@@ -78,6 +78,7 @@
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "elkjs": "^0.8.2",
+    "express-validator": "^6.15.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "lodash": "^4.17.21",

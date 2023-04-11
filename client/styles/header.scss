@@ -16,14 +16,18 @@ body {
   width: 100%;
   height: 50px;
   top: 10px;
-  left: 0;
+  left: 3%;
   background-color: transparent;
 }
 
 .logo {
+  width: 250px;
+  height: 75px;
   position: absolute;
-  padding-left: 3%;
-  font-size: 40px;
+  margin: -5px 0 0 -1%;
+  background-image: url(../assets/logo-03.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .logout-button {
