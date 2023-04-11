@@ -8,7 +8,7 @@ $color4: #6bfbce;
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .header {
@@ -16,14 +16,18 @@ body {
   width: 100%;
   height: 50px;
   top: 10px;
-  left: 0;
+  left: 3%;
   background-color: transparent;
-}
 
-.logo {
-  position: absolute;
-  padding-left: 3%;
-  font-size: 40px;
+  .logo {
+    width: 250px;
+    height: 75px;
+    position: absolute;
+    margin: -5px 0 0 -1%;
+    background-image: url(../../assets/logo-main.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
 }
 
 .logout-button {

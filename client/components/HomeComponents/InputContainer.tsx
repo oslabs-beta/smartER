@@ -41,7 +41,7 @@ const InputContainer: React.FC<{}> = () => {
         <div
           className={tab === 'Settings' ? 'content active-content' : 'content'}
         >
-          <Settings />
+          <Settings setTab={setTab} />
         </div>
       </div>
     </div>
