@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
-import { body, validationResult } from 'express-validator';
 
 const app = express();
 

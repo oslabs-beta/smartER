@@ -4,9 +4,9 @@
   "description": "visualize your sql queries as you type",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"NODE_ENV=development webpack serve --hot --open\" \"npx nodemon ./server/server.ts & redis-server\"",
+    "start": "concurrently \"NODE_ENV=development webpack serve --hot --open\" \"npx nodemon ./server/server.ts\"",
     "front-end": "NODE_ENV=development webpack serve --hot --open",
-    "server": "npx nodemon ./server/server.ts & redis-server",
+    "server": "npx nodemon ./server/server.ts",
     "build": "NODE_ENV=production webpack",
     "test": "NODE_ENV=test jest"
   },
