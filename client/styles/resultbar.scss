@@ -17,6 +17,7 @@ $color4: #6bfbce;
   // table-layout: fixed;
   display: flex;
   flex-direction: column;
+  filter: drop-shadow(-2px 1px 20px rgba(0, 163, 181, 0.25));
 
   h2 {
     margin: 0;

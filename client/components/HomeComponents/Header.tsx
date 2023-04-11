@@ -11,7 +11,7 @@ const Header: React.FC<{}> = () => {
   };
   return (
     <div className="header">
-      <div className="logo"> smartER </div>
+      <div className="logo"></div>
       <button className="logout-button" onClick={handleClick}>
         back
       </button>
