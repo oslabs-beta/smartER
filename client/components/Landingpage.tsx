@@ -99,7 +99,7 @@ const Landingpage: React.FC<{}> = () => {
               to those tables, whether directly or via a join table.
             </p>
           </div>
-          <img src="https://unsplash.it/600/400" />
+          <div className="images" id="diagram"></div>
         </div>
 
         <div className="landing-page-section ltr">
@@ -112,7 +112,7 @@ const Landingpage: React.FC<{}> = () => {
               tables to accomodate your needs.
             </p>
           </div>
-          <img src="https://unsplash.it/600/400" />
+          <div className="images" id="repositioning"></div>
         </div>
 
         <div className="landing-page-section rtl">
@@ -125,7 +125,7 @@ const Landingpage: React.FC<{}> = () => {
               again later from the History tab.
             </p>
           </div>
-          <img src="https://unsplash.it/600/400" />
+          <div className="images" id="history"></div>
         </div>
 
         <div className="landing-page-section ltr">
@@ -137,7 +137,7 @@ const Landingpage: React.FC<{}> = () => {
               progressing and to make sure you are getting the results you want.
             </p>
           </div>
-          <img src="https://unsplash.it/600/400" />
+          <div className="images" id="results"></div>
         </div>
       </div>
 

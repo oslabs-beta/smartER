@@ -134,13 +134,29 @@ body {
         min-width: 45%;
         max-width: 200px;
         padding-top: 22.7%;
+        position: relative;
+        background-size: cover;
+        background-repeat: no-repeat;
       }
 
       #security {
-        position: relative;
         background-image: url(../../assets/settings-uri.png);
-        background-size: cover;
-        background-repeat: no-repeat;
+      }
+
+      #diagram {
+        background-image: url(../../assets/query-people-species.png);
+      }
+
+      #repositioning {
+        background-image: url(../../assets/diagram-rearranged.png);
+      }
+
+      #history {
+        background-image: url(../../assets/history-2.png);
+      }
+
+      #results {
+        background-image: url(../../assets/results.png);
       }
     }
 
