@@ -78,11 +78,11 @@ const Landingpage: React.FC<{}> = () => {
               To get started, sign up or login, then head to the Settings tab
               and enter your database URI or credentials. Rest assured your data
               is encrypted and secure! In the full version, login credentials
-              are protected via one-way encryption and your URI is encrypted via
-              AES. In the demo version, database credentials are stored only in
-              front-end state and sent to the server with each request. In other
-              words, once you leave the demo site, your credentials are no
-              longer saved!
+              are protected via one-way encryption and your URI is further
+              encrypted via AES. In the demo version, database credentials are
+              stored only in front-end state and sent to the server with each
+              request. In other words, once you leave the demo site, your
+              credentials leave with you!
             </p>
           </div>
           <div className="images" id="security"></div>
@@ -108,8 +108,8 @@ const Landingpage: React.FC<{}> = () => {
             <p>
               As your diagram renders, feel free to move things around! Database
               relationships can get complicated and smartER was built with that
-              in mind! Our interactive ER diagram allows you to reposition
-              tables to accomodate your needs.
+              in mind. Our interactive ER diagram allows you to reposition
+              tables so you can scrutinize your database from every angle!
             </p>
           </div>
           <div className="images" id="repositioning"></div>
