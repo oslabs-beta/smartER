@@ -1,4 +1,4 @@
-FROM node:latest
+FROM ts-node:latest
 WORKDIR /smarter-lite
 COPY . .
 RUN npm install
