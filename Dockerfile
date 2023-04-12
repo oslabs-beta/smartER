@@ -2,6 +2,7 @@ FROM node:latest
 WORKDIR /smarter-lite
 COPY . .
 RUN npm install
-RUN npm run build
+RUN webpack --config ./webpack.config.js
+RUN tsc
 EXPOSE 9001
-ENTRYPOINT [ "ts-node",  "./server/server.ts"]
+ENTRYPOINT [ "node",  "./server/server.js"]
