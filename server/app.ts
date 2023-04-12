@@ -15,9 +15,9 @@ app.use(express.static(path.join(__dirname, '../dist')));
 // API Route
 app.use('/api', apiRouter);
 
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../dist/index.html'));
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+// });
 // Catch all 4048
 app.use('/', (req: Request, res: Response) => {
   res.status(404).json(`This is not the page you are looking for ¯\\_(ツ)_/¯`);
