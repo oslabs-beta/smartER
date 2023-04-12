@@ -5,11 +5,11 @@ const Landingpage: React.FC<{}> = () => {
   const githubLogo = (
     <svg
       fill="white"
-      height="20"
+      height="15"
       aria-hidden="true"
       viewBox="0 0 16 16"
       version="1.1"
-      width="20"
+      width="15"
       data-view-component="true"
       className="github-logo"
     >
@@ -23,129 +23,144 @@ const Landingpage: React.FC<{}> = () => {
     navigate('/homepage');
   };
 
-  const handleGithubClick = (e: any) => {
-    e.preventDefault();
-    window.location.href = 'https://github.com/oslabs-beta/smartER';
-  };
+  // const handleGithubClick = (e: any) => {
+  //   e.preventDefault();
+  //   window.location.href = 'https://github.com/oslabs-beta/smartER';
+  // };
   return (
     <div className="landing-page-container">
-      <div className="landing-page-header">
-        <a href="https://github.com/oslabs-beta/smartER">{githubLogo}</a>
-      </div>
-      <p>query faster, query simpler</p>
-      <h1 className="landing-page-title">smartER</h1>
-      <h2>
-        Querying a new database can be daunting. Use SmartER to visualize your
-        organization's ER diagram as you build your query!
-      </h2>
-      <div>
-        <button
-          type="submit"
-          onClick={handleGithubClick}
-          className="landing-page-small-btn"
-        >
-          Github readme
-        </button>
-      </div>
-      <div>
-        <button
-          type="button"
-          onClick={handleDemoClick}
-          className="landing-page-demo-btn"
-        >
-          Try our Demo!
-        </button>
-      </div>
-      <h3>
-        SmartER is a powerful open-source tool built for new and experienced SQL
-        users alike. Features include:
-      </h3>
-      <ul>
-        <li>Visualize your database's ER as you type</li>
-        <li>Powerful, interactive UI</li>
-        <li>Save your queries for later use</li>
-        <li>View your query results as you build.</li>
-      </ul>
+      <header>
+        {/* <a href="https://github.com/oslabs-beta/smartER" target="_blank">
+          {githubLogo}
+        </a> */}
+        {/* <p>query faster, query simpler</p> */}
+        <div className="logo"></div>
+      </header>
 
-      <div className="landing-page-section">
-        <div className="landing-page-section-text">
-          <h2>How to use SmartER:</h2>
-          <p>
-            To get started, simply enter your database URI or credentials in the
-            settings tab. Then start entering your query under the query tab!
-          </p>
+      <div className="landing-page-content">
+        <h1 className="description">
+          Querying a new database can be daunting. Use smartER to visualize your
+          organization's ER diagram as you build your query!
+        </h1>
+        <div className="buttons">
+          <a
+            href="https://github.com/oslabs-beta/smartER"
+            target="_blank"
+            className="landing-page-small-btn"
+          >
+            Github readme
+          </a>
+          <button
+            type="button"
+            onClick={handleDemoClick}
+            className="landing-page-demo-btn"
+          >
+            Try it out!
+          </button>
         </div>
-        <img src="https://unsplash.it/600/400" />
-      </div>
-
-      <div className="landing-page-section">
-        <img src="https://unsplash.it/600/400" />
-        <div className="landing-page-section-text">
-          <h2>Visualize as you type!</h2>
+        <div className="features">
           <p>
-            Start typing your query, as you go SmartER will mapping out your
-            database's ER diagram with the relevant tables, highlight columns,
-            and show you the relationships between tables.
+            SmartER is a powerful open-source tool built for new and experienced
+            SQL users alike. Features include:
           </p>
+          <ul>
+            <li>✓ Powerful, interactive UI</li>
+            <li>✓ Visualize your ER diagram as you type</li>
+            <li>✓ View your query results as you type</li>
+            <li>✓ Save your queries for later use</li>
+          </ul>
         </div>
-      </div>
-
-      <div className="landing-page-section">
-        <div className="landing-page-section-text">
-          <h2>Full Interaction with your ER Diagram</h2>
-          <p>
-            SmartER's interactive ER diagram allows you to drag and drop tables
-            to accomodate your needs.
-          </p>
-        </div>
-        <img src="https://unsplash.it/600/400" />
-      </div>
-
-      <div className="landing-page-section">
-        <img src="https://unsplash.it/600/400" />
-        <div className="landing-page-section-text">
-          <h2>Save Your Queries for Later</h2>
-          <p>
-            Have a query you use often? Save it for later use! SmartER will save
-            your query so you can build upon, update, and run it again later.
-          </p>
-        </div>
-      </div>
-
-      <div className="landing-page-section">
-        <div className="landing-page-section-text">
-          <h2>View Query Results as You Build</h2>
-          <p>
-            As you type, valid queries will be run and the results will be shown
-            below the query editor. Use this to see how your query is
-            progressing and to make sure you are getting the results you want.
-          </p>
-        </div>
-        <img src="https://unsplash.it/600/400" />
-      </div>
-
-      <footer className="footer">
-        <h3>
-          SmartER was developed under OSLabs by the following team members:
-          <br />
-          <br />
-          <div className="name-container">
-            <a href="https://github.com/joyxek">{githubLogo}</a>
-            <p className="small-text">Joyce Kwak</p>
+        <div className="spacer"></div>
+        <div className="landing-page-section ltr">
+          <div className="landing-page-section-text">
+            <h2>Top of the line security</h2>
+            <p>
+              To get started, sign up or login, then head to the Settings tab
+              and enter your database URI or credentials. Rest assured your data
+              is encrypted and secure! In the full version, login credentials
+              are protected via one-way encryption and your URI is encrypted via
+              AES. In the demo version, database credentials are stored only in
+              front-end state and sent to the server with each request. In other
+              words, once you leave the demo site, your credentials are no
+              longer saved!
+            </p>
           </div>
-          <div className="name-container">
-            <a href="https://github.com/melissamcl">{githubLogo}</a>
-            <p className="small-text">Melissa McLaughlin</p>
+          <div className="images" id="security"></div>
+        </div>
+
+        <div className="landing-page-section rtl">
+          <div className="landing-page-section-text">
+            <h2>Visualize as you type!</h2>
+            <p>
+              After providing your credentials, start typing your query. As you
+              type, smartER will map out your database's ER diagram with the
+              tables you have selected, highlighting the columns in your select
+              statement and displaying all the tables that have a relationship
+              to those tables, whether directly or via a join table.
+            </p>
           </div>
-          <div className="name-container">
-            <a href="https://github.com/n8ngo">{githubLogo}</a>
-            <p className="small-text">Nathan Ngo</p>
+          <div className="images" id="diagram"></div>
+        </div>
+
+        <div className="landing-page-section ltr">
+          <div className="landing-page-section-text">
+            <h2>Full interaction with your ER diagram</h2>
+            <p>
+              As your diagram renders, feel free to move things around! Database
+              relationships can get complicated and smartER was built with that
+              in mind! Our interactive ER diagram allows you to reposition
+              tables to accomodate your needs.
+            </p>
           </div>
-          <div className="name-container">
-            <a href="https://github.com/b-v-u">{githubLogo}</a>
-            <p className="small-text">Brian Vu</p>
+          <div className="images" id="repositioning"></div>
+        </div>
+
+        <div className="landing-page-section rtl">
+          <div className="landing-page-section-text">
+            <h2>Save your queries for later</h2>
+            <p>
+              Have a query you use often? Or building something complex and
+              don't want to lose progress? Save it for later! SmartER will save
+              your query so you can build upon, update, and conveniently run it
+              again later from the History tab.
+            </p>
           </div>
-        </h3>
+          <div className="images" id="history"></div>
+        </div>
+
+        <div className="landing-page-section ltr">
+          <div className="landing-page-section-text">
+            <h2>View query results as you build</h2>
+            <p>
+              As you type, valid queries will be run and the results will be
+              shown below the query editor. Use this to see how your query is
+              progressing and to make sure you are getting the results you want.
+            </p>
+          </div>
+          <div className="images" id="results"></div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          smartER was developed under OSLabs by the following team members:
+          <ul>
+            <li>
+              <a href="https://github.com/joyxek">{githubLogo} Joyce Kwak</a>
+            </li>
+            <li>
+              <a href="https://github.com/melissamcl">
+                {githubLogo} Melissa McLaughlin
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/n8ngo">{githubLogo} Nathan Ngo</a>
+            </li>
+            <li>
+              <a href="https://github.com/b-v-u">{githubLogo} Brian Vu</a>
+            </li>
+          </ul>
+        </p>
       </footer>
     </div>
   );
