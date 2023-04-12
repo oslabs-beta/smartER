@@ -5,11 +5,11 @@ const Landingpage: React.FC<{}> = () => {
   const githubLogo = (
     <svg
       fill="white"
-      height="20"
+      height="30"
       aria-hidden="true"
       viewBox="0 0 16 16"
       version="1.1"
-      width="20"
+      width="30"
       data-view-component="true"
       className="github-logo"
     >
@@ -23,32 +23,32 @@ const Landingpage: React.FC<{}> = () => {
     navigate('/homepage');
   };
 
-  const handleGithubClick = (e: any) => {
-    e.preventDefault();
-    window.location.href = 'https://github.com/oslabs-beta/smartER';
-  };
+  // const handleGithubClick = (e: any) => {
+  //   e.preventDefault();
+  //   window.location.href = 'https://github.com/oslabs-beta/smartER';
+  // };
   return (
     <div className="landing-page-container">
       <div className="landing-page-header">
-        <a href="https://github.com/oslabs-beta/smartER">{githubLogo}</a>
+        <a href="https://github.com/oslabs-beta/smartER" target="_blank">
+          {githubLogo}
+        </a>
       </div>
       <p>query faster, query simpler</p>
-      <div className="logo-container">
-        <div className="logo"></div>
-      </div>
+      <div className="logo"></div>
 
       <h2>
-        Querying a new database can be daunting. Use SmartER to visualize your
+        Querying a new database can be daunting. Use smartER to visualize your
         organization's ER diagram as you build your query!
       </h2>
       <div>
-        <button
-          type="submit"
-          onClick={handleGithubClick}
+        <a
+          href="https://github.com/oslabs-beta/smartER"
+          target="_blank"
           className="landing-page-small-btn"
         >
           Github readme
-        </button>
+        </a>
       </div>
       <div>
         <button
@@ -69,7 +69,6 @@ const Landingpage: React.FC<{}> = () => {
         <li>Save your queries for later use</li>
         <li>View your query results as you build.</li>
       </ul>
-
       <div className="landing-page-section">
         <div className="landing-page-section-text">
           <h2>How to use SmartER:</h2>

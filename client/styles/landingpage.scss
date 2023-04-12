@@ -1,7 +1,7 @@
 .landing-page-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   margin: 3%;
   // background-color: #4f74de;
   // background-image: linear-gradient(
@@ -11,30 +11,28 @@
   //   #ffb3b3 100%
   // );
 
-  .login-container {
-    margin-top: 200px;
-    margin-bottom: 20px;
+  button:hover {
+    cursor: pointer;
+  }
 
-    .logo-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 10px;
-    }
+  .logo {
+    width: 400px;
+    height: 125px;
+    position: relative;
+    background-image: url(../../assets/logo-main.png);
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 
   h2 {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    text-align: center;
     color: white;
   }
 
   // github logo
   .landing-page-header {
-    display: flex;
-    justify-content: right;
+    // display: flex;
+    // justify-content: right;
     font-size: 20px;
     margin: 10px;
   }
@@ -47,31 +45,23 @@
   }
 
   .landing-page-small-btn {
-    display: flex;
-    margin: 5px;
+    background-color: #efefef;
+    padding: 5px;
+    text-decoration: none;
+    color: #000;
     border-radius: 3px;
-    border: none;
   }
-
-  .landing-page-small-btn:hover {
-    cursor: pointer;
-  }
-
   .landing-page-demo-btn {
     display: flex;
-    margin: 5px;
+    padding: 5px;
     border-radius: 3px;
     border: none;
     font-size: 20px;
   }
 
-  .landing-page-demo-btn:hover {
-    cursor: pointer;
-  }
-
   p {
-    display: flex;
-    justify-content: center;
+    // display: flex;
+    // justify-content: center;
   }
 
   .landing-page-section {
@@ -80,6 +70,7 @@
     justify-content: space-between;
     align-items: center;
     margin: 20px;
+    display: none;
 
     .landing-page-section-text {
       display: flex;
@@ -98,23 +89,27 @@
   }
 
   // footer
-  h3 {
-    display: flex;
-    justify-content: center;
-    font-size: 13px;
-  }
-  .name-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .footer {
-    background-color: grey;
-  }
-  .small-text {
-    font-size: 10px;
-    display: flex;
-    justify-content: left;
-    color: white;
+  footer {
+    display: none;
+
+    h3 {
+      display: flex;
+      justify-content: center;
+      font-size: 13px;
+    }
+    .name-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .footer {
+      background-color: grey;
+    }
+    .small-text {
+      font-size: 10px;
+      display: flex;
+      justify-content: left;
+      color: white;
+    }
   }
 }
