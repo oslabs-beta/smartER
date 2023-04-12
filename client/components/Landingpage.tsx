@@ -108,8 +108,8 @@ const Landingpage: React.FC<{}> = () => {
             <p>
               As your diagram renders, feel free to move things around! Database
               relationships can get complicated and smartER was built with that
-              in mind! Our interactive ER diagram allows you to reposition
-              tables to accomodate your needs.
+              in mind. Our interactive ER diagram allows you to reposition
+              tables so you can scrutinize your database from every angle!
             </p>
           </div>
           <div className="images" id="repositioning"></div>
