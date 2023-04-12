@@ -46,33 +46,28 @@ const QueryInput: React.FC<{}> = () => {
     setQueryString(e.target.value);
     const lastChar = e.target.value[e.target.value.length - 1];
     const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
+    const splitQuery = e.target.value.split(' ');
     const lowerCaseQuery = e.target.value.toLowerCase();
-    if (
-      keys.has(lastChar) &&
-      lowerCaseQuery.includes('select') &&
-      lowerCaseQuery.includes('from')
-    ) {
-      setSubmit(!submit);
-      errorList();
-      // do not check for pause if the last character entered was in the list of keys
-      checkPause = false;
-    } else {
-      checkPause = true;
-    }
+
+    // if (
+    //   keys.has(lastChar) &&
+    //   lowerCaseQuery.includes('select') &&
+    //   lowerCaseQuery.includes('from')
+    // ) {
+    //   setSubmit(!submit);
+    //   errorList();
+    //   // do not check for pause if the last character entered was in the list of keys
+    // }
   };
 
-  const handlePause = debounce(() => {
-    // only run if handleTyping functionality did not just run
-    if (checkPause) {
-      const lowerCaseQuery = queryString.toLowerCase();
-      if (
-        lowerCaseQuery.includes('select') &&
-        lowerCaseQuery.includes('from')
-      ) {
-        setSubmit(!submit);
-      }
-    }
-  }, 500);
+  // const handlePause = debounce(() => {
+  //   // only run if handleTyping functionality did not just run
+
+  //   const lowerCaseQuery = queryString.toLowerCase();
+  //   if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
+  //     setSubmit(!submit);
+  //   }
+  // }, 500);
 
   // handling tab key
   const handleKeys = (e: any) => {
@@ -98,7 +93,7 @@ const QueryInput: React.FC<{}> = () => {
           placeholder="type your query"
           onChange={handleTyping}
           value={queryString}
-          onKeyUp={handlePause}
+          // onKeyUp={handlePause}
           onKeyDown={handleKeys}
         ></textarea>
         <button
