@@ -70,6 +70,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/cookie-parser": "^1.4.3",
     "@types/cryptr": "^4.0.1",
+    "@types/dotenv": "^8.2.0",
     "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.192",
     "@types/react-router": "^5.1.20",

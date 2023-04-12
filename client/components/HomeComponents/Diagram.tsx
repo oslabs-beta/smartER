@@ -97,7 +97,7 @@ const Diagram: FC<{}> = () => {
   // invoke getQueryResults function to render query results
   useEffect(() => {
     if (queryString) {
-      async function updateNodes() {
+      (async () => {
         setErrorMessages(['']);
         const queryParse = conditionalSchemaParser(queryString, masterData);
         const errorArr = queryParse.errorArr;
@@ -124,8 +124,7 @@ const Diagram: FC<{}> = () => {
         setRenderedDataPositions(testElk);
         setEdges(defaultEdges);
         setRenderedData(queryParse.mainObj);
-      }
-      updateNodes();
+      })();
     }
   }, [submit]);
 

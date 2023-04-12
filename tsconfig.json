@@ -2,14 +2,14 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "lib": ["DOM", "ESNEXT"],
-    "target": "ES6",
+    "lib": ["DOM", "ESNext"],
+    "target": "ES5",
     "jsx": "react-jsx",
     "allowJs": true,
-    "moduleResolution": "nodenext",
+    // "moduleResolution": "nodenext",
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
+    // "esModuleInterop": true,
     "typeRoots": ["./types", "node_modules/@types"]
   }
 }
