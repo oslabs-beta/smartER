@@ -33,7 +33,10 @@ const Landingpage: React.FC<{}> = () => {
         <a href="https://github.com/oslabs-beta/smartER">{githubLogo}</a>
       </div>
       <p>query faster, query simpler</p>
-      <h1 className="landing-page-title">smartER</h1>
+      <div className="logo-container">
+        <div className="logo"></div>
+      </div>
+
       <h2>
         Querying a new database can be daunting. Use SmartER to visualize your
         organization's ER diagram as you build your query!
