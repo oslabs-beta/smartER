@@ -1,12 +1,4 @@
 version: 1
-backend:
-  phases:
-    preBuild:
-      commands:
-        - npm install
-    build:
-      commands:
-        - npm run server
 frontend:
   phases:
     preBuild:
@@ -15,6 +7,9 @@ frontend:
     build:
       commands:
         - npm run build
+    postBuild:
+      commands:
+        - npm run server
   artifacts:
     baseDirectory: dist
     files:
