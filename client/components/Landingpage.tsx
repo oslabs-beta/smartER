@@ -36,20 +36,13 @@ const Landingpage: React.FC<{}> = () => {
         </a> */}
           {/* <p>query faster, query simpler</p> */}
           <div className="logo"></div>
-        </header>
-
-        <div className="landing-page-content">
-          <h1 className="description">
-            Querying a new database can be daunting. Use smartER to visualize
-            your organization's ER diagram as you build your query!
-          </h1>
           <div className="buttons">
             <a
               href="https://github.com/oslabs-beta/smartER#readme"
               target="_blank"
               className="landing-page-small-btn"
             >
-              Github readme
+              Read the docs
             </a>
             <button
               type="button"
@@ -59,6 +52,13 @@ const Landingpage: React.FC<{}> = () => {
               Try it out!
             </button>
           </div>
+        </header>
+
+        <div className="landing-page-content">
+          <h1 className="description">
+            Querying a new database can be daunting. Use smartER to visualize
+            your organization's ER diagram as you build your query!
+          </h1>
           <div className="features">
             <p>
               SmartER is a powerful open-source tool built for new and
@@ -119,19 +119,6 @@ const Landingpage: React.FC<{}> = () => {
 
           <div className="landing-page-section rtl">
             <div className="landing-page-section-text">
-              <h2>Save your queries for later</h2>
-              <p>
-                Have a query you use often? Or building something complex and
-                don't want to lose progress? Save it for later! SmartER will
-                save your query so you can build upon, update, and conveniently
-                run it again later from the History tab.
-              </p>
-            </div>
-            <div className="images" id="history"></div>
-          </div>
-
-          <div className="landing-page-section ltr">
-            <div className="landing-page-section-text">
               <h2>View query results as you build</h2>
               <p>
                 As you type, valid queries will be run and the results will be
@@ -141,6 +128,19 @@ const Landingpage: React.FC<{}> = () => {
               </p>
             </div>
             <div className="images" id="results"></div>
+          </div>
+
+          <div className="landing-page-section ltr">
+            <div className="landing-page-section-text">
+              <h2>Save your queries for later</h2>
+              <p>
+                Have a query you use often? Or building something complex and
+                don't want to lose progress? Save it for later! SmartER will
+                save your query so you can build upon, update, and conveniently
+                run it again later from the History tab.
+              </p>
+            </div>
+            <div className="images" id="history"></div>
           </div>
         </div>
 
