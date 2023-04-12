@@ -327,8 +327,9 @@ textarea {
         .header-row,
         .history-rows {
           list-style: none;
-          display: flex;
-          justify-content: space-between;
+          display: grid;
+          grid-template-columns: 80% 20%;
+          // justify-content: space-between;
           margin: 0;
           padding: 10px;
         }
