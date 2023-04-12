@@ -83,7 +83,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var react_1 = require("react");
+var react_1 = __importStar(require("react"));
 var reactflow_1 = __importStar(require("reactflow"));
 require("reactflow/dist/style.css");
 var Context_1 = require("../../Context");

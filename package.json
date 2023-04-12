@@ -8,7 +8,9 @@
     "front-end": "NODE_ENV=development webpack serve --hot --open",
     "server": "npx nodemon ./server/server.ts",
     "build": "NODE_ENV=production webpack --config ./webpack.config.ts",
-    "test": "NODE_ENV=test jest"
+    "build2": "NODE_ENV=production webpack --config ./webpack.config.js",
+    "test": "NODE_ENV=test jest",
+    "tsc": "tsc"
   },
   "author": "",
   "license": "ISC",
@@ -79,7 +81,6 @@
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "elkjs": "^0.8.2",
-    "express-validator": "^6.15.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "lodash": "^4.17.21",

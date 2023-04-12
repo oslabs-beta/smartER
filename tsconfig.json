@@ -4,7 +4,6 @@
     "lib": ["DOM", "ESNext"],
     "target": "ES5",
     "jsx": "react-jsx",
-    "allowJs": true,
     // "moduleResolution": "nodenext",
     "strict": true,
     "allowSyntheticDefaultImports": true,
