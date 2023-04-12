@@ -1,12 +1,13 @@
 version: '3'
 services:
-  deployment:
-    build:
-      context: .
-      dockerfile: Dockerfile.development
+  dev:
+    image: querysmarter/smarter-lite-dev
+    container_name: smarter-lite-dev-hot
     ports:
       - '8080:8080'
     volumes:
-      - .:/smarter-lite
-      - /smarter-lite/node_modules
+      - ./:/smarter-lite
+      - node_modules:/smarter-lite/node_modules
     command: npm run start
+volumes:
+  node_modules:

@@ -1,6 +1,7 @@
 FROM node:18.13.0
+RUN npm install webpack -g
 WORKDIR /smarter-lite
-COPY . .
+COPY package*.json .
 RUN npm install
-
+EXPOSE 9001
 CMD ["npm", "run", "start"]
