@@ -7,7 +7,7 @@
     "start": "concurrently \"NODE_ENV=development webpack serve --hot --open\" \"npx nodemon ./server/server.ts\"",
     "front-end": "NODE_ENV=development webpack serve --hot --open",
     "server": "npx nodemon ./server/server.ts",
-    "build": "NODE_ENV=production webpack",
+    "build": "NODE_ENV=production webpack --config ./webpack.config.ts",
     "test": "NODE_ENV=test jest"
   },
   "author": "",

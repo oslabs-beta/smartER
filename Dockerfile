@@ -1,7 +1,7 @@
-FROM node:18.12
+FROM node:latest
 WORKDIR /smarter-lite
 COPY . .
 RUN npm install
 RUN npm run build
 EXPOSE 9001
-ENTRYPOINT [ "npx", "nodemon",  "./server/server.ts"]
+ENTRYPOINT [ "ts-node",  "./server/server.ts"]
