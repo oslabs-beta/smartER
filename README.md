@@ -104,8 +104,8 @@ Not <em>just</em> a visualizer, smartER aims to provide a seamless user experien
 
 <h1 id="how-to-contribute">How to contribute </h1>
 
-<p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please fork, clone, and make pull requests. If you would like to report an issue or submit a feature request, please do so.  We would love to hear how we can make smartER more useful for you! If you would like to reach the smartER team directly for any other reason, please <a href="mailto:querysmarter@gmail.com>email us</a></p>
-<br>
+<p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please fork, clone, and make pull requests. If you would like to report an issue or submit a feature request, please do so.  We would love to hear how we can make smartER more useful for you! If you would like to reach the smartER team directly for any other reason, please <a href="mailto:querysmarter@gmail.com">email us</a></p>
+
 <h1 id="contributors">👥 Contributors</h1>
 
 <p>Joyce Kwak <a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/leonardlew' target=“_blank”>@linkedin</a></p>
