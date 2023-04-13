@@ -105,16 +105,16 @@ Not <em>just</em> a visualizer, smartER aims to provide a seamless user experien
 <h1 id="how-to-contribute">How to contribute </h1>
 
 <p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please fork, clone, and make pull requests. If you would like to report an issue or submit a feature request, please do so.  We would love to hear how we can make smartER more useful for you! If you would like to reach the smartER team directly for any other reason, please <a href="mailto:querysmarter@gmail.com>email us</a></p>
-
+<br>
 <h1 id="contributors">👥 Contributors</h1>
 
-<p>Joyce Kwak</p><a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/leonardlew' target=“_blank”>@linkedin</a>
+<p>Joyce Kwak <a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/leonardlew' target=“_blank”>@linkedin</a></p>
 
 <p>
-Melissa McLaughlin</p><a  href='https://github.com/melissamcl' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/melissamcl/' target=“_blank”>@linkedin</a>
+Melissa McLaughlin <a  href='https://github.com/melissamcl' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/melissamcl/' target=“_blank”>@linkedin</a></p>
 
-<p>Nathan Ngo</p><a  href='https://github.com/n8ngo' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/nathan-qh-ngo/' target=“_blank”>@linkedin</a>
+<p>Nathan Ngo <a  href='https://github.com/n8ngo' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/nathan-qh-ngo/' target=“_blank”>@linkedin</a></p>
 
-<p>Brian Vu</p><a  href='https://github.com/b-v-u' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/briandoanvu/' target=“_blank”>@linkedin</a>
+<p>Brian Vu <a  href='https://github.com/b-v-u' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/briandoanvu/' target=“_blank”>@linkedin</a></p>
 
 <h1 id="supporters">☕️ Supporters</h1>
