@@ -16,7 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter);
 
 // static routes
-app.use('assets', express.static(path.resolve(__dirname, '../assets')));
+app.get('/assets/favicon.ico', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../assets/favicon.ico'));
+});
 
 // Catch all 4048
 app.use('/', (req: Request, res: Response) => {
