@@ -6,25 +6,16 @@
   gap: 15px;  
 }
 
-.icons {
-  text-align: center;
-  margin: 15px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 10px;
-}
-
 h1 {
   padding-top: 20px;
 }
 </style>
 
-<p style="text-align: center">
+<center><p>
 <img src='./src/static/smarter-logo-padded.png' width=100%>   
 </p>
 
-<div class="icons">
+<div>
 <img src='./src/static/icons8-react-native-48.png' width=30px height=30px>
 <img src='./src/static/typescript.png' width=30px height=30px>
 <img src='./src/static/postgresql.png' width=32px height=32px>
@@ -34,10 +25,11 @@ h1 {
 <img src='./src/static/react-flow.svg' width=32px height=32px>
 </div>
   
-<div class="links">
+<div>
 <div>[⚡ Getting Started](#getting-started)</div>
 <div>[📝 User guide](#user-guide)</div>
 </div>
+</center>
 
 <p>
 SQL databases often contain a complex network of interconnected tables.  This can pose a challenge for developers when attempting to build or optimize queries that require traversing multiple relationships.
