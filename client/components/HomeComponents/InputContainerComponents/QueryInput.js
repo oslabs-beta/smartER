@@ -10,36 +10,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var react_1 = __importStar(require("react"));
+var react_1 = require("react");
 var Context_1 = require("../../../Context");
 var lodash_1 = require("lodash");
 var QueryInput = function () {
-    var _a = (0, react_1.useContext)(Context_1.HomepageContext), queryString = _a.queryString, setQueryString = _a.setQueryString, errorMessages = _a.errorMessages, setErrorMessages = _a.setErrorMessages, submit = _a.submit, setSubmit = _a.setSubmit, queryResponse = _a.queryResponse, setQueryResponse = _a.setQueryResponse, reset = _a.reset, setReset = _a.setReset;
+    var _a = (0, react_1.useContext)(Context_1.HomepageContext), savedUri = _a.savedUri, queryString = _a.queryString, setQueryString = _a.setQueryString, errorMessages = _a.errorMessages, setErrorMessages = _a.setErrorMessages, submit = _a.submit, setSubmit = _a.setSubmit, queryResponse = _a.queryResponse, setQueryResponse = _a.setQueryResponse, reset = _a.reset, setReset = _a.setReset;
     var errorList = function () {
         // if the query is not valid, errorMessage will be returned
         if (errorMessages.length > 0) {
@@ -58,30 +35,28 @@ var QueryInput = function () {
     };
     var checkPause;
     var handleTyping = function (e) {
-        setQueryString(e.target.value);
-        var lastChar = e.target.value[e.target.value.length - 1];
-        var keys = new Set([' ', ',', ';', 'Tab', 'Return']);
-        var lowerCaseQuery = e.target.value.toLowerCase();
-        if (keys.has(lastChar) &&
-            lowerCaseQuery.includes('select') &&
-            lowerCaseQuery.includes('from')) {
-            setSubmit(!submit);
-            errorList();
-            // do not check for pause if the last character entered was in the list of keys
-            checkPause = false;
+        try {
+            setQueryString(e.target.value);
+            var lastChar = e.target.value[e.target.value.length - 1];
+            var keys = new Set([' ', ',', ';', 'Tab', 'Return']);
+            var lowerCaseQuery = e.target.value.toLowerCase();
+            if (keys.has(lastChar) &&
+                lowerCaseQuery.includes('select') &&
+                lowerCaseQuery.includes('from')) {
+                setSubmit(!submit);
+                errorList();
+                // do not check for pause if the last character entered was in the list of keys
+            }
         }
-        else {
-            checkPause = true;
+        catch (error) {
+            console.log('Error in handleTyping: ', error);
         }
     };
     var handlePause = (0, lodash_1.debounce)(function () {
         // only run if handleTyping functionality did not just run
-        if (checkPause) {
-            var lowerCaseQuery = queryString.toLowerCase();
-            if (lowerCaseQuery.includes('select') &&
-                lowerCaseQuery.includes('from')) {
-                setSubmit(!submit);
-            }
+        var lowerCaseQuery = queryString.toLowerCase();
+        if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
+            setSubmit(!submit);
         }
     }, 500);
     // handling tab key

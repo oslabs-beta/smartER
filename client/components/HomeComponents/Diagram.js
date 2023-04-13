@@ -83,7 +83,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var react_1 = __importStar(require("react"));
+var react_1 = require("react");
 var reactflow_1 = __importStar(require("reactflow"));
 require("reactflow/dist/style.css");
 var Context_1 = require("../../Context");
@@ -107,12 +107,11 @@ var Diagram = function () {
     var _c = (0, react_1.useContext)(Context_1.HomepageContext), queryString = _c.queryString, savedUri = _c.savedUri, submit = _c.submit, masterData = _c.masterData, setMasterData = _c.setMasterData, renderedData = _c.renderedData, setRenderedData = _c.setRenderedData, renderedDataPositions = _c.renderedDataPositions, setRenderedDataPositions = _c.setRenderedDataPositions, errorMessages = _c.errorMessages, setErrorMessages = _c.setErrorMessages, queryResponse = _c.queryResponse, setQueryResponse = _c.setQueryResponse, reset = _c.reset, setReset = _c.setReset;
     function getQueryResults() {
         return __awaiter(this, void 0, void 0, function () {
-            var created_at, data, parsedData, error_1;
+            var data, parsedData, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        created_at = String(Date.now());
                         return [4 /*yield*/, fetch('/api/getQueryResults', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },

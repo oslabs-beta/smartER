@@ -43,6 +43,9 @@ app.use('/api', router_1.default);
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 });
+app.get('/homepage', function (req, res) {
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+});
 // Catch all 404
 app.use('/', function (req, res) {
     res.status(404).json("This is not the page you are looking for \u00AF\\_(\u30C4)_/\u00AF");

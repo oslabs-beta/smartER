@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseEdges = exports.parseNodes = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
-var react_1 = __importDefault(require("react"));
 var ionicons_1 = __importDefault(require("@reacticons/ionicons"));
 function parseNodes(rawData) {
     var standardHeight = 25;

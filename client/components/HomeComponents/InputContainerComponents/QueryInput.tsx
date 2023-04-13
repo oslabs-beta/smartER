@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 
 const QueryInput: React.FC<{}> = () => {
   const {
+    savedUri,
     queryString,
     setQueryString,
     errorMessages,
@@ -43,31 +44,33 @@ const QueryInput: React.FC<{}> = () => {
 
   let checkPause: boolean;
   const handleTyping = (e: any) => {
-    setQueryString(e.target.value);
-    const lastChar = e.target.value[e.target.value.length - 1];
-    const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
-    const splitQuery = e.target.value.split(' ');
-    const lowerCaseQuery = e.target.value.toLowerCase();
-
-    // if (
-    //   keys.has(lastChar) &&
-    //   lowerCaseQuery.includes('select') &&
-    //   lowerCaseQuery.includes('from')
-    // ) {
-    //   setSubmit(!submit);
-    //   errorList();
-    //   // do not check for pause if the last character entered was in the list of keys
-    // }
+    try {
+      setQueryString(e.target.value);
+      const lastChar = e.target.value[e.target.value.length - 1];
+      const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
+      const lowerCaseQuery = e.target.value.toLowerCase();
+      // if (
+      //   keys.has(lastChar) &&
+      //   lowerCaseQuery.includes('select') &&
+      //   lowerCaseQuery.includes('from')
+      // ) {
+      //   setSubmit(!submit);
+      //   errorList();
+      //   // do not check for pause if the last character entered was in the list of keys
+      // }
+    } catch (error) {
+      console.log('Error in handleTyping: ', error);
+    }
   };
 
-  // const handlePause = debounce(() => {
-  //   // only run if handleTyping functionality did not just run
+  const handlePause = debounce(() => {
+    // only run if handleTyping functionality did not just run
 
-  //   const lowerCaseQuery = queryString.toLowerCase();
-  //   if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
-  //     setSubmit(!submit);
-  //   }
-  // }, 500);
+    const lowerCaseQuery = queryString.toLowerCase();
+    if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
+      setSubmit(!submit);
+    }
+  }, 500);
 
   // handling tab key
   const handleKeys = (e: any) => {
@@ -93,7 +96,7 @@ const QueryInput: React.FC<{}> = () => {
           placeholder="type your query"
           onChange={handleTyping}
           value={queryString}
-          // onKeyUp={handlePause}
+          onKeyUp={handlePause}
           onKeyDown={handleKeys}
         ></textarea>
         <button

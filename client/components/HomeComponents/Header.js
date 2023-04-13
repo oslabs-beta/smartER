@@ -10,12 +10,8 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var react_1 = __importDefault(require("react"));
 var react_router_dom_1 = require("react-router-dom");
 // clicking profile modal will openthe option to logout
 var Header = function () {

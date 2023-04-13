@@ -35,20 +35,19 @@ exports.default = {
         publicPath: '/',
         filename: 'bundle.js',
     },
-    // mode: process.env.NODE_ENV ? process.env.NODE_ENV : 'development',
-    // devServer: {
-    //   static: {
-    //     directory: path.resolve(__dirname, 'dist'),
-    //     publicPath: '/',
-    //   },
-    //   port: 8080,
-    //   historyApiFallback: true,
-    //   headers: { 'Access-Control-Allow-Origin': '*' },
-    //   proxy: {
-    //     '/api': 'http://localhost:9001/',
-    //     secure: false,
-    //   },
-    // },
+    mode: process.env.NODE_ENV ? process.env.NODE_ENV : 'development',
+    devServer: {
+        static: {
+            directory: path.resolve(__dirname, 'dist'),
+            publicPath: '/',
+        },
+        port: 8080,
+        historyApiFallback: true,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        proxy: {
+            '/api/': 'http://localhost:9001/',
+        },
+    },
     module: {
         rules: [
             {

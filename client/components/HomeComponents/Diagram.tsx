@@ -53,7 +53,6 @@ const Diagram: FC<{}> = () => {
     //setSubmit to trigger useEffect for re-rendering Diagram.tsx
     // POST request to database with queryString
     try {
-      const created_at = String(Date.now());
       const data = await fetch('/api/getQueryResults', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,32 +97,42 @@ const Diagram: FC<{}> = () => {
   useEffect(() => {
     if (queryString) {
       (async () => {
+        let errorArr: any[] = [];
         setErrorMessages(['']);
         const queryParse = conditionalSchemaParser(queryString, masterData);
-        const errorArr = queryParse.errorArr;
-        setErrorMessages(errorArr);
-        if (!errorArr[0]) getQueryResults();
-
-        const defaultNodes = parseNodes(queryParse.mainObj);
-        const defaultEdges = parseEdges(queryParse.mainObj);
-
-        // if no new tables are being added, retain positions; else recalculate
-        let positions = [];
-        const currentTables = Object.keys(renderedData);
-        const newTables = Object.keys(queryParse.mainObj);
-        const combinedLength = new Set(currentTables.concat(newTables)).size;
-        if (
-          currentTables.length === newTables.length &&
-          currentTables.length === combinedLength
-        ) {
-          positions = renderedDataPositions;
+        if (queryParse) {
+          errorArr = queryParse.errorArr;
+          setErrorMessages(errorArr);
         }
-        const testElk = await getElkData(defaultNodes, defaultEdges, positions);
 
-        setNodes(testElk);
-        setRenderedDataPositions(testElk);
-        setEdges(defaultEdges);
-        setRenderedData(queryParse.mainObj);
+        if (queryParse && !errorArr[0]) {
+          getQueryResults();
+
+          const defaultNodes = parseNodes(queryParse.mainObj);
+          const defaultEdges = parseEdges(queryParse.mainObj);
+
+          // if no new tables are being added, retain positions; else recalculate
+          let positions = [];
+          const currentTables = Object.keys(renderedData);
+          const newTables = Object.keys(queryParse.mainObj);
+          const combinedLength = new Set(currentTables.concat(newTables)).size;
+          if (
+            currentTables.length === newTables.length &&
+            currentTables.length === combinedLength
+          ) {
+            positions = renderedDataPositions;
+          }
+          const testElk = await getElkData(
+            defaultNodes,
+            defaultEdges,
+            positions
+          );
+
+          setNodes(testElk);
+          setRenderedDataPositions(testElk);
+          setEdges(defaultEdges);
+          setRenderedData(queryParse.mainObj);
+        }
       })();
     }
   }, [submit]);
