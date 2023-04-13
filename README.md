@@ -1,16 +1,3 @@
-<style>
-.links {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 15px;  
-}
-
-h1 {
-  padding-top: 20px;
-}
-</style>
-
 <p align="center">
 <img src='./src/static/smarter-logo-padded.png' width=100%>   
 </p>
@@ -26,12 +13,12 @@ h1 {
 </div>
 <br>
 <div align="center">
-  <div><a href="#getting-started">⚡ Getting Started</a></div>
-  <div><a href="#user-guide">📝 User guide</a></div>
-  <div><a href="#features">📬 Features</a></div>
-  <div><a href="#how-to-contribute">🧠 How to contribute</a></div>
-  <div><a href="#contributors">👥 Contributors</a></div>
-  <div><a href="#supporters">☕️ Supporters</a></div>
+  <a href="#getting-started">⚡ Getting Started</a>&nbsp;&nbsp;
+  <a href="#user-guide">📝 User guide</a>&nbsp;&nbsp;
+  <a href="#features">📬 Features</a>&nbsp;&nbsp;
+  <a href="#how-to-contribute">🧠 How to contribute</a>&nbsp;&nbsp;
+  <a href="#contributors">👥 Contributors</a>&nbsp;&nbsp;
+  <a href="#supporters">☕️ Supporters</a>&nbsp;&nbsp;
 </div>
 
 <br>
