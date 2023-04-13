@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
+import path from 'path';
 
 const app = express();
 
@@ -13,6 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Route
 app.use('/api', apiRouter);
+
+// static routes
+app.use('assets', express.static(path.resolve(__dirname, '../assets')));
 
 // Catch all 4048
 app.use('/', (req: Request, res: Response) => {
