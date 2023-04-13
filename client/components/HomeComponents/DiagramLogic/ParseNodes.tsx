@@ -3,7 +3,6 @@ import React from 'react';
 import IonIcon from '@reacticons/ionicons';
 
 export function parseNodes(rawData: any): any {
-  console.log('RAWDATA: ', rawData);
   const standardHeight = 25;
   // const pkey = <FontAwesomeIcon icon={p_key} />;
   const pkey = <IonIcon id="pkey" name="key" />;
