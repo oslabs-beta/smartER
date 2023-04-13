@@ -118,10 +118,13 @@ const Diagram: FC<{}> = () => {
           const combinedLength = new Set(currentTables.concat(newTables)).size;
           if (
             currentTables.length === newTables.length &&
-            currentTables.length === combinedLength
+            currentTables.length === combinedLength &&
+            JSON.stringify(currentTables.sort()) ===
+              JSON.stringify(newTables.sort())
           ) {
             positions = renderedDataPositions;
           }
+
           const testElk = await getElkData(
             defaultNodes,
             defaultEdges,

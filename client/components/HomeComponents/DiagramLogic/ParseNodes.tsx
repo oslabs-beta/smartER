@@ -3,6 +3,7 @@ import React from 'react';
 import IonIcon from '@reacticons/ionicons';
 
 export function parseNodes(rawData: any): any {
+  console.log('RAWDATA: ', rawData);
   const standardHeight = 25;
   // const pkey = <FontAwesomeIcon icon={p_key} />;
   const pkey = <IonIcon id="pkey" name="key" />;
@@ -130,7 +131,7 @@ export function parseEdges(data: any): any {
     for (const columnObj in data[table]) {
       const columnName = data[table][columnObj].column_name;
       const column = data[table][columnObj];
-      if (column.foreign_key) {
+      if (column.foreign_key && data[column.linkedTable]) {
         const newEdge = {
           id: `${table}.${columnName}->${column.linkedTableColumn}.${column.column_name}`,
           source: `${columnName}.${table}.node`,

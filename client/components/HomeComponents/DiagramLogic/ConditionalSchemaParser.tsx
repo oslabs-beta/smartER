@@ -278,9 +278,7 @@ function conditionalSchemaParser(
 
     for (const table in mainObj) connectedTablesHandler(table);
     return { errorArr: errorArr, mainObj: mainObj };
-  } catch (error) {
-    console.log('Error in Conditional parser:', error);
-  }
+  } catch (error) {}
 }
 
 function flagActiveLinks(
