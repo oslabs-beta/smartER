@@ -139,7 +139,7 @@ export function parseEdges(data: any): any {
           style: {},
           animated: false,
         };
-        if (column.activeLink) {
+        if (column.activeLink && data[column.linkedTable]) {
           newEdge.animated = false;
           newEdge.style = {
             stroke: 'white',
