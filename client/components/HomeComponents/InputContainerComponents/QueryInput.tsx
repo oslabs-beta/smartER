@@ -44,31 +44,34 @@ const QueryInput: React.FC<{}> = () => {
 
   let checkPause: boolean;
   const handleTyping = (e: any) => {
-    try {
-      setQueryString(e.target.value);
-      const lastChar = e.target.value[e.target.value.length - 1];
-      const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
-      const lowerCaseQuery = e.target.value.toLowerCase();
-      if (
-        keys.has(lastChar) &&
-        lowerCaseQuery.includes('select') &&
-        lowerCaseQuery.includes('from')
-      ) {
-        setSubmit(!submit);
-        errorList();
-        // do not check for pause if the last character entered was in the list of keys
-      }
-    } catch (error) {
-      console.log('Error in handleTyping: ', error);
+    setQueryString(e.target.value);
+    const lastChar = e.target.value[e.target.value.length - 1];
+    const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
+    const lowerCaseQuery = e.target.value.toLowerCase();
+    if (
+      keys.has(lastChar) &&
+      lowerCaseQuery.includes('select') &&
+      lowerCaseQuery.includes('from')
+    ) {
+      setSubmit(!submit);
+      errorList();
+      // do not check for pause if the last character entered was in the list of keys
+      checkPause = false;
+    } else {
+      checkPause = true;
     }
   };
 
   const handlePause = debounce(() => {
     // only run if handleTyping functionality did not just run
-
-    const lowerCaseQuery = queryString.toLowerCase();
-    if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
-      setSubmit(!submit);
+    if (checkPause) {
+      const lowerCaseQuery = queryString.toLowerCase();
+      if (
+        lowerCaseQuery.includes('select') &&
+        lowerCaseQuery.includes('from')
+      ) {
+        setSubmit(!submit);
+      }
     }
   }, 500);
 
