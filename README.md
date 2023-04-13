@@ -108,7 +108,7 @@ smartER aims to provide a seamless user experience, offering:
 
 <h1 id="contributors">👥 Contributors</h1>
 
-<p>Joyce Kwak <a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/leonardlew' target=“_blank”>@linkedin</a></p>
+<p>Joyce Kwak <a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/joyce-kwak/' target=“_blank”>@linkedin</a></p>
 
 <p>
 Melissa McLaughlin <a  href='https://github.com/melissamcl' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/melissamcl/' target=“_blank”>@linkedin</a></p>
