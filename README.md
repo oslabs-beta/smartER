@@ -93,7 +93,7 @@ Save your query and re-render it later by clicking on it in the History tab
 
 <h1 id="features">📬 Features:</h1>
 
-Not <em>just</em> a visualizer, smartER aims to provide a seamless user experience, offering:
+smartER aims to provide a seamless user experience, offering:
 - Automatic rendering based on a valid query string, with helpful error messages for invalid query strings
 - Linking of relationships in the ER diagram via a dotted line
 - Linking of JOIN columns from your query with a bolded line
@@ -102,7 +102,7 @@ Not <em>just</em> a visualizer, smartER aims to provide a seamless user experien
 - An interactive and easily rearranged ER diagram for optimal clarity on your database relationships
 - A responsive UI that allows the user to decide which features get the most real estate
 
-<h1 id="how-to-contribute">How to contribute </h1>
+<h1 id="how-to-contribute">🧠 How to contribute </h1>
 
 <p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please fork, clone, and make pull requests. If you would like to report an issue or submit a feature request, please do so.  We would love to hear how we can make smartER more useful for you! If you would like to reach the smartER team directly for any other reason, please <a href="mailto:querysmarter@gmail.com">email us</a></p>
 
