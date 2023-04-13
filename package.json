@@ -4,11 +4,13 @@
   "description": "visualize your sql queries as you type",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"NODE_ENV=development webpack serve --hot --open\" \"npx nodemon ./server/server.ts\"",
+    "start": "concurrently \"NODE_ENV=development webpack serve --hot --open --config ./webpack.config.ts\" \"npx nodemon ./server/server.ts\"",
     "front-end": "NODE_ENV=development webpack serve --hot --open",
     "server": "npx nodemon ./server/server.ts",
-    "build": "NODE_ENV=production webpack",
-    "test": "NODE_ENV=test jest"
+    "build": "NODE_ENV=production webpack --config ./webpack.config.ts",
+    "build2": "NODE_ENV=production webpack --config ./webpack.config.js",
+    "test": "NODE_ENV=test jest",
+    "tsc": "tsc"
   },
   "author": "",
   "license": "ISC",
@@ -70,6 +72,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/cookie-parser": "^1.4.3",
     "@types/cryptr": "^4.0.1",
+    "@types/dotenv": "^8.2.0",
     "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.192",
     "@types/react-router": "^5.1.20",
@@ -78,7 +81,6 @@
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "elkjs": "^0.8.2",
-    "express-validator": "^6.15.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "lodash": "^4.17.21",
