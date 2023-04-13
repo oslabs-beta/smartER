@@ -1,6 +1,8 @@
-FROM node:18.13.0
+FROM node:latest
 WORKDIR /smarter-lite
 COPY . .
 RUN npm install
-EXPOSE 8080
-CMD ["npm", "run", "start"]
+RUN npm run tsc
+RUN npm run build2
+EXPOSE 9001
+ENTRYPOINT [ "node",  "./server/server.js"]

@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 
 const QueryInput: React.FC<{}> = () => {
   const {
+    savedUri,
     queryString,
     setQueryString,
     errorMessages,
@@ -41,7 +42,7 @@ const QueryInput: React.FC<{}> = () => {
     setSubmit(!submit);
   };
 
-  // let checkPause: boolean;
+  let checkPause: boolean;
   const handleTyping = (e: any) => {
     setQueryString(e.target.value);
     const lastChar = e.target.value[e.target.value.length - 1];
@@ -55,20 +56,23 @@ const QueryInput: React.FC<{}> = () => {
       setSubmit(!submit);
       errorList();
       // do not check for pause if the last character entered was in the list of keys
-      //   checkPause = false;
-      // } else {
-      //   checkPause = true;
+      checkPause = false;
+    } else {
+      checkPause = true;
     }
   };
 
   const handlePause = debounce(() => {
     // only run if handleTyping functionality did not just run
-    // if (checkPause) {
-    const lowerCaseQuery = queryString.toLowerCase();
-    if (lowerCaseQuery.includes('select') && lowerCaseQuery.includes('from')) {
-      setSubmit(!submit);
+    if (checkPause) {
+      const lowerCaseQuery = queryString.toLowerCase();
+      if (
+        lowerCaseQuery.includes('select') &&
+        lowerCaseQuery.includes('from')
+      ) {
+        setSubmit(!submit);
+      }
     }
-    // }
   }, 500);
 
   // handling tab key

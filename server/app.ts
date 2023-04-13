@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import apiRouter from './routes/router';
-import path from 'path';
+import * as path from 'path';
 
 const app = express();
 
@@ -11,16 +11,17 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(express.static(path.join(__dirname, '../dist')));
 // API Route
 app.use('/api', apiRouter);
 
-// static routes
-app.get('/assets/favicon.ico', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../assets/favicon.ico'));
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 });
-
-// Catch all 4048
+app.get('/homepage', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+});
+// Catch all 404
 app.use('/', (req: Request, res: Response) => {
   res.status(404).json(`This is not the page you are looking for ¯\\_(ツ)_/¯`);
 });

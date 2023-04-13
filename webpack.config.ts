@@ -18,7 +18,7 @@ export default {
     historyApiFallback: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
     proxy: {
-      '/api': 'http://localhost:9001/',
+      '/api/': 'http://localhost:9001/',
     },
   },
   module: {

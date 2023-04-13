@@ -13,6 +13,10 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
     setSavedUri,
     dbCredentials,
     setDBCredentials,
+    errorMessages,
+    queryString,
+    setQueryString,
+    setErrorMessages,
     masterData,
     setMasterData,
   } = useContext(HomepageContext)!;
@@ -33,6 +37,7 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
         setSavedUri(encodedURI);
         setUri('');
         setTab('Query');
+        setErrorMessages(['']);
         const parsedData = await data.json();
         setMasterData(parsedData);
         return;
@@ -67,6 +72,8 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
         //TODO: add a success indicator
         setSavedUri(encodedURI);
         setUri('');
+        setErrorMessages(['']);
+        setQueryString('');
         setDBCredentials({
           host: '',
           port: 0,

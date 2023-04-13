@@ -16,7 +16,6 @@ const schemaController: schemaControllers = {
       console.log('running connectDb');
       const { uri } = req.body;
       const decodedUri = decodeURIComponent(uri);
-      console.log('decodedURI: ', decodedUri);
       const envCredentials: any = { connectionString: decodedUri };
       res.locals.pg = new Pool(envCredentials);
       return next();
