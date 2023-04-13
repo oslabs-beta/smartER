@@ -28,6 +28,9 @@ h1 {
 <div align="center">
   <div><a href="#getting-started">⚡ Getting Started</a></div>
   <div><a href="#user-guide">📝 User guide</a></div>
+  <div><a href="#features">📬 Features</a></div>
+  <div><a href="#how-to-contribute">🧠 How to contribute</a></div>
+  <div><a href="#contributors">👥 Contributors</a></div>
 </div>
 
 <br>
@@ -48,15 +51,6 @@ SQL databases often contain a complex network of interconnected tables.  This ca
 - <a href="https://sass-lang.com/documentation/"> Sass </a>
 - <a href="https://redis.io/docs/"> Redis </a>
 - <a href="https://reactflow.dev/docs/examples/overview/"> React Flow </a>
-
-<h1> 📖 Table of Contents </h1>
-
-<ul>
-  <li id="getting-started">Getting started</li>
-  <li>User guide</li>
-  <li>How to contribute</li>
-  <li>Contributers</li>
-</ul>
 
 <h1>⚡ Getting started </h1>
 Our application is pretty simple to get up and running!
@@ -109,10 +103,9 @@ Scroll through your query results at any time, they are rendered as you type as 
 Save your query at any time and re-render it later by clicking on it in the History tab
 <img src='./assets/save-history.gif' width=100%>
 
-<h2> 📬 Features: </h2>
+<h1 id="features">📬 Features:</h1>
 
-In addition to being able to visualize a query, smartER aims to bring seemless visuals during user actions, offering:
-
+In addition to being able to visualize a query, smartER aims to bring seamless visuals during user actions, offering:
 - Automatic rendering based on a valid query string
 - Linking of relationships in the ER diagram via a dotted line
 - Linking of JOIN columns from your query with a bolded line
@@ -120,11 +113,11 @@ In addition to being able to visualize a query, smartER aims to bring seemless v
 - Support for all postgreSQL SELECT queries, including unions, subqueries, and aggregations
 - An interactive and easily rearranged ER diagram for optimal clarity on your database relationships
 
-<h1> How to contribute </h1>
+<h1 id="how-to-contribute">How to contribute </h1>
 
 <p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please contact us at querysmarter@gmail.com</p>
 
-<h1> Contributors </h1>
+<h1 id="contributors">👥 Contributors</h1>
 
 <p>Joyce Kwak</p><a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/leonardlew' target=“_blank”>@linkedin</a>
 
