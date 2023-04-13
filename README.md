@@ -31,6 +31,7 @@ h1 {
   <div><a href="#features">📬 Features</a></div>
   <div><a href="#how-to-contribute">🧠 How to contribute</a></div>
   <div><a href="#contributors">👥 Contributors</a></div>
+  <div><a href="#supporters">☕️ Supporters</a></div>
 </div>
 
 <br>
@@ -52,7 +53,7 @@ SQL databases often contain a complex network of interconnected tables.  This ca
 - <a href="https://redis.io/docs/"> Redis </a>
 - <a href="https://reactflow.dev/docs/examples/overview/"> React Flow </a>
 
-<h1>⚡ Getting started </h1>
+<h1 id="getting-started">⚡ Getting started </h1>
 Our application is pretty simple to get up and running!
 
 Install redis:
@@ -67,7 +68,7 @@ Install other dependencies:
 npm install
 ```
 
-Set up your database. Ours looks like this:
+Set up your database. Ours looks like this:<br>
 <img src = ./assets/smarter-db.png>
 
 Set your .env variables:
@@ -87,25 +88,25 @@ npm start
 
 <h1 id="user-guide"> 📝 User guide </h1>
 
-On application load, the user will be prompted to log in. First time users should create an account to be redirected to the homepage
+On application load, the user will be prompted to log in before being directed to the homepage. First time users should first create an account
 
 <img src='./assets/login.gif' width=100%>
 
-Navigate to the settings tab and input either your URI or credentials for your database
+Navigate to the settings tab and input either the URI or credentials for your database
 <img src='./assets/settings-tab.gif' width=100%>
 
-Once the database is connected, navigate to the query tab and begin typing your query - notice your ER diagram renders and updates as you type
+Once the database is connected, navigate to the query tab and begin typing your query - notice your ER diagram renders and updates as you type!
 <img src='./assets/query-diagram-render.gif' width=100%>
 
 Scroll through your query results at any time, they are rendered as you type as well
 <img src='./assets/results-scroll.gif' width=100%>
 
-Save your query at any time and re-render it later by clicking on it in the History tab
+Save your query and re-render it later by clicking on it in the History tab
 <img src='./assets/save-history.gif' width=100%>
 
 <h1 id="features">📬 Features:</h1>
 
-In addition to being able to visualize a query, smartER aims to bring seamless visuals during user actions, offering:
+In addition to being able to visualize a query, smartER aims to provide a seamless user experience, offering:
 - Automatic rendering based on a valid query string
 - Linking of relationships in the ER diagram via a dotted line
 - Linking of JOIN columns from your query with a bolded line
@@ -128,4 +129,4 @@ Melissa McLaughlin</p><a  href='https://github.com/melissamcl' target=“_blank�
 
 <p>Brian Vu</p><a  href='https://github.com/b-v-u' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/briandoanvu/' target=“_blank”>@linkedin</a>
 
-<h3> ☕️ Supporters </h3>
+<h1 id="supporters">☕️ Supporters</h1>
