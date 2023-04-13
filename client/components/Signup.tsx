@@ -86,8 +86,11 @@ const Signup: React.FC<{}> = () => {
   };
 
   return (
-    <>
-      <h1>smartER</h1>
+    <div className="login-container">
+      {/* <h1>smartER</h1> */}
+      <div className="logo-container">
+        <div className="logo"></div>
+      </div>
       <form className="loginForm" onSubmit={handleSubmit}>
         <div className="formLine">
           <label className="login-text" htmlFor="email">
@@ -145,7 +148,7 @@ const Signup: React.FC<{}> = () => {
           Sign in here!
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

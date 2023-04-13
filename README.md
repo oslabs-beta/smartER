@@ -1,31 +1,52 @@
-<p>
+<style>
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 15px;  
+}
+
+.icons {
+  text-align: center;
+  margin: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+
+h1 {
+  padding-top: 20px;
+}
+</style>
+
+<p class="center">
 <img src='./src/static/smarter-logo-padded.png' width=100%>   
 </p>
+
+<div class="icons">
+<img src='./src/static/icons8-react-native-48.png' width=30px height=30px>
+<img src='./src/static/typescript.png' width=30px height=30px>
+<img src='./src/static/postgresql.png' width=32px height=32px>
+<img src='./src/static/express.png' width=32px height=32px>
+<img src='./src/static/sass.png' width=32px height=32px>
+<img src='./src/static/redis.png' width=32px height=32px>
+<img src='./src/static/react-flow.svg' width=32px height=32px>
+</div>
   
-[⚡ Getting Started]() |
-[📚 Documentation]() |
-[⌨️ Blog]() |
-[💬 Twitter](https://twitter.com) |
-[💼 LinkedIn](https://www.linkedin.com)
+<div class="links">
+<div>[⚡ Getting Started](#getting-started)</div>
+<div>[📝 User guide](#user-guide)</div>
+</div>
 
 <p>
-<img src='./src/static/icons8-react-native-48.png' width=15px height=15px>
-    <img src='./src/static/typescript.png' width=15px height=15px>
-    <img src='./src/static/postgresql.png' width=16px height=16px>
-    <img src='./src/static/express.png' width=16px height=16px>
-<img src='./src/static/sass.png' width=16px height=16px>
-<img src='./src/static/redis.png' width=16px height=16px>
-<img src='./src/static/react-flow.svg' width=16px height=16px>
-</p>
+SQL databases often contain a complex network of interconnected tables.  This can pose a challenge for developers when attempting to build or optimize queries that require traversing multiple relationships.
 
-<p>
-SQL databases may contain a complex network of interconnected tables which can pose a challenge for developers when attempting to optimize queries that require traversing multiple relationships.
-
-<b>smartER </b> is a query visualizing tool that works with your postgreSQL database to provide dynamically rendered ER diagrams. It is a web application that is written with TypeScript and works to read a user's database schema in order to render ER diagrams based on a specific input query string. In order to assist with parsing through SQL schemas, it uses the <a href="https://www.npmjs.com/package/pgsql-ast-parser">pgsql-ast-parser </a> to produce a typed Abstract Syntax Tree in order to work with building custon nodes with React Flow.
+<strong>smartER </strong> is a query visualizing tool that works with your postgreSQL database to provide dynamically rendered ER diagrams. It is a web application written in TypeScript that reads a user's database schema in order to render ER diagrams based on a given query string. To parse through SQL schemas, it uses the <a href="https://www.npmjs.com/package/pgsql-ast-parser">pgsql-ast-parser </a> to produce a typed Abstract Syntax Tree, which is further parsed to build custom nodes with React Flow.
 
 </p>
 
-<h3> 🛠 Built With </h3>
+<h1> 🛠 Built With </h1>
 
 - <a href="https://react.dev/learn"> React </a>
 - <a href="https://www.typescriptlang.org/docs/handbook/jsx.html"> TypeScript </a>
@@ -35,67 +56,82 @@ SQL databases may contain a complex network of interconnected tables which can p
 - <a href="https://redis.io/docs/"> Redis </a>
 - <a href="https://reactflow.dev/docs/examples/overview/"> React Flow </a>
 
-<h3> 📖 Table of Contents </h3>
+<h1> 📖 Table of Contents </h1>
 
 <ul>
-  <li>Getting started</li>
-  <li>Usage Guidance</li>
+  <li id="getting-started">Getting started</li>
+  <li>User guide</li>
   <li>How to contribute</li>
   <li>Contributers</li>
 </ul>
 
-<h3> Getting started </h3>
-
+<h1>⚡ Getting started </h1>
 Our application is pretty simple to get up and running!
 
-Install all dependencies:
+Install redis:
+
+```js
+brew install redis
+```
+
+Install other dependencies:
 
 ```js
 npm install
 ```
 
+Set up your database. Ours looks like this:
+<img src = ./assets/smarter-db.png>
+
+Set your .env variables:
+
+<ul>
+  <li>DATABASE_API</li>
+  <li>PORT</li>
+  <li>JWT_SECRET_KEY</li>
+  <li>URI_SECRET_KEY</li>
+</ul>
+
+Start the application:
+
 ```js
 npm start
 ```
 
-Running start will direct you to your browser with smartER.
+<h1 id="user-guide"> 📝 User guide </h1>
 
-<h3> 📝 Usage Guidelines </h3>
+On application load, the user will be prompted to log in. First time users should create an account to be redirected to the homepage
 
-On application load it will lead you to a login page. First time users will want to create an account to be redirected to the homepage.
+<img src='./assets/login.gif' width=100%>
 
-<img src='./src/static/login.png' width=100%>
+Navigate to the settings tab and input either your URI or credentials for your database
+<img src='./assets/settings-tab.gif' width=100%>
 
-Navigate to the settings tab and input either your URI for your database or connect with valid credentials.
-<img src='./src/static/settings.png' width=100%> <img src='./src/static/settings-uri.png' width=100%>
+Once the database is connected, navigate to the query tab and begin typing your query - notice your ER diagram renders and updates as you type
+<img src='./assets/query-diagram-render.gif' width=100%>
 
-Ensure that your usernames, passwords, and ports are accurate in the smartER settings.
-<img src='./src/static/settings-credentials.png' width=100%>
-Once the database is connected, navigate to the query tab and begin typing in your queries. Use the buttons within the query input box to either <i>clear</i> or <i>save</i> our query to your history.
-<br >
-<br >
-SmartER is designed to render both your ER Diagram and query results as you are typing.
-<img src='./src/static/query-people-species.png' width=100%>
+Scroll through your query results at any time, they are rendered as you type as well
+<img src='./assets/results-scroll.gif' width=100%>
 
-Navigate to the history tab to easily re-run past queries.
-<img src='./src/static/history-2.png' width=100%>
-<img src='./src/static/history-3.png' width=100%>
+Save your query at any time and re-render it later by clicking on it in the History tab
+<img src='./assets/save-history.gif' width=100%>
 
-<h4> 📬 FEATURES: </h4>
+<h2> 📬 Features: </h2>
 
-In addition to being able to visualize a query, smartER aims to bring seemless visuals during user actions. smartER offers:
+In addition to being able to visualize a query, smartER aims to bring seemless visuals during user actions, offering:
 
 - Automatic rendering based on a valid query string
-- In the ER Diagram, the primary and foreign keys are connected to one another with a dotted line
-- Relevent columns from an executed query that contains SELECT statements are highlighted in yellow for visual accessibility
-- Likewise, JOIN statements from an executed query appear with a bolded line connecting specified points
-- Columns are easily rearranged by the user
+- Linking of relationships in the ER diagram via a dotted line
+- Linking of JOIN columns from your query with a bolded line
+- Highlighting of all columns in your SELECT statement for visual clarity and accessibility
+- Support for all postgreSQL SELECT queries, including unions, subqueries, and aggregations
+- An interactive and easily rearranged ER diagram for optimal clarity on your database relationships
 
-<h3> How to contribute </h3>
+<h1> How to contribute </h1>
 
-<p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please contact us at ....</p>
+<p> smartER is currently in alpha and we would love to hear your feedback, encouragement, advice, suggestions, or problems. If you would like to contribute, please contact us at querysmarter@gmail.com</p>
 
-<h3> Contributors </h3>
+<h1> Contributors </h1>
 
 <p>Joyce Kwak</p><a  href='https://github.com/joyxek' target=“_blank”>@github </a><a  href='https://www.linkedin.com/in/leonardlew' target=“_blank”>@linkedin</a>
 

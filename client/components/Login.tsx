@@ -49,8 +49,10 @@ const Login: React.FC<{}> = () => {
   };
 
   return (
-    <>
-      <h1>smartER</h1>
+    <div className="login-container">
+      <div className="logo-container">
+        <div className="logo"></div>
+      </div>
       <form className="loginForm" onSubmit={handleSubmit}>
         <div className="formLine">
           <label className="login-text" htmlFor="email">
@@ -94,7 +96,7 @@ const Login: React.FC<{}> = () => {
           Sign up here!
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -24,12 +24,7 @@ body {
   background-color: transparent;
   overflow-y: scroll;
   border-radius: 0 0 5px 5px;
-  filter: drop-shadow(-2px 1px 33px rgba(0, 163, 181, 0.4));
-}
-
-.input-container::-webkit-scrollbar {
-  background: transparent; /* Chrome/Safari/Webkit */
-  width: 0px;
+  filter: drop-shadow(-2px 1px 20px rgba(0, 163, 181, 0.25));
 }
 
 // holds the three buttons
@@ -228,39 +223,26 @@ textarea {
         flex-wrap: nowrap;
         width: 100%;
 
-        .db-settings-input {
-          height: 20px;
-          border: 1px $color1;
-          background-color: $color6;
-          border-radius: 5px 0 0 5px;
-          color: black;
-          padding: 8px;
-          width: 80%;
-        }
+        // .db-submit-settings {
+        //   background-color: $color6;
+        //   // width: 30%;
+        //   height: 36px;
+        //   border-radius: 0 5px 5px 0;
+        //   width: 20%;
+        //   min-width: 60px;
+        // }
 
-        .db-submit-settings {
-          background-color: $color6;
-          // width: 30%;
-          height: 36px;
-          border-radius: 0 5px 5px 0;
-          width: 20%;
-          min-width: 60px;
-        }
-
-        .db-submit-settings:hover {
-          cursor: pointer;
-          color: lighten(black, 52%);
-        }
+        // .db-submit-settings:hover {
+        //   cursor: pointer;
+        //   color: lighten(black, 52%);
+        // }
       }
     }
-  }
-
-  .credentials-main {
-    margin: 40px 20%;
 
     .settings-title {
       text-align: center;
       color: white;
+      margin: 40px 0 0 0;
     }
 
     form {
@@ -345,8 +327,9 @@ textarea {
         .header-row,
         .history-rows {
           list-style: none;
-          display: flex;
-          justify-content: space-between;
+          display: grid;
+          grid-template-columns: 80% 20%;
+          // justify-content: space-between;
           margin: 0;
           padding: 10px;
         }
