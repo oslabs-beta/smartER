@@ -49,15 +49,15 @@ const QueryInput: React.FC<{}> = () => {
       const lastChar = e.target.value[e.target.value.length - 1];
       const keys = new Set([' ', ',', ';', 'Tab', 'Return']);
       const lowerCaseQuery = e.target.value.toLowerCase();
-      // if (
-      //   keys.has(lastChar) &&
-      //   lowerCaseQuery.includes('select') &&
-      //   lowerCaseQuery.includes('from')
-      // ) {
-      //   setSubmit(!submit);
-      //   errorList();
-      //   // do not check for pause if the last character entered was in the list of keys
-      // }
+      if (
+        keys.has(lastChar) &&
+        lowerCaseQuery.includes('select') &&
+        lowerCaseQuery.includes('from')
+      ) {
+        setSubmit(!submit);
+        errorList();
+        // do not check for pause if the last character entered was in the list of keys
+      }
     } catch (error) {
       console.log('Error in handleTyping: ', error);
     }
