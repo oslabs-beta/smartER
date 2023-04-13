@@ -3,13 +3,13 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "lib": ["DOM", "ESNEXT"],
-    "target": "es5",
+    "target": "ES6",
     "jsx": "react-jsx",
     "allowJs": true,
     "moduleResolution": "node",
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "types": ["react/next", "react-dom/next"]
+    "typeRoots": ["./types", "node_modules/@types"]
   }
 }

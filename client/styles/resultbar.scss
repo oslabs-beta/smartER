@@ -1,0 +1,61 @@
+$color1: #020024;
+$color2: #004f77;
+$color3: #00a3b5;
+$color4: #6bfbce;
+
+.query-table-outer-container {
+  margin: 0.8%;
+  padding: 10px;
+  // background: rgb(0, 79, 119);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 79, 119, 1) 0%,
+    rgba(46, 44, 87, 1) 100%
+  );
+  border-radius: 5px;
+  width: 98%;
+  // table-layout: fixed;
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(-2px 1px 20px rgba(0, 163, 181, 0.25));
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .query-table-container {
+    margin: 0.8%;
+    background: rgba(255, 255, 255, 0.375);
+    border-radius: 5px;
+    // width: 98%;
+    overflow: auto;
+    height: 98%;
+  }
+
+  // .query-table-container:hover {
+  //   overflow: auto;
+  // }
+
+  .query-table {
+    font-size: 10pt;
+    padding: 3px 10px;
+    color: black;
+    width: auto;
+    // max-width: 100%;
+    height: 100%;
+    table-layout: auto;
+
+    th {
+      // background-color: $color2;
+      padding: 5px 5px 2px 5px;
+      border-bottom: 2px solid $color2;
+      vertical-align: bottom;
+    }
+
+    td {
+      border-bottom: 1px solid $color2;
+      vertical-align: top;
+    }
+  }
+}
