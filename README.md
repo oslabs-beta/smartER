@@ -66,7 +66,7 @@ Set your .env variables:
   <li>JWT_SECRET_KEY</li>
   <li>URI_SECRET_KEY</li>
 </ul>
-<br><br>
+<br>
 Start the application:
 
 ```js
