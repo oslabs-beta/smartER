@@ -14,17 +14,17 @@ h1 {
 <p align="center">
 <img src='./src/static/smarter-logo-padded.png' width=100%>   
 </p>
-
+<br>
 <div align="center">
-<img src='./src/static/icons8-react-native-48.png' width=30px height=30px>
-<img src='./src/static/typescript.png' width=30px height=30px>
-<img src='./src/static/postgresql.png' width=32px height=32px>
-<img src='./src/static/express.png' width=32px height=32px>
-<img src='./src/static/sass.png' width=32px height=32px>
-<img src='./src/static/redis.png' width=32px height=32px>
+<img src='./src/static/icons8-react-native-48.png' width=30px height=30px>&nbsp;&nbsp;
+<img src='./src/static/typescript.png' width=30px height=30px>&nbsp;&nbsp;
+<img src='./src/static/postgresql.png' width=32px height=32px>&nbsp;&nbsp;
+<img src='./src/static/express.png' width=32px height=32px>&nbsp;&nbsp;
+<img src='./src/static/sass.png' width=32px height=32px>&nbsp;&nbsp;
+<img src='./src/static/redis.png' width=32px height=32px>&nbsp;&nbsp;
 <img src='./src/static/react-flow.svg' width=32px height=32px>
 </div>
-  
+<br>
 <div align="center">
 <div>[⚡ Getting Started](#getting-started)</div>
 <div>[📝 User guide](#user-guide)</div>
