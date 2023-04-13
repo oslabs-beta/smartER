@@ -130,7 +130,7 @@ export function parseEdges(data: any): any {
     for (const columnObj in data[table]) {
       const columnName = data[table][columnObj].column_name;
       const column = data[table][columnObj];
-      if (column.foreign_key) {
+      if (column.foreign_key && data[column.linkedTable]) {
         const newEdge = {
           id: `${table}.${columnName}->${column.linkedTableColumn}.${column.column_name}`,
           source: `${columnName}.${table}.node`,
