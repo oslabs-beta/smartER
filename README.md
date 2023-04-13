@@ -20,7 +20,7 @@ h1 {
 }
 </style>
 
-<p class="center">
+<p style="text-align: center">
 <img src='./src/static/smarter-logo-padded.png' width=100%>   
 </p>
 
