@@ -26,9 +26,11 @@ h1 {
 </div>
 <br>
 <div align="center">
-<div>[⚡ Getting Started](#getting-started)</div>
-<div>[📝 User guide](#user-guide)</div>
+  <div><a href="#getting-started">⚡ Getting Started</a></div>
+  <div><a href="#user-guide">📝 User guide</a></div>
 </div>
+
+<br>
 
 <p>
 SQL databases often contain a complex network of interconnected tables.  This can pose a challenge for developers when attempting to build or optimize queries that require traversing multiple relationships.
