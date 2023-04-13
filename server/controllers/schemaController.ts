@@ -35,7 +35,6 @@ const schemaController: schemaControllers = {
       const decryptedUri = cryptr.decrypt(dbResult.rows[0].uri);
       const pg_uri = decodeURIComponent(decryptedUri);
 
-      // const pg_uri = process.env.PG_URL_STARWARS;
       var envCredentials: any = { connectionString: pg_uri };
       res.locals.pg = new Pool(envCredentials);
       return next();
