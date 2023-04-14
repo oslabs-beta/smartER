@@ -21,6 +21,7 @@ const elk: any = new Elk({
 
 // grab information for nodes and edges needed for elk
 export async function getElkData(nodes: any, edges: any, startPositions: any) {
+  console.log('EDGES', edges);
   const elkNodes: any[] = [];
   const elkEdges: any[] = [];
 
