@@ -91,7 +91,7 @@ const Landingpage: React.FC<{}> = () => {
 
           <div className="landing-page-section rtl">
             <div className="landing-page-section-text">
-              <h2>Visualize as you type!</h2>
+              <h2>Visualize as you type</h2>
               <p>
                 After providing your credentials, start typing your query. As
                 you type, smartER will map out your database's ER diagram with
@@ -147,23 +147,23 @@ const Landingpage: React.FC<{}> = () => {
         <footer>
           <p>
             smartER was developed under OSLabs by the following team members:
-            <ul>
-              <li>
-                <a href="https://github.com/joyxek">{githubLogo} Joyce Kwak</a>
-              </li>
-              <li>
-                <a href="https://github.com/melissamcl">
-                  {githubLogo} Melissa McLaughlin
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/n8ngo">{githubLogo} Nathan Ngo</a>
-              </li>
-              <li>
-                <a href="https://github.com/b-v-u">{githubLogo} Brian Vu</a>
-              </li>
-            </ul>
           </p>
+          <ul>
+            <li>
+              <a href="https://github.com/joyxek">{githubLogo} Joyce Kwak</a>
+            </li>
+            <li>
+              <a href="https://github.com/melissamcl">
+                {githubLogo} Melissa McLaughlin
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/n8ngo">{githubLogo} Nathan Ngo</a>
+            </li>
+            <li>
+              <a href="https://github.com/b-v-u">{githubLogo} Brian Vu</a>
+            </li>
+          </ul>
         </footer>
       </div>
     </div>
