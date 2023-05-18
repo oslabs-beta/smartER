@@ -24,6 +24,8 @@ export type HomepageContextType = {
   setErrorMessages: Dispatch<SetStateAction<string[]>>;
   reset: boolean;
   setReset: Dispatch<SetStateAction<boolean>>;
+  connectionStatus: string;
+  setConnectionStatus: Dispatch<SetStateAction<string>>;
 };
 
 const defaultHomeState = {
@@ -55,6 +57,8 @@ const defaultHomeState = {
   setErrorMessages: () => [],
   reset: false,
   setReset: () => {},
+  connectionStatus: '',
+  setConnectionStatus: () => {},
 };
 
 export const HomepageContext = createContext<HomepageContextType | undefined>(

@@ -19,9 +19,11 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
     setErrorMessages,
     masterData,
     setMasterData,
+    connectionStatus,
+    setConnectionStatus,
   } = useContext(HomepageContext)!;
-  //Handle submission of new URI
 
+  //Handle submission of new URI
   const handleUriSubmit = async (e: any) => {
     e.preventDefault();
     //TODO: Add fetch to add URI to DB, email will be parsed from JWT on backend
@@ -71,21 +73,25 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
       if (data.status === 200) {
         //TODO: add a success indicator
         setSavedUri(encodedURI);
-        setUri('');
-        setErrorMessages(['']);
-        setQueryString('');
-        setDBCredentials({
-          host: '',
-          port: 0,
-          dbUsername: '',
-          dbPassword: '',
-          database: '',
-        });
         setTab('Query');
         const parsedData = await data.json();
         setMasterData(parsedData);
-        return;
+        setConnectionStatus('success');
+      } else {
+        //display error banner
+        setConnectionStatus('failed');
       }
+      //clear inputs
+      setUri('');
+      setErrorMessages(['']);
+      setQueryString('');
+      setDBCredentials({
+        host: '',
+        port: 0,
+        dbUsername: '',
+        dbPassword: '',
+        database: '',
+      });
     } catch (error) {
       console.log('Error in Settings.tsx handleSubmit');
     }
@@ -178,7 +184,7 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
             className="submit-settings"
             onClick={handleSubmit}
           >
-            connect
+            Connect
           </button>
         </form>
       </div>

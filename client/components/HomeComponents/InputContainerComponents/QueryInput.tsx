@@ -110,14 +110,14 @@ const QueryInput: React.FC<{}> = () => {
             setReset(!reset);
           }}
         >
-          clear
+          Clear
         </button>
         <button
           type="submit"
           className="submit-query-button"
           onClick={handleSubmit}
         >
-          run
+          Run
         </button>
       </div>
       {errorMessages[0] && <div className="error-message-container">{err}</div>}

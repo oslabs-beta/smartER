@@ -37,8 +37,11 @@ body {
   outline: none;
   background-color: transparent;
   color: white;
-  border: none;
   cursor: pointer;
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  background-color: #72561c;
 }
 
 .logout-button:hover {
@@ -56,4 +59,18 @@ body {
 
 .main-container-split {
   height: 85vh;
+}
+
+.connection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.failed {
+  color: rgb(238, 124, 124);
+}
+.success {
+  color: rgb(0, 255, 81);
 }

@@ -23,6 +23,7 @@ const App = () => {
   const [renderedDataPositions, setRenderedDataPositions] = useState({});
   const [errorMessages, setErrorMessages] = useState(['']);
   const [reset, setReset] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('neutral');
 
   return (
     <HomepageContext.Provider
@@ -49,6 +50,8 @@ const App = () => {
         setErrorMessages,
         reset,
         setReset,
+        connectionStatus,
+        setConnectionStatus,
       }}
     >
       <Routes>
