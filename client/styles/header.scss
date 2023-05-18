@@ -36,12 +36,12 @@ body {
   right: 2%;
   outline: none;
   background-color: transparent;
-  color: white;
+  color: rgb(194, 194, 194);
   cursor: pointer;
   border-radius: 10px;
   padding: 10px;
-  border: 1px solid black;
-  background-color: #72561c;
+  border: 1px solid rgba(45, 49, 43, 0.582);
+  background-color: #464d3f;
 }
 
 .logout-button:hover {
