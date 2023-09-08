@@ -18,8 +18,6 @@ const TopComp = () => {
 };
 
 const Homepage: React.FC<{}> = () => {
-  //TODO: FETCH to authenticate Token: 401 not authenticated | 200 Sucess | 400 server error
-
   return (
     <>
       <Header />

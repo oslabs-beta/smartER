@@ -16,13 +16,12 @@ const Signup: React.FC<{}> = () => {
   useEffect(() => {
     (async () => {
       try {
-        // console.log('EMAIL', email);
-        const validEmail = new RegExp(/^\S+@\S+\.\S\S+$/);
         //if email has a '@' and '.'
+        const validEmail = new RegExp(/^\S+@\S+\.\S\S+$/);
 
         if (email.match(validEmail)) {
-          // console.log('VALID EMAIL');
           //Make API req to backend since match has been found to be valid email
+          setEmailExistsError(false);
           const data = await fetch('/user/emailCheck', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -30,9 +29,7 @@ const Signup: React.FC<{}> = () => {
           });
           const parsedData = await data.json();
           if (parsedData === 'user exists') {
-            //TODO: render a message 'Email is already in use. '
-            // setEmailExistsError(true);
-            // console.log('email in use');
+            setEmailExistsError(true);
           }
         }
       } catch (error) {
@@ -52,7 +49,7 @@ const Signup: React.FC<{}> = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
         });
-        //TODO: FETCH to authenticate Token
+
         if (data.status === 200) {
           localStorage.setItem('userIn', 'true');
           navigate('/homepage');
@@ -80,14 +77,13 @@ const Signup: React.FC<{}> = () => {
   };
 
   // login route
-  const routeToLogin = (e: any) => {
+  const routeToLogin = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate('/');
   };
 
   return (
     <div className="login-container">
-      {/* <h1>smartER</h1> */}
       <div className="logo-container">
         <div className="logo"></div>
       </div>
