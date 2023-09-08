@@ -39,8 +39,6 @@ const QueryInput: React.FC<{}> = () => {
   const err = errorList();
   // Handle submit of queryString
   const handleSubmit = async (e: any) => {
-    console.log('event', e);
-    // setErrorMessages([]);
     e.preventDefault();
     //setSubmit to trigger useEffect for re-rendering Diagram.tsx and getting query results
     setSubmit(!submit);

@@ -122,10 +122,10 @@ const Diagram: FC<{}> = () => {
         ) {
           positions = renderedDataPositions;
         }
-        const testElk = await getElkData(defaultNodes, defaultEdges, positions);
+        const dataElk = await getElkData(defaultNodes, defaultEdges, positions);
 
-        setNodes(testElk);
-        setRenderedDataPositions(testElk);
+        setNodes(dataElk);
+        setRenderedDataPositions(dataElk);
         setEdges(defaultEdges);
         setRenderedData(queryParse.mainObj);
       }

@@ -87,7 +87,7 @@ const schemaController: schemaControllers = {
       ORDER BY table_name, ordinal_position;`;
       const schema = await pg.query(query);
 
-      // Initialize array to hold returned data
+      // Initialize object to hold returned data
       let erDiagram: Record<string, typeof tableObj> = {};
       let tableObj: Record<string, any> = {};
       // Make custom type for any on tableObj
