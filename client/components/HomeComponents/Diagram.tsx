@@ -26,8 +26,6 @@ const fitViewOptions = {
 };
 
 const Diagram: FC<{}> = () => {
-  // STATE
-
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -50,7 +48,6 @@ const Diagram: FC<{}> = () => {
 
   async function getQueryResults() {
     //setSubmit to trigger useEffect for re-rendering Diagram.tsx
-    // POST request to database with queryString
     try {
       const created_at = String(Date.now());
       const data = await fetch('/api/getQueryResults', {
@@ -60,30 +57,20 @@ const Diagram: FC<{}> = () => {
       });
       if (data.status === 200) {
         const parsedData = await data.json();
-        //setState query result for rendering QueryResults.tsx
         setQueryResponse(parsedData);
-      } else {
-        // errorList();
       }
-      //Update History State, for re-rendering History.tsx
-      // setHistory((prev: any) => {
-      //   console.log('IN QUERY SUBMIT history: ', history);
-      //   prev.push({ created_at, query: queryString });
-      //   return prev;
-      // });
     } catch (error) {
       console.log(`Error in QueryInput.tsx ${error}`);
       return `Error in QueryInput.tsx ${error}`;
     }
   }
-  // HOOKS
+
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
   const onNodeDragStop = (e: any, node: any) => {
-    // console.log(e, node);
     setRenderedDataPositions([...renderedDataPositions, node]);
   };
 
