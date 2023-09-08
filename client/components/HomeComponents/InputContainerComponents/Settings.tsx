@@ -1,5 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { HomepageContext, dbCredentialsType } from '../../../Context';
+
+const CONNECTION: any = {
+  success: 'Successfully connected!',
+  fail: 'Failed to connect. Please try again.',
+};
 
 interface setTab {
   setTab: React.Dispatch<React.SetStateAction<string>>;
@@ -14,6 +19,18 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
     masterData,
     setMasterData,
   } = useContext(HomepageContext)!;
+
+  const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setConnectionStatus(null);
+    }, 3000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [connectionStatus]);
+
   //Handle submission of new URI
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -26,7 +43,7 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
       encodedURI = encodeURIComponent(
         `postgres://${dbUsername}:${dbPassword}@${hostspec}/${database}`
       );
-    } //TODO: Add fetch to add URI to DB, email will be parsed from JWT on backend
+    }
     try {
       const data = await fetch('/api/addURI', {
         method: 'POST',
@@ -34,8 +51,10 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
         body: JSON.stringify({ encodedURI }),
       });
       if (data.status === 200) {
-        //TODO: add a success indicator
-        setTab('Query');
+        setConnectionStatus('success');
+        setTimeout(() => {
+          setTab('Query');
+        }, 1500);
         setUri('');
         setDBCredentials({
           host: '',
@@ -47,9 +66,11 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
         const parsedData = await data.json();
         setMasterData(parsedData);
         return;
+      } else {
+        setConnectionStatus('fail');
       }
     } catch (error) {
-      console.log(`Error in Settings.tsx ${error}`);
+      setConnectionStatus('fail');
       return `Error in Settings.tsx ${error}`;
     }
   };
@@ -143,6 +164,17 @@ const Settings: React.FC<setTab> = ({ setTab }) => {
           >
             connect
           </button>
+          {connectionStatus ? (
+            <div
+              className={
+                connectionStatus === 'fail'
+                  ? 'connection-content failed'
+                  : 'connection-content success'
+              }
+            >
+              {CONNECTION[connectionStatus]}
+            </div>
+          ) : null}
         </form>
       </div>
     </div>
