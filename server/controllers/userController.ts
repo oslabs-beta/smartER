@@ -117,7 +117,7 @@ const userController: userControllers = {
   // protect API routes by validating JWT
   authenticateToken: async (req, res, next) => {
     try {
-      console.log('running authenticateToken');
+      // console.log('running authenticateToken');
       const token: string | undefined = req.cookies.JWT;
       if (token) console.log('validating token');
 

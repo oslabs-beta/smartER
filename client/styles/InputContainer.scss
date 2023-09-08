@@ -289,14 +289,28 @@ textarea {
       }
     }
   }
+
+  .connection-content {
+    position: absolute;
+    z-index: 100;
+    bottom: 10px;
+  }
+  .failed {
+    background-color: $color2;
+    border-radius: 5px;
+    padding: 5px;
+  }
+  .success {
+    background-color: $color5;
+    color: $color2;
+    border-radius: 5px;
+    padding: 5px;
+  }
 }
 
 // HISTORY
 .history-table-container {
-  // display: flex;
-  // justify-content: center;
   height: 100%;
-  // overflow: hidden;
 
   .history-table {
     margin: 40px 10%;
@@ -329,14 +343,13 @@ textarea {
           list-style: none;
           display: grid;
           grid-template-columns: 80% 20%;
-          // justify-content: space-between;
+
           margin: 0;
           padding: 10px;
         }
       }
 
       .header-row {
-        // background-color: $color2;
         padding: 5px 5px 2px 5px;
         border-bottom: 2px solid $color3;
         vertical-align: bottom;
@@ -346,9 +359,6 @@ textarea {
         border-bottom: 1px solid $color3;
         vertical-align: top;
         padding: 0 5px;
-        // overflow: hidden;
-        // text-overflow: ellipsis;
-        // white-space: nowrap;
       }
 
       .history-query {
@@ -357,7 +367,6 @@ textarea {
       }
 
       .history-time {
-        // width: 120px;
         text-align: right;
       }
     }

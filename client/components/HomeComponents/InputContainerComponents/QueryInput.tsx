@@ -39,8 +39,6 @@ const QueryInput: React.FC<{}> = () => {
   const err = errorList();
   // Handle submit of queryString
   const handleSubmit = async (e: any) => {
-    console.log('event', e);
-    // setErrorMessages([]);
     e.preventDefault();
     //setSubmit to trigger useEffect for re-rendering Diagram.tsx and getting query results
     setSubmit(!submit);
@@ -61,12 +59,6 @@ const QueryInput: React.FC<{}> = () => {
       } else {
         // errorList();
       }
-      //Update History State, for re-rendering History.tsx
-      // setHistory((prev: any) => {
-      //   console.log('IN QUERY SUBMIT history: ', history);
-      //   prev.push({ created_at, query: queryString });
-      //   return prev;
-      // });
     } catch (error) {
       console.log(`Error in QueryInput.tsx ${error}`);
       return `Error in QueryInput.tsx ${error}`;

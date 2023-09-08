@@ -18,10 +18,3 @@ export default {
     return pool.query(text, arr);
   },
 };
-
-// export default {
-//   query: (text: string, params: string, callback: Function) => {
-//     console.log('executed query', text);
-//     return pool.query(text, params, callback);
-//   },
-// };

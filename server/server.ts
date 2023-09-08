@@ -22,5 +22,4 @@ let redisClient: RedisClientType;
   await redisClient.connect();
 })();
 
-// export { app };
 export { redisClient };

@@ -86,9 +86,8 @@ const schemaController: schemaControllers = {
 
       ORDER BY table_name, ordinal_position;`;
       const schema = await pg.query(query);
-      // console.log('SCHEMA', schema.rows);
 
-      // Initialize array to hold returned data
+      // Initialize object to hold returned data
       let erDiagram: Record<string, typeof tableObj> = {};
       let tableObj: Record<string, any> = {};
       // Make custom type for any on tableObj
@@ -105,17 +104,20 @@ const schemaController: schemaControllers = {
         tableObj[current.column_name] = {};
         tableObj[current.column_name].table_name = current.table_name;
         tableObj[current.column_name].column_name = current.column_name;
+
         // Assign data type
         if (current.data_type === 'integer')
           tableObj[current.column_name].data_type = 'int';
         else if (current.data_type === 'character varying')
           tableObj[current.column_name].data_type = 'varchar';
         else tableObj[current.column_name].data_type = current.data_type;
+
         // Add relationships and constraints if there are any
         if (current.is_primary_key) {
           tableObj[current.column_name].primary_key = true;
           tableObj[current.column_name].foreign_tables = [];
         }
+
         // table_origin is only given when column is a foreign key
         if (current.table_origin) {
           const constraintObj: Record<string, string> = {};

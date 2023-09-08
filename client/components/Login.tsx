@@ -27,13 +27,11 @@ const Login: React.FC<{}> = () => {
       }
       // 401 incorrect pw , 400 middleware error
       else if (data.status === 401) {
-        // console.log('wrong pw');
         setPassword('');
         setValidCredentials(false);
       } else if (data.status === 400) {
         setEmail('');
         setPassword('');
-        // TODO: need to look into this 400 response, should it display for the user that the login is incorrect?
         setValidCredentials(false);
       }
     } catch (error) {
