@@ -82,7 +82,7 @@ const Diagram: FC<{}> = () => {
     [setEdges]
   );
 
-  const onNodeDragStop = (e, node: any) => {
+  const onNodeDragStop = (e: any, node: any) => {
     // console.log(e, node);
     setRenderedDataPositions([...renderedDataPositions, node]);
   };
